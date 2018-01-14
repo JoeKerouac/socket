@@ -1,0 +1,13 @@
+数据报格式：
+    数据报分为header和body
+        header：数据报head为固定长度16个字节 第一个字节为版本号 第二到第五个字节为数据报长度（请求体的长度，不包含请求头） 第六个字节为数据报数据类型 第七到第十六字节为数据报编码
+        body：数据报body为变长，长度等于数据报head里边的数据报长度（body具体的序列化格式可以自定义，如果使用内置的MVC数据处理器的话body格式固定为InterfaceData（后边会介绍该对象）
+    其中数据报的构建可以参考com.joe.easysocket.common.DatagramUtil中的方法
+
+PS：如果使用内置的MVC数据处理器，body为固定的InterfaceData格式，格式说明如下：
+    InterfaceData为json对象，示例如下：
+        {
+            "id":"客户端生成的短时间内唯一的ID，可以用做去重，当前暂时没有用，没有加入底层去重策略",
+            "invoke":"要请求的资源路径，例如   user/getUserInfo",
+            "data":"请求资源需要的数据，当资源不需要数据时可以为null"
+        }

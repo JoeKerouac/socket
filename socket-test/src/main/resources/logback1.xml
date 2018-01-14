@@ -1,0 +1,65 @@
+<configuration scan="true">
+    <property name="LOG_HOME" value="/applogs/server" />
+    <!--<property name="LOG_HOME" value="/applogs/balance" />-->
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n
+            </pattern>
+        </encoder>
+        <!-- 只接收ERROR级别的日志，注：如果填成INFO将只接收INFO级别的日志，其他任何级别的都不接收 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="Framework"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/frame/Framework-%d{yyyy-MM-dd}.%i.txt
+            </fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %-4relative [%thread] %-5level %logger{35} - %msg%n%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="JVMStatus"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/jvminfo/JVMStatus-%d{yyyy-MM-dd}.%i.txt
+            </fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %-4relative [%thread] %-5level %logger{35} - %msg%n%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 控制台输出，所有错误信息都在此输出 -->
+    <root level="ERROR">
+        <appender-ref ref="Console" />
+    </root>
+
+    <!-- 框架输出 -->
+    <logger name="com" level="WARN">
+        <appender-ref ref="Framework" />
+    </logger>
+
+    <!-- JVM监控输出 -->
+    <logger name="JVMStatus" level="WARN">
+        <appender-ref ref="JVMStatus" />
+    </logger>
+</configuration>
