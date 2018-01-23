@@ -5,3 +5,6 @@
 - [common](https://github.com/935237604/socket/tree/master/common "common")：common项目为前端项目和后端项目的通用部分。
 - [client](https://github.com/935237604/socket/tree/master/client "client")：client项目为客户端参考实现，用于测试使用，不建议直接用于生产环境。
 - [socket-test](https://github.com/935237604/socket/tree/master/socket-test "socket-test")：socket-test项目使用balance项目和backserver项目实现了一个简易的socket服务器，用于给用户提供使用参考。
+
+# 项目案例
+目前[名门互娱-斗牛](https://mingmen.mingmenhuyu.com/share/wie.html "名门互娱-斗牛")项目（斗牛游戏项目）在使用本框架。
