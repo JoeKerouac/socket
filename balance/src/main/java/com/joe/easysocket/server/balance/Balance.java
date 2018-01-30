@@ -1,7 +1,10 @@
 package com.joe.easysocket.server.balance;
 
 
+import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.server.BackServer;
+import com.joe.easysocket.server.balance.spi.ConnectorManager;
+import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
@@ -10,7 +13,6 @@ import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.PublishCenter;
-import com.joe.utils.cluster.ClusterManager;
 import com.joe.utils.common.Tools;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,9 +65,10 @@ public abstract class Balance {
      * 默认构造器
      *
      * @param config 前端配置
-     * @throws ConfigIllegalException 当config不符合要求时抛出该异常
+     * @throws ConfigIllegalException 配置错误时抛出该异常
      */
     public Balance(Config config) throws ConfigIllegalException {
+        checkConfig(config);
         this.config = config;
         this.clusterConfig = config.getClusterConfig();
         this.publishCenter = clusterConfig.getPublishCenter();
@@ -206,5 +209,69 @@ public abstract class Balance {
             }
         }
         return null;
+    }
+
+
+    /**
+     * 检查配置的正确性
+     *
+     * @param config 配置
+     * @throws ConfigIllegalException 配置错误时抛出该异常
+     */
+    private void checkConfig(Config config) throws ConfigIllegalException {
+        if (config.getConnectorManager() == null) {
+            log.info("ConnectorManager未设置，使用默认ConnectorManager[{}]", AbstractConnectorManager.class);
+        }
+        if (config.getPort() <= 0) {
+            log.warn("监听端口号必须大于0");
+            throw new ConfigIllegalException("监听端口号必须大于0，请重新设置port");
+        } else if (config.getPort() < 1000) {
+            log.warn("当前监听端口小于1000，有可能会与系统端口号冲突，建议设置大于1000的值");
+        }
+
+        if (config.getTcpBacklog() <= 0) {
+            log.warn("tcpBacklog必须大于0");
+            throw new ConfigIllegalException("tcpBacklog必须大于0，请设置一个大于0的tcpBacklog");
+        }
+        if (config.getHeatbeat() <= 30) {
+            log.warn("心跳周期不能小于30秒");
+            throw new ConfigIllegalException("心跳周期不能小于30秒，请设置一个大于0的heatbeat");
+        } else if (config.getHeatbeat() > 500) {
+            log.warn("当前心跳周期较长，建议设置300秒左右的心跳周期");
+        }
+        if (config.getRespTimeout() <= 0) {
+            log.warn("响应超时时间必须大于0");
+            throw new ConfigIllegalException("响应超时必须大于0，请设置一个大于0的respTimeout");
+        } else if (config.getRespTimeout() <= 50) {
+            log.warn("当前设置响应超时时间较短，建议加大响应超时时间");
+        }
+        if (config.getAckTimeout() <= 0) {
+            log.warn("ack超时时间必须大于0");
+            throw new ConfigIllegalException("ack超时时间必须大于0，请设置一个大于0的ackTimeout");
+        } else if (config.getAckTimeout() <= 50) {
+            log.warn("当前设置ack超时时间较短，建议加大ack超时时间");
+        }
+
+        String connectorManagerClass = config.getConnectorManager();
+        try {
+            if (!ConnectorManager.class.isAssignableFrom(Class.forName(connectorManagerClass))) {
+                throw new ConfigIllegalException("指定的ConnectorManager[" + connectorManagerClass + "]不是" +
+                        ConnectorManager.class.getName() + "的子类");
+            }
+        } catch (Exception e) {
+            log.error("指定的ConnectorManager[{}]不存在");
+            throw new ConfigIllegalException("指定的ConnectorManager[" + connectorManagerClass + "]不存在", e);
+        }
+
+        String eventCenterClass = config.getEventCenter();
+        try {
+            if (!EventCenter.class.isAssignableFrom(Class.forName(eventCenterClass))) {
+                throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不是" +
+                        EventCenter.class.getName() + "的子类");
+            }
+        } catch (Exception e) {
+            log.error("指定的EventCenter[{}]不存在");
+            throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不存在", e);
+        }
     }
 }

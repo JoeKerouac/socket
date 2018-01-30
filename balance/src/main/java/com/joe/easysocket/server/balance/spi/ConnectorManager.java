@@ -1,5 +1,7 @@
-package com.joe.easysocket.server.balance.protocol;
+package com.joe.easysocket.server.balance.spi;
 
+import com.joe.easysocket.server.balance.Config;
+import com.joe.easysocket.server.balance.protocol.CloseCause;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.lambda.Endpoint;
@@ -8,10 +10,20 @@ import com.joe.easysocket.server.common.protocol.PChannel;
 
 /**
  * 连接管理器，该类实现连接的管理（需要能够定期清理心跳超时的客户端）和数据的分发
+ * <p>
+ * 注意：必须要有默认无参数构造器
  *
  * @author joe
  */
-public interface ConnectorManager extends Endpoint {
+public interface ConnectorManager extends EventCenter, Endpoint {
+    /**
+     * 初始化，调用该处理器前需要先调用初始化方法
+     *
+     * @param config      配置
+     * @param eventCenter 事件中心，可以为null
+     */
+    void init(Config config, EventCenter eventCenter);
+
     /**
      * 协议栈从底层接收数据，然后交由应用层处理（底层接收到数据后可以发送到此处）
      *

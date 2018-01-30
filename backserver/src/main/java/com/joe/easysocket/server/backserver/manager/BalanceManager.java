@@ -6,7 +6,7 @@ import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BalanceInfo;
 import com.joe.easysocket.server.common.lambda.Endpoint;
 import com.joe.easysocket.server.common.lambda.Serializer;
-import com.joe.easysocket.server.common.registry.Registry;
+import com.joe.easysocket.server.common.spi.Registry;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;

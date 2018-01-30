@@ -1,10 +1,12 @@
 package com.joe.easysocket.server.balance.protocol;
 
+import com.joe.easysocket.server.balance.Config;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
+import com.joe.easysocket.server.balance.spi.ConnectorManager;
+import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.common.data.Datagram;
 import com.joe.easysocket.server.common.data.DatagramUtil;
 import com.joe.easysocket.server.common.data.ProtocolData;
-import com.joe.easysocket.server.common.msg.PublishCenter;
 import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.utils.common.StringUtils;
 import com.joe.utils.concurrent.ThreadUtil;
@@ -20,16 +22,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 协议栈基本实现
+ * 协议栈抽象实现（通用实现，同时该实现已经实现了EventCenter，子类只需要将EventCenter的实例传入即可）
  *
  * @author joe
  */
 @Slf4j
-public abstract class ConnectorManagerImpl implements ConnectorManager {
+public abstract class AbstractConnectorManager implements ConnectorManager {
     /**
      * 协议栈事件中心
      */
-    private EventCenter eventCenter;
+    protected EventCenter eventCenter;
     /**
      * 当前所有通道，key为链接的ID，value为通道
      */
@@ -62,21 +64,19 @@ public abstract class ConnectorManagerImpl implements ConnectorManager {
      * 发送线程
      */
     private Thread writer;
-    /**
-     * 发布中心
-     */
-    private PublishCenter publishCenter;
 
 
-    /**
-     * 默认构造器
-     *
-     * @param heartbeaat  最长心跳周期，单位为秒，超过该时间没有收到客户端任何消息后关闭该连接（该时间最小为30秒）
-     * @param eventCenter 事件中心
-     */
-    public ConnectorManagerImpl(int heartbeaat, @NonNull EventCenter eventCenter) {
-        this.heartbeat = heartbeaat < 30 ? 30 : heartbeaat;
-        this.eventCenter = eventCenter;
+    @Override
+    public void init(Config config, EventCenter eventCenter) {
+        if (eventCenter == null || eventCenter == this) {
+            log.info("事件中心为空，采用默认事件中心[{}]", DefaultEventCenter.class);
+            this.eventCenter = new DefaultEventCenter();
+        } else {
+            this.eventCenter = eventCenter;
+        }
+
+        this.heartbeat = config.getHeatbeat() < 30 ? 30 : config.getHeatbeat();
+
         this.listeners = new CopyOnWriteArrayList<>();
         this.pChannels = new ConcurrentHashMap<>();
         this.queue = new ConcurrentHashMap<>();
@@ -282,6 +282,41 @@ public abstract class ConnectorManagerImpl implements ConnectorManager {
     @Override
     public void register(ProtocolDataListener listener) {
         listeners.add(listener);
+    }
+
+    @Override
+    public void register(ProtocolEventListener listener) {
+        this.eventCenter.register(listener);
+    }
+
+    @Override
+    public void discard(String channel, byte[] data) {
+        this.eventCenter.discard(channel, data);
+    }
+
+    @Override
+    public void send(String channel, byte[] data) {
+        this.eventCenter.send(channel, data);
+    }
+
+    @Override
+    public void register(String channel) {
+        this.eventCenter.register(channel);
+    }
+
+    @Override
+    public void receiveError(String channel, byte[] data, Throwable e) {
+        this.eventCenter.receiveError(channel, data, e);
+    }
+
+    @Override
+    public void receiveSuccess(String channel, byte[] data) {
+        this.eventCenter.receiveSuccess(channel, data);
+    }
+
+    @Override
+    public void receive(String channel, byte[] data) {
+        this.eventCenter.receive(channel, data);
     }
 
     /**

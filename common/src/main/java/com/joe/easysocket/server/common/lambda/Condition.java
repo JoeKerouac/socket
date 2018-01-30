@@ -8,7 +8,7 @@ package com.joe.easysocket.server.common.lambda;
 @FunctionalInterface
 public interface Condition {
     /**
-     * 允许
+     * 条件是否通过
      *
      * @return 返回true表示允许，返回false表示不允许
      */

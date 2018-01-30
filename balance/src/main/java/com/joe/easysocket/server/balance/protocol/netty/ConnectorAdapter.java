@@ -1,8 +1,9 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
 import com.joe.easysocket.server.balance.protocol.CloseCause;
-import com.joe.easysocket.server.balance.protocol.EventCenter;
-import com.joe.easysocket.server.balance.protocol.ConnectorManager;
+import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
+import com.joe.easysocket.server.balance.spi.ConnectorManager;
+import com.joe.easysocket.server.balance.spi.EventCenter;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

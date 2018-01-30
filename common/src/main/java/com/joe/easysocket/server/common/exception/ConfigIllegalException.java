@@ -9,4 +9,8 @@ public class ConfigIllegalException extends SystemException {
     public ConfigIllegalException(String message) {
         super(message);
     }
+
+    public ConfigIllegalException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

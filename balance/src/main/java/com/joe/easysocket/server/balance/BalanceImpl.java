@@ -4,6 +4,8 @@ import com.joe.easysocket.server.balance.protocol.*;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.balance.server.BackServer;
 import com.joe.easysocket.server.balance.server.BackServerImpl;
+import com.joe.easysocket.server.balance.spi.ConnectorManager;
+import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.balance.strategy.LoadStrategy;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.data.ProtocolData;
@@ -15,7 +17,7 @@ import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.registry.Registry;
+import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.utils.common.Tools;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,13 +60,9 @@ public class BalanceImpl extends Balance {
      */
     private LoadStrategy strategy;
     /**
-     * 事件中心
-     */
-    private EventCenter eventCenter;
-    /**
      * 处理底层连接的server
      */
-    private SocketServer socketServer;
+    private ConnectorManager connectorManager;
     /**
      * 注册中心
      */
@@ -95,7 +93,7 @@ public class BalanceImpl extends Balance {
      * 默认构造器
      *
      * @param config 前端配置
-     * @throws ConfigIllegalException 当config不符合要求时抛出该异常
+     * @throws ConfigIllegalException 配置错误时抛出该异常
      */
     public BalanceImpl(Config config) throws ConfigIllegalException {
         super(config);
@@ -119,9 +117,34 @@ public class BalanceImpl extends Balance {
         };
         this.strategy = config.getStrategy();
         this.registry = clusterConfig.getRegistry();
-        this.eventCenter = new EventCenter();
-        this.socketServer = SocketServer.buildDefault(config.getPort(), config.getHeatbeat(), config.isNodelay(),
-                config.getTcpBacklog(), eventCenter);
+
+        String connectorManagerClass = config.getConnectorManager();
+        try {
+            log.debug("初始化ConnectorManager子类[{}]的实例", connectorManagerClass);
+            this.connectorManager = (ConnectorManager) Class.forName(connectorManagerClass).newInstance();
+        } catch (Exception e) {
+            log.error("构造ConnectorManager实例[{}]失败，可能是没有无参数构造器，请为ConnectorManager实现类[{}]增加无参数构造器",
+                    connectorManagerClass, connectorManagerClass, e);
+            throw new ConfigIllegalException("构造ConnectorManager实例[" + connectorManagerClass +
+                    "]失败，可能是没有无参数构造器，请为ConnectorManager实现类[" + connectorManagerClass + "]增加无参数构造器", e);
+        }
+
+
+        String eventCenterClass = config.getEventCenter();
+        EventCenter eventCenter;
+        try {
+            log.debug("初始化EventCenter子类[{}]的实例", eventCenterClass);
+            eventCenter = (EventCenter) Class.forName(eventCenterClass).newInstance();
+        } catch (Exception e) {
+            log.warn("构造EventCenter实例[{}]失败，可能是没有无参数构造器，将采用默认EventCenter[{}]",
+                    connectorManagerClass, DefaultEventCenter.class, e);
+            eventCenter = new DefaultEventCenter();
+        }
+
+        log.debug("初始化ConnectorManager");
+        connectorManager.init(config, eventCenter);
+        log.debug("ConnectorManager初始化完毕");
+
         this.msgRecTopic = clusterConfig.getTopic() + "/" + id;
         this.balanceGroup = clusterConfig.getBalanceGroup();
         this.registryBase = clusterConfig.getRegistryBase();
@@ -129,7 +152,7 @@ public class BalanceImpl extends Balance {
         this.host = config.getHost();
 
         //当有通道关闭时发出通知
-        this.eventCenter.register(new ProtocolEventListener() {
+        this.connectorManager.register(new ProtocolEventListener() {
             /**
              * 当通道注销但是有未读消息时将会触发该方法
              *
@@ -174,7 +197,7 @@ public class BalanceImpl extends Balance {
 
         log.debug("注册对后端的数据监听");
         //注册数据监听
-        socketServer.register(data -> {
+        connectorManager.register(data -> {
             log.debug("使用负载均衡策略寻找一个合适的后端处理数据");
             BackServer server = strategy.next();
             log.debug("由后端{}处理数据{}", server.getId(), data);
@@ -231,7 +254,7 @@ public class BalanceImpl extends Balance {
 
         log.debug("启动底层socket监听");
         try {
-            socketServer.start();
+            connectorManager.start();
         } catch (SystemException e) {
             throw e;
         } catch (Exception e) {
@@ -252,7 +275,7 @@ public class BalanceImpl extends Balance {
 
         log.debug("关闭socket监听");
         try {
-            socketServer.shutdown();
+            connectorManager.shutdown();
         } catch (SystemException e) {
             throw e;
         } catch (Exception e) {
@@ -354,7 +377,7 @@ public class BalanceImpl extends Balance {
 
     @Override
     public void receiveData(ProtocolData data) {
-        socketServer.write(data);
+        connectorManager.write(data);
     }
 
     /**

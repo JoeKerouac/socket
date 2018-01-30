@@ -1,6 +1,8 @@
-package com.joe.easysocket.server.common.registry;
+package com.joe.easysocket.server.common.spi;
 
 
+import com.joe.easysocket.server.common.registry.ConnectionStateListener;
+import com.joe.easysocket.server.common.registry.NodeListener;
 import com.joe.easysocket.server.common.registry.zk.ZKConfig;
 import com.joe.easysocket.server.common.registry.zk.ZKRegistry;
 
@@ -8,6 +10,8 @@ import java.io.Closeable;
 import java.util.List;
 
 /**
+ * 注册中心
+ *
  * @author joe
  */
 public interface Registry extends Closeable {

@@ -3,7 +3,7 @@ package com.joe.easysocket.server.common.registry.zk;
 
 import com.joe.easysocket.server.common.registry.ConnectionStateListener;
 import com.joe.easysocket.server.common.registry.NodeListener;
-import com.joe.easysocket.server.common.registry.Registry;
+import com.joe.easysocket.server.common.spi.Registry;
 
 import java.io.IOException;
 import java.util.List;

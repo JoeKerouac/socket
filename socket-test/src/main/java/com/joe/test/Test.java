@@ -5,10 +5,8 @@ import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.balance.Balance;
 import com.joe.easysocket.server.balance.BalanceImpl;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.data.Datagram;
-import com.joe.easysocket.server.common.data.DatagramUtil;
 import com.joe.easysocket.server.common.msg.PublishCenter;
-import com.joe.easysocket.server.common.registry.Registry;
+import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.easysocket.server.common.registry.zk.ZKConfig;
 import com.joe.easysocket.server.common.registry.zk.ZKRegistry;
 import com.joe.test.redis.RedisPublishCenter;
@@ -18,20 +16,19 @@ import com.joe.test.redis.RedisPublishCenter;
  */
 public class Test {
     static String host = "192.168.1.1";
-    static PublishCenter publishCenter = new RedisPublishCenter("wggyl.cn", 9997);
-    static String zookeeper = "wggyl.cn:2181";
+    static PublishCenter publishCenter = new RedisPublishCenter("192.168.2.222", 6379);
+    static String zookeeper = "192.168.2.222:3181";
 
     public static void main(String[] args) throws Exception {
-        new Thread(Test::startBalance).start();
-//        new Thread(Test::startBackserver).start();
-        System.out.println("启动完成------");
+//        new Thread(Test::startBalance).start();
+        new Thread(Test::startBackserver).start();
     }
 
     static void startBalance() {
         try {
             Registry registry = new ZKRegistry(ZKConfig.builder().connectStr(zookeeper).build());
 
-            String host = "192.168.1.1";
+            String host = "192.168.2.71";
 
             com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
                     .clusterConfig(ClusterConfig.builder().publishCenter(publishCenter).registry(registry).build())

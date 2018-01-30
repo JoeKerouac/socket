@@ -1,5 +1,7 @@
 package com.joe.easysocket.server.common.registry;
 
+import com.joe.easysocket.server.common.spi.Registry;
+
 /**
  * 节点监听器
  *

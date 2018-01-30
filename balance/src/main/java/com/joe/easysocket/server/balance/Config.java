@@ -1,15 +1,12 @@
 package com.joe.easysocket.server.balance;
 
-import com.joe.easysocket.server.balance.protocol.ConnectorManager;
+import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
+import com.joe.easysocket.server.balance.protocol.NettyConnectorManager;
+import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.strategy.LoadStrategy;
 import com.joe.easysocket.server.balance.strategy.PollLoadSrategy;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.lambda.Serializer;
-import com.joe.easysocket.server.common.msg.PublishCenter;
-import com.joe.easysocket.server.common.registry.Registry;
 import lombok.*;
-
-import java.util.List;
 
 /**
  * 前端配置，其中发布中心、注册中心、本机IP为必填项，其他都为选填项
@@ -26,10 +23,6 @@ public class Config {
      */
     @NonNull
     private String host;
-    /**
-     * 连接管理，当没有设置该值时使用默认的实现
-     */
-    private ConnectorManager connectorManager;
     /**
      * 负载策略
      */
@@ -63,5 +56,16 @@ public class Config {
      */
     @Builder.Default
     private long ackTimeout = 1000;
-
+    /**
+     * 连接管理
+     */
+    @NonNull
+    @Builder.Default
+    private String connectorManager = NettyConnectorManager.class.getName();
+    /**
+     * 事件中心
+     */
+    @NonNull
+    @Builder.Default
+    private String eventCenter = DefaultEventCenter.class.getName();
 }
