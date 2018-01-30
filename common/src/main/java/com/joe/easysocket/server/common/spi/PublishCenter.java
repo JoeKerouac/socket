@@ -1,8 +1,9 @@
-package com.joe.easysocket.server.common.msg;
+package com.joe.easysocket.server.common.spi;
 
 
 import com.joe.easysocket.server.common.lambda.Endpoint;
 import com.joe.easysocket.server.common.lambda.Serializer;
+import com.joe.easysocket.server.common.msg.CustomMessageListener;
 
 /**
  * 发布中心，用于发布消息和注册消息监听者，序列化器默认是json，需要其他的可以自行注册

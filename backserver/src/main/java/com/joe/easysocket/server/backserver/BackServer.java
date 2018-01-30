@@ -9,7 +9,7 @@ import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.msg.PublishCenter;
+import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.utils.common.Tools;
 import lombok.extern.slf4j.Slf4j;

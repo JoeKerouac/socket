@@ -5,7 +5,7 @@ import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.balance.Balance;
 import com.joe.easysocket.server.balance.BalanceImpl;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.msg.PublishCenter;
+import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.easysocket.server.common.registry.zk.ZKConfig;
 import com.joe.easysocket.server.common.registry.zk.ZKRegistry;

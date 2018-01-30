@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.common.config;
 
 import com.joe.easysocket.server.common.lambda.Serializer;
-import com.joe.easysocket.server.common.msg.PublishCenter;
+import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import lombok.Builder;
 import lombok.Getter;

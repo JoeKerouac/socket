@@ -3,7 +3,7 @@ package com.joe.test.redis;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
-import com.joe.easysocket.server.common.msg.PublishCenter;
+import com.joe.easysocket.server.common.spi.PublishCenter;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;

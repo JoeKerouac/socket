@@ -1,7 +1,6 @@
 package com.joe.easysocket.server.backserver.mvc.impl;
 
 import com.joe.easysocket.server.backserver.Config;
-import com.joe.easysocket.server.backserver.manager.ChannelManager;
 import com.joe.easysocket.server.backserver.mvc.DataWorker;
 import com.joe.easysocket.server.backserver.mvc.impl.coder.DataReaderContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.coder.DataWriterContainer;
@@ -31,10 +30,8 @@ import com.joe.easysocket.server.common.data.DatagramUtil;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.NoRequireParamException;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.msg.PubMsg;
-import com.joe.easysocket.server.common.msg.PublishCenter;
+import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.utils.common.StringUtils;
-import com.joe.utils.concurrent.ThreadUtil;
 import com.joe.utils.parse.json.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

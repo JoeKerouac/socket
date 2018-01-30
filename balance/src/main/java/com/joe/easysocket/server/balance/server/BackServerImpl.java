@@ -5,7 +5,7 @@ import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.msg.PublishCenter;
+import com.joe.easysocket.server.common.spi.PublishCenter;
 import lombok.extern.slf4j.Slf4j;
 
 /**

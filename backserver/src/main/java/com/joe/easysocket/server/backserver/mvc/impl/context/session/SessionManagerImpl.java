@@ -2,7 +2,6 @@ package com.joe.easysocket.server.backserver.mvc.impl.context.session;
 
 import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.backserver.manager.ChannelManager;
-import com.joe.easysocket.server.common.msg.PublishCenter;
 import com.joe.utils.concurrent.LockService;
 import lombok.extern.slf4j.Slf4j;
 
