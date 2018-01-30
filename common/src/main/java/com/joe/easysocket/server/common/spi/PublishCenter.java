@@ -20,8 +20,8 @@ public interface PublishCenter extends Endpoint {
     <T> void pub(String channel, T message);
 
     /**
-     * 注册消息监听，如果容器已经运行，那么系统会尽快添加该监听（注：该方法添加监听时监听容器肯定已经运行了，所以消息监听不是实时生效的，但是
-     * 基本等于实时，除非系统负载过大）
+     * 注册消息监听，如果容器已经运行，那么系统会尽快添加该监听（注：该方法添加监听时监听容器肯定已经运行了，所以消息
+     * 监听不是实时生效的，但是基本等于实时，除非系统负载过大）
      *
      * @param channel  要监听的渠道
      * @param listener 监听者
