@@ -1,4 +1,4 @@
-package com.joe.easysocket.server.backserver.mvc;
+package com.joe.easysocket.server.backserver.spi;
 
 
 import com.joe.easysocket.server.common.lambda.Endpoint;

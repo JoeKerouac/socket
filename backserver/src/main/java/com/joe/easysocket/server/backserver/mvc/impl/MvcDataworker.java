@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver.mvc.impl;
 
 import com.joe.easysocket.server.backserver.Config;
-import com.joe.easysocket.server.backserver.mvc.DataWorker;
+import com.joe.easysocket.server.backserver.spi.DataWorker;
 import com.joe.easysocket.server.backserver.mvc.impl.coder.DataReaderContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.coder.DataWriterContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.coder.ReaderInterceptor;

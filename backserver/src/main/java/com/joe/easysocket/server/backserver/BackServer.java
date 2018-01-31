@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver;
 
 
-import com.joe.easysocket.server.backserver.mvc.DataWorker;
+import com.joe.easysocket.server.backserver.spi.DataWorker;
 import com.joe.easysocket.server.backserver.mvc.impl.MvcDataworker;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.exception.SystemException;
