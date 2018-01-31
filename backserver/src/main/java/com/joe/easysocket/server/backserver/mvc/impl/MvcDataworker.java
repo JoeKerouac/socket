@@ -84,7 +84,7 @@ public class MvcDataworker implements DataWorker {
     /**
      * 空闲线程存活时间，单位为秒
      */
-    private long keyAliveTime;
+    private long threadAliveTime;
 
     /**
      * 默认构造器
@@ -102,8 +102,8 @@ public class MvcDataworker implements DataWorker {
         this.maxThread = this.maxThread <= 0 ? Runtime.getRuntime().availableProcessors() * 150 : this.maxThread;
         this.minThread = config.getMinThreadCount();
         this.minThread = this.minThread <= 0 ? Runtime.getRuntime().availableProcessors() * 50 : this.minThread;
-        this.keyAliveTime = config.getKeyAliveTime();
-        this.keyAliveTime = this.keyAliveTime <= 0 ? 30 : this.keyAliveTime;
+        this.threadAliveTime = config.getThreadAliveTime();
+        this.threadAliveTime = this.threadAliveTime <= 0 ? 30 : this.threadAliveTime;
         this.threadName = config.getThreadName();
         //校验格式是否正确
         String.format(threadName, Integer.valueOf(0));
@@ -167,8 +167,8 @@ public class MvcDataworker implements DataWorker {
         };
 
         //构建线程池
-        logger.debug("构建线程池，参数为{}:{}:{}:{}", minThread, maxThread, keyAliveTime, threadName);
-        service = new ThreadPoolExecutor(minThread, maxThread, keyAliveTime, TimeUnit.SECONDS, new
+        logger.debug("构建线程池，参数为{}:{}:{}:{}", minThread, maxThread, threadAliveTime, threadName);
+        service = new ThreadPoolExecutor(minThread, maxThread, threadAliveTime, TimeUnit.SECONDS, new
                 LinkedBlockingQueue(), factory);
         logger.debug("线程池构建完成");
 

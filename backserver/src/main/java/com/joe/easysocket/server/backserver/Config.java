@@ -50,7 +50,7 @@ public class Config {
      * 空闲线程存活时间，单位为秒
      */
     @Builder.Default
-    private long keyAliveTime = 30;
+    private long threadAliveTime = 30;
     /**
      * 线程名字的格式，必须包含%d
      */
