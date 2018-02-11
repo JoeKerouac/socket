@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 后端信息
+ *
  * @author joe
  */
 @Data

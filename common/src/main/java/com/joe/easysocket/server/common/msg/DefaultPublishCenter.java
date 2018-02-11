@@ -68,9 +68,7 @@ public class DefaultPublishCenter implements PublishCenter {
         logger.debug("为渠道{}发布消息：{}", channel, message);
         customMessageListeners.forEach((key, value) -> {
             if (key.equals(channel)) {
-                value.forEach(listner -> {
-                    listner.onMessage(channel.getBytes(), serializer.write(message));
-                });
+                value.forEach(listner -> listner.onMessage(channel.getBytes(), serializer.write(message)));
             }
         });
     }
@@ -78,7 +76,7 @@ public class DefaultPublishCenter implements PublishCenter {
     @Override
     public <T> void register(String channel, CustomMessageListener<T> listener) {
         logger.debug("为渠道{}注册监听者{}", channel, listener);
-        InternalMessageListener<T> messageListener = new InternalMessageListener(listener);
+        InternalMessageListener<T> messageListener = new InternalMessageListener<>(listener);
 
 
         if (customMessageListeners.containsKey(channel)) {
@@ -118,10 +116,7 @@ public class DefaultPublishCenter implements PublishCenter {
             return;
         }
 
-        keys.forEach(key -> {
-            Set<InternalMessageListener<?>> listeners = customMessageListeners.get(key);
-            listeners.remove(listener);
-        });
+        keys.forEach(key -> customMessageListeners.get(key).remove(listener));
         keys.clear();
     }
 
@@ -159,9 +154,7 @@ public class DefaultPublishCenter implements PublishCenter {
         }
         Set<InternalMessageListener<?>> listeners = customMessageListeners.get(channel);
         if (listeners != null) {
-            listeners.forEach(listener -> {
-                cache.get(listener).remove(channel);
-            });
+            listeners.forEach(listener -> cache.get(listener).remove(channel));
             listeners.clear();
         }
     }
