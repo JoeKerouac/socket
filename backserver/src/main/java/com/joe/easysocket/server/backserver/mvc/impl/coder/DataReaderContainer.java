@@ -15,15 +15,13 @@ import java.util.List;
 public class DataReaderContainer extends AbstractSpringContainer<ReaderInterceptor> {
     private ParamParserContainer paramParserContainer;
 
-    public DataReaderContainer(BeanContainer beanContainer , ParamParserContainer paramParserContainer) {
+    public DataReaderContainer(BeanContainer beanContainer, ParamParserContainer paramParserContainer) {
         super(beanContainer);
         this.paramParserContainer = paramParserContainer;
     }
 
     @Override
-    public void initBean(List<ReaderInterceptor> beans){
-        beans.forEach(bean -> {
-            bean.init(paramParserContainer);
-        });
+    public void initBean(List<ReaderInterceptor> beans) {
+        beans.forEach(bean -> bean.init(paramParserContainer));
     }
 }

@@ -10,18 +10,17 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * resource类的注解
- * 
- * @author joe
  *
+ * @author joe
  */
 @Documented
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD })
+@Target({TYPE, METHOD})
 public @interface Path {
-	/**
-	 * 路径
-	 * 
-	 * @return
-	 */
-	String value();
+    /**
+     * 路径
+     *
+     * @return 路径
+     */
+    String value();
 }

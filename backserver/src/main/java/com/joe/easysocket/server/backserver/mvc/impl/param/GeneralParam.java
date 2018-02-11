@@ -9,18 +9,17 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 参数命名注解
- * 
- * @author joe
  *
+ * @author joe
  */
 @Documented
 @Retention(RUNTIME)
-@Target({ ElementType.PARAMETER })
+@Target({ElementType.PARAMETER})
 public @interface GeneralParam {
-	/**
-	 * 参数名
-	 * 
-	 * @return 参数名
-	 */
-	String value() default "";
+    /**
+     * 参数名
+     *
+     * @return 参数名
+     */
+    String value() default "";
 }

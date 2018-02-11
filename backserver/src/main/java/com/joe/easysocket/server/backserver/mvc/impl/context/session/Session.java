@@ -1,7 +1,6 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context.session;
 
 import com.joe.easysocket.server.common.protocol.ChannelProxy;
-import com.joe.easysocket.server.common.protocol.PChannel;
 
 /**
  * Session

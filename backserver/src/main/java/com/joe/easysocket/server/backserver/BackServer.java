@@ -58,7 +58,7 @@ public interface BackServer {
         private DataWorker dataWorker;
         private Function callback;
         private PublishCenter publishCenter;
-        private CustomMessageListener customMessageListener;
+        private CustomMessageListener<DataMsg> customMessageListener;
         /**
          * 后端的ID，需要全局唯一
          */

@@ -43,7 +43,7 @@ public class GeneralParamParser implements ParamInterceptor {
             return result;
         } catch (Throwable e) {
             logger.error("解析参数{}时出错，用户数据为：{}", param, data, e);
-            throw new ParamParserException(param.getName() , e.toString());
+            throw new ParamParserException(param.getName(), e.toString());
         }
     }
 }

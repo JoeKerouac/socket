@@ -6,9 +6,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractSpringCon
 
 /**
  * 异常处理器容器
- * 
- * @author joe
  *
+ * @author joe
  */
 public class ExceptionMapperContainer extends AbstractSpringContainer<ExceptionMapper> {
     public ExceptionMapperContainer(BeanContainer beanContainer) {

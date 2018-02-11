@@ -11,6 +11,7 @@ import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class Resource<T> implements Bean {
     // 该资源的访问路径，格式是/aa/bb，以/开头
     private String name;
     // 访问该资源需要的参数
-    private List<Param<?>> params;
+    private List<Param> params;
     private T instance;
     // 响应数据格式
     private String produce;
@@ -61,8 +62,9 @@ public class Resource<T> implements Bean {
     public void check(Object[] params) throws ValidationException {
         Set<ConstraintViolation<T>> methodValidators = executableValidator.validateParameters(instance,
                 resourceMethod, params);
-        for (ConstraintViolation<T> constraintViolation : methodValidators) {
-            throw new ValidationException(constraintViolation.getMessage());
+        Iterator<ConstraintViolation<T>> iterator = methodValidators.iterator();
+        if (iterator.hasNext()) {
+            throw new ValidationException(iterator.next().getMessage());
         }
     }
 }

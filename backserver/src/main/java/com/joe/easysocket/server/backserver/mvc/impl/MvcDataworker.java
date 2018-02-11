@@ -169,7 +169,7 @@ public class MvcDataworker implements DataWorker {
         //构建线程池
         logger.debug("构建线程池，参数为{}:{}:{}:{}", minThread, maxThread, threadAliveTime, threadName);
         service = new ThreadPoolExecutor(minThread, maxThread, threadAliveTime, TimeUnit.SECONDS, new
-                LinkedBlockingQueue(), factory);
+                LinkedBlockingQueue<>(), factory);
         logger.debug("线程池构建完成");
 
 
@@ -234,8 +234,7 @@ public class MvcDataworker implements DataWorker {
         InterfaceData resultData;
         InterfaceData message = null;
         try {
-            Datagram requestDatagram = datagram;
-            byte[] body = requestDatagram.getBody();
+            byte[] body = datagram.getBody();
 
             if (body == null || body.length == 0) {
                 //请求必须有请求体，否则最基本的invoke信息都没有
@@ -244,7 +243,7 @@ public class MvcDataworker implements DataWorker {
             }
 
             //必须在此处初始化，否则当发生异常的时候异常中获取到的requestContext是空，无法获取到信息
-            requestContext = new RequestContext(channel, topic, requestDatagram, requestDatagram.getCharset());
+            requestContext = new RequestContext(channel, topic, datagram, datagram.getCharset());
             // 构建响应上下文，必须在此处初始化，否则当发生异常的时候异常中获取到的responseContext是空，无法获取到信息
             responseContext = new ResponseContext();
             // MVC数据处理器只有这一种请求data，直接读取
@@ -317,9 +316,7 @@ public class MvcDataworker implements DataWorker {
             logger.error("请求过程中发生了异常，开始查找相应的异常处理器处理异常", e);
 
             // 查找异常处理器
-            List<ExceptionMapper> exceptionMappers = exceptionMapperContainer.select(mapper -> {
-                return mapper.mapper(e);
-            });
+            List<ExceptionMapper> exceptionMappers = exceptionMapperContainer.select(mapper -> mapper.mapper(e));
 
             logger.info("异常处理器查找完毕");
             if (exceptionMappers.isEmpty()) {
@@ -372,18 +369,15 @@ public class MvcDataworker implements DataWorker {
         if (result == null) {
             logger.debug("请求的接口{}没有响应消息，返回一个BaseDTO", userData.getInvoke());
             // 如果该接口没有响应消息，那么返回一个基本的请求成功
-            InterfaceData data = buildResult(src, BaseDTO.buildSuccess(), userData.getId(), userData.getInvoke(),
+            return buildResult(src, BaseDTO.buildSuccess(), userData.getId(), userData.getInvoke(),
                     writerInterceptor);
-            return data;
         } else if (result instanceof InterfaceData) {
             logger.debug("用户响应的信息是InterfaceData对象");
-            InterfaceData data = (InterfaceData) result;
-            return data;
+            return (InterfaceData) result;
         } else {
             logger.debug("请求接口{}的响应信息为：{}", userData.getInvoke(), result);
             // 该接口有响应消息并且不是聊天类型消息，那么直接将该消息返回
-            InterfaceData data = buildResult(src, result, userData.getId(), userData.getInvoke(), writerInterceptor);
-            return data;
+            return buildResult(src, result, userData.getId(), userData.getInvoke(), writerInterceptor);
         }
     }
 
@@ -416,9 +410,8 @@ public class MvcDataworker implements DataWorker {
     private ReaderInterceptor findReaderInterceptor(String consume) throws MediaTypeNoSupportException {
         logger.debug("要查找的数据解码器类型为：{}", consume);
         final String realConsume = StringUtils.isEmpty(consume) ? "json" : consume;
-        List<ReaderInterceptor> readerInterceptors = dataReaderContainer.select(reader -> {
-            return reader.isReadable(realConsume);
-        });
+        List<ReaderInterceptor> readerInterceptors = dataReaderContainer.select(reader -> reader.isReadable
+                (realConsume));
 
         logger.debug("数据编码器为：{}", readerInterceptors);
         if (readerInterceptors.isEmpty()) {
@@ -463,9 +456,8 @@ public class MvcDataworker implements DataWorker {
         logger.debug("查找{}格式的数据编码器", produce);
         final String dataProduce = StringUtils.isEmpty(produce) ? "json" : produce;
 
-        List<WriterInterceptor> writerInterceptors = dataWriterContainer.select(dataInterceptor -> {
-            return dataInterceptor.isWriteable(dataProduce);
-        });
+        List<WriterInterceptor> writerInterceptors = dataWriterContainer.select(dataInterceptor -> dataInterceptor
+                .isWriteable(dataProduce));
 
         if (writerInterceptors.isEmpty()) {
             // 找不到支持

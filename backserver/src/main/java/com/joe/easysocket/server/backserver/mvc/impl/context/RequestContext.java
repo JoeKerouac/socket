@@ -95,10 +95,9 @@ public class RequestContext {
          */
         public synchronized Object[] getEntity() {
             if (entity == null) {
-                entity = Arrays.stream(requestContext.getParams()).filter(param -> {
-                    return !(param instanceof RequestContext || param instanceof Session || param instanceof
-                            ResponseContext);
-                }).collect(Collectors.toList()).toArray();
+                entity = Arrays.stream(requestContext.getParams()).filter(param -> !(param instanceof RequestContext
+                        || param instanceof Session || param instanceof ResponseContext)).collect(Collectors.toList()
+                ).toArray();
             }
             return entity;
         }

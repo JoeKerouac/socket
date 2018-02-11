@@ -86,7 +86,7 @@ public class BalanceManager implements Endpoint {
                 byte[] data = event.getData().getData();
                 BalanceInfo info = serialize(data);
                 if (info == null) {
-                    log.debug("事件{}解析出来的前端信息为空", info);
+                    log.debug("事件解析出来的前端信息为空");
                     return;
                 }
                 log.debug("解析出来的前端信息是：{}", data);

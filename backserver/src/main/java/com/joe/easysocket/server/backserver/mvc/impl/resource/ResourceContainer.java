@@ -59,11 +59,9 @@ public class ResourceContainer extends AbstractSpringContainer<Resource> {
         Map<String, Object> map = beanContainer.getBeansWithAnnotation(Path.class);
         if (!map.isEmpty()) {
             List<Object> list = new ArrayList<>(map.size());
-            map.forEach((key , value) -> {
-                list.add(value);
-            });
+            map.forEach((key, value) -> list.add(value));
             this.container = apiBuilder.buildResourceFromObject(list);
-        }else{
+        } else {
             this.container = Collections.emptyMap();
             logger.warn("没有找到资源");
         }

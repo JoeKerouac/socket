@@ -16,7 +16,6 @@ public interface SessionManager extends Endpoint {
      * @param balanceId 前端ID
      * @param port      端口信息
      * @param host      客户端的IP
-     * @param topic     该session对应的前端监听的topic
      * @return 指定channel对应的session
      */
     Session get(String channel, String balanceId, int port, String host);

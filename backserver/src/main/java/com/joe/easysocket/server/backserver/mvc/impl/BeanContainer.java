@@ -9,7 +9,8 @@ import java.util.Map;
 /**
  * bean容器，需要可以扫描生成带有{@link com.joe.easysocket.server.backserver.mvc.impl.container.Provider}注解的bean
  * <p>
- * 如果使用系统自带的MVC容器，那么还需要bean容器可以扫描生成带有{@link com.joe.easysocket.server.ext.mvc.resource.annotation.Path}注解的bean
+ * 如果使用系统自带的MVC容器，那么还需要bean容器可以扫描生成带有{@link com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path
+ * }注解的bean
  * <p>
  * 实现的bean容器必须满足可以对构造函数的依赖自动注入，其他强制要求自动注入
  *

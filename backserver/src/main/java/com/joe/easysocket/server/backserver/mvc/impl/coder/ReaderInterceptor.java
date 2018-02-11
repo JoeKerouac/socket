@@ -33,7 +33,7 @@ public interface ReaderInterceptor extends Bean {
      * @return 读取的参数数组
      * @throws ParamParserException 数据读取成功但是校验失败
      */
-    Object[] read(List<Param<?>> params, RequestContext requestContext, String data) throws ParamParserException;
+    Object[] read(List<Param> params, RequestContext requestContext, String data) throws ParamParserException;
 
     /**
      * 初始化

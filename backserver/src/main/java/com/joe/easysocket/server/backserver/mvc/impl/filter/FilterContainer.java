@@ -24,6 +24,7 @@ public class FilterContainer extends AbstractSpringContainer<NioFilter> {
     public FilterContainer(BeanContainer beanContainer) {
         super(beanContainer);
     }
+
     // 存放filter，其中key为优先级
     private TreeMap<Integer, NioFilter> filters;
     private boolean init = false;
@@ -73,9 +74,7 @@ public class FilterContainer extends AbstractSpringContainer<NioFilter> {
 
     @Override
     public void register(Map<String, NioFilter> components) {
-        components.forEach((key, value) -> {
-            register(key, value);
-        });
+        components.forEach(this::register);
     }
 
     @Override
@@ -88,21 +87,16 @@ public class FilterContainer extends AbstractSpringContainer<NioFilter> {
         //必须先初始化
         //该行必须放在super.init()上方，否则会空指针异常
         //降序排列
-        filters = new TreeMap<>((arg0 , arg1) -> {
-            return arg1 - arg0;
-        });
+        filters = new TreeMap<>((arg0, arg1) -> arg1 - arg0);
         super.start();
 
-//        super.container.forEach(filter -> {
-//            register((String) null, filter);
-//        });
         logger.debug("filter容器初始化完毕");
     }
 
     @Override
     public synchronized void shutdown() {
         logger.info("开始销毁filter容器");
-        if(!init){
+        if (!init) {
             logger.warn("filter容器已经销毁或者未初始化，不能销毁");
         }
         init = false;
@@ -126,9 +120,7 @@ public class FilterContainer extends AbstractSpringContainer<NioFilter> {
     public void requestFilter(RequestContext.RequestWrapper request) throws FilterException {
         try {
             logger.debug("开始请求filter");
-            filters.entrySet().forEach(entry -> {
-                entry.getValue().requestFilter(request);
-            });
+            filters.entrySet().forEach(entry -> entry.getValue().requestFilter(request));
             logger.debug("filter结束");
         } catch (Throwable e) {
             logger.error("请求filter过程中发生了异常");
@@ -142,12 +134,11 @@ public class FilterContainer extends AbstractSpringContainer<NioFilter> {
      * @param request  请求信息
      * @param response 响应信息
      */
-    public void responseFilter(RequestContext.RequestWrapper request, ResponseContext.Response response) throws FilterException {
+    public void responseFilter(RequestContext.RequestWrapper request, ResponseContext.Response response) throws
+            FilterException {
         try {
             logger.debug("开始响应filter");
-            filters.entrySet().forEach(entry -> {
-                entry.getValue().responseFilter(request, response);
-            });
+            filters.entrySet().forEach(entry -> entry.getValue().responseFilter(request, response));
             logger.debug("响应filter结束");
         } catch (Throwable e) {
             logger.error("响应filter过程中发生了异常");

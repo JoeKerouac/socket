@@ -5,19 +5,17 @@ import lombok.Data;
 
 /**
  * API参数
- * 
- * @author joe
  *
- * @param <T>
+ * @author joe
  */
 @Data
-public class Param<T> {
-	/*
-	 * 参数名
-	 */
-	private String name;
-	/*
-	 * 参数类型
-	 */
-	private JavaType type;
+public class Param {
+    /*
+     * 参数名
+     */
+    private String name;
+    /*
+     * 参数类型
+     */
+    private JavaType type;
 }

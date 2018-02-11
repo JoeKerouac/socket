@@ -27,6 +27,7 @@ public abstract class AbstractSpringContainer<T extends Bean> implements Contain
     protected List<T> container;
     private boolean init;
 
+    @SuppressWarnings("unchecked")
     public AbstractSpringContainer(BeanContainer beanContainer) {
         this.beanContainer = beanContainer;
         // 反射获取Container存放的Bean类型
@@ -54,7 +55,7 @@ public abstract class AbstractSpringContainer<T extends Bean> implements Contain
     }
 
     @Override
-    public void initBean(List<T> beans){
+    public void initBean(List<T> beans) {
         //空实现，各个子容器根据需要对bean进行初始化
     }
 
@@ -73,7 +74,7 @@ public abstract class AbstractSpringContainer<T extends Bean> implements Contain
     @Override
     @SuppressWarnings("unchecked")
     public synchronized void start() {
-        if(init){
+        if (init) {
             return;
         }
         init = true;
@@ -94,7 +95,7 @@ public abstract class AbstractSpringContainer<T extends Bean> implements Contain
 
     @Override
     public synchronized void shutdown() {
-        if(!init){
+        if (!init) {
             return;
         }
         init = false;
@@ -112,9 +113,7 @@ public abstract class AbstractSpringContainer<T extends Bean> implements Contain
 
     @Override
     public void register(Map<String, T> components) {
-        components.forEach((key, value) -> {
-            register((String) null, value);
-        });
+        components.forEach((key, value) -> register((String) null, value));
     }
 
     @Override

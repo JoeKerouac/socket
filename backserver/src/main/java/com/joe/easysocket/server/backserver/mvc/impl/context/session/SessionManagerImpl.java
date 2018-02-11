@@ -70,6 +70,6 @@ public class SessionManagerImpl implements SessionManager {
 
     @Override
     public Session remove(String channel) {
-        return (channel == null || channel == null) ? null : cache.get(channel);
+        return (channel == null || cache == null) ? null : cache.get(channel);
     }
 }

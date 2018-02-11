@@ -55,7 +55,7 @@ class ApiBuilder {
         if (methodList.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, Resource> resources = new TreeMap<String, Resource>();
+        Map<String, Resource> resources = new TreeMap<>();
         // 构建API说明并添加到apiList中去
         resources.putAll(ApiUtil.buildResource(arg, clazz, methodList.toArray(new Method[methodList.size()])));
         return resources;
@@ -74,8 +74,7 @@ class ApiBuilder {
         }
         // 构建API说明
         try {
-            Map<String, Resource> resources = buildResourceFromObject(clazz.newInstance());
-            return resources;
+            return buildResourceFromObject(clazz.newInstance());
         } catch (Exception e) {
             throw new ScannerException("构建API对象时实例化失败", e);
         }
@@ -105,10 +104,8 @@ class ApiBuilder {
         if (classList.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, Resource> resources = new TreeMap<String, Resource>();
-        classList.forEach(clazz -> {
-            resources.putAll(buildResourceFromClass(clazz));
-        });
+        Map<String, Resource> resources = new TreeMap<>();
+        classList.forEach(clazz -> resources.putAll(buildResourceFromClass(clazz)));
         logger.debug("对类集合{}扫描完毕", classList);
         return resources;
     }
@@ -124,10 +121,8 @@ class ApiBuilder {
         if (args.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, Resource> resources = new TreeMap<String, Resource>();
-        args.forEach(clazz -> {
-            resources.putAll(buildResourceFromObject(clazz));
-        });
+        Map<String, Resource> resources = new TreeMap<>();
+        args.forEach(clazz -> resources.putAll(buildResourceFromObject(clazz)));
         logger.debug("对类集合{}扫描完毕", args);
         return resources;
     }

@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,9 +55,8 @@ public class BeanContainerImpl implements BeanContainer {
             }
             logger.debug("缓存中不存在指定注解的bean集合，开始生成");
 
-            List<Object> allObj = allBeanClass.stream().filter(clazz -> {
-                return clazz.getDeclaredAnnotation(annotationType) != null;
-            }).map(clazz -> {
+            List<Object> allObj = allBeanClass.stream().filter(clazz -> clazz.getDeclaredAnnotation(annotationType)
+                    != null).map(clazz -> {
                 try {
                     //调用默认无参数构造
                     Class<?>[] empty = {};
@@ -69,12 +65,10 @@ public class BeanContainerImpl implements BeanContainer {
                     constructor.setAccessible(true);
                     return constructor.newInstance();
                 } catch (Exception e) {
-                    logger.debug("生成{}的实例时失败，忽略该类，该类的注解为：{}", clazz , annotationType, e);
+                    logger.debug("生成{}的实例时失败，忽略该类，该类的注解为：{}", clazz, annotationType, e);
                     return null;
                 }
-            }).filter(obj -> {
-                return obj != null;
-            }).collect(Collectors.toList());
+            }).filter(Objects::nonNull).collect(Collectors.toList());
             logger.debug("当前所有带有注解{}的类的实例为：{}", annotationType, allObj);
 
             if (allObj.isEmpty()) {
@@ -83,9 +77,7 @@ public class BeanContainerImpl implements BeanContainer {
             }
 
             Map<String, Object> result = new HashMap<>();
-            allObj.forEach(obj -> {
-                result.put(obj.getClass().getName(), obj);
-            });
+            allObj.forEach(obj -> result.put(obj.getClass().getName(), obj));
             logger.debug("当前所有带有注解{}的类的实例集合为：{}", annotationType, result);
             beanCache.put(annotationType, result);
             return result;
@@ -102,7 +94,7 @@ public class BeanContainerImpl implements BeanContainer {
             return;
         }
         ClassScanner scanner = ClassScanner.getInstance();
-        allBeanClass = scanner.scan(args);
+        allBeanClass = scanner.scan((Object[]) args);
         beanCache = new HashMap<>();
         init = true;
         logger.debug("Bean容器初始化完毕");
