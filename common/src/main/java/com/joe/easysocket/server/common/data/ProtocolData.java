@@ -62,7 +62,7 @@ public class ProtocolData {
      * @param channel 对应的客户端通道ID
      * @return 心跳包
      */
-    public static ProtocolData buildHeatbeat(int port, String host, String channel) {
+    public static ProtocolData buildHeartbeat(int port, String host, String channel) {
         return new ProtocolData(heartbeat, port, host, channel, System.currentTimeMillis(), System.currentTimeMillis());
     }
 }
