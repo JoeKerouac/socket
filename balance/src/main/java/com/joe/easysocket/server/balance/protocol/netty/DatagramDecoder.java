@@ -21,13 +21,13 @@ public class DatagramDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        byte[] data = this.decode(ctx, msg);
+        byte[] data = this.decode(msg);
         if (data != null) {
             out.add(new ByteBufRef(data, msg));
         }
     }
 
-    private byte[] decode(ChannelHandlerContext ctx, ByteBuf msg) throws IllegalRequestException {
+    private byte[] decode(ByteBuf msg) throws IllegalRequestException {
         logger.debug("开始从缓冲区读取数据");
         try {
             // 将byte信息从ByteBuf中读取出来

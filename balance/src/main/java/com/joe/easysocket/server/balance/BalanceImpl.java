@@ -218,7 +218,7 @@ public class BalanceImpl extends Balance {
                 byte[] data = event.getData().getData();
                 BackServerInfo info = serialize(data);
                 if (info == null) {
-                    log.debug("事件{}解析出来的后端信息为空", info);
+                    log.debug("事件解析出来的后端信息为空");
                     return;
                 }
                 log.debug("解析出来的服务器信息是：{}", data);

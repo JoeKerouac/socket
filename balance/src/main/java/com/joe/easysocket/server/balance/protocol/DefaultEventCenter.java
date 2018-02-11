@@ -25,51 +25,37 @@ public class DefaultEventCenter implements EventCenter {
 
     @Override
     public void discard(String channel, byte[] data) {
-        listeners.forEach(listener -> {
-            listener.discard(channel, data);
-        });
+        listeners.forEach(listener -> listener.discard(channel, data));
     }
 
     @Override
     public void close(String channel, CloseCause closeCause) {
-        listeners.forEach(listener -> {
-            listener.close(channel, closeCause);
-        });
+        listeners.forEach(listener -> listener.close(channel, closeCause));
     }
 
 
     @Override
     public void send(String channel, byte[] data) {
-        listeners.forEach(listener -> {
-            listener.send(channel, data);
-        });
+        listeners.forEach(listener -> listener.send(channel, data));
     }
 
     @Override
     public void register(String channel) {
-        listeners.forEach(listener -> {
-            listener.register(channel);
-        });
+        listeners.forEach(listener -> listener.register(channel));
     }
 
     @Override
     public void receiveError(String channel, byte[] data, Throwable e) {
-        listeners.forEach(listener -> {
-            listener.receiveError(channel, data, e);
-        });
+        listeners.forEach(listener -> listener.receiveError(channel, data, e));
     }
 
     @Override
     public void receiveSuccess(String channel, byte[] data) {
-        listeners.forEach(listener -> {
-            listener.receiveSuccess(channel, data);
-        });
+        listeners.forEach(listener -> listener.receiveSuccess(channel, data));
     }
 
     @Override
     public void receive(String channel, byte[] data) {
-        listeners.forEach(listener -> {
-            listener.receive(channel, data);
-        });
+        listeners.forEach(listener -> listener.receive(channel, data));
     }
 }

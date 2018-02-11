@@ -22,7 +22,7 @@ public class ChannelData {
      * 通道消息类型
      */
     public enum ChannelDataType {
-        REGISTER("注册消息"), DATA("数据消息"), ACK("确认消息"),CLOSE("通道关闭");
+        REGISTER("注册消息"), DATA("数据消息"), ACK("确认消息"), CLOSE("通道关闭");
         private String type;
 
         ChannelDataType(String type) {

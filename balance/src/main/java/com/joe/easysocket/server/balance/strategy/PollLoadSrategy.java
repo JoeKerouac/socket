@@ -20,9 +20,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class PollLoadSrategy implements LoadStrategy {
-    public Deque<DataMsg> deque = new LinkedBlockingDeque();
+    private Deque<DataMsg> deque = new LinkedBlockingDeque<>();
     private List<BackServer> backServers = new CopyOnWriteArrayList<>();
-    private AtomicInteger atomicInteger = new AtomicInteger(0);
+    private final AtomicInteger atomicInteger = new AtomicInteger(0);
 
     private BackServer DEFAULT = new BackServer() {
         @Override
@@ -127,13 +127,8 @@ public class PollLoadSrategy implements LoadStrategy {
 
     @Override
     public void update(String id, BackServerInfo info) {
-        for (int i = 0; i < backServers.size(); i++) {
-            if (id.equals(backServers.get(i).getId())) {
-                backServers.get(i).update(info);
-                return;
-            }
-        }
-        log.debug("当前不存在节点{}：{}，无法更新", id, info);
+        backServers.stream().filter(backServer -> id.equals(backServer.getId())).forEach(backServer -> backServer
+                .update(info));
     }
 
     @Override

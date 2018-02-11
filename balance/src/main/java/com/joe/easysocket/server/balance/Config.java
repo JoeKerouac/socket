@@ -2,11 +2,12 @@ package com.joe.easysocket.server.balance;
 
 import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
 import com.joe.easysocket.server.balance.protocol.NettyConnectorManager;
-import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.strategy.LoadStrategy;
 import com.joe.easysocket.server.balance.strategy.PollLoadSrategy;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * 前端配置，其中发布中心、注册中心、本机IP为必填项，其他都为选填项

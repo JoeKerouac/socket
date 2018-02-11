@@ -233,9 +233,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             } else {
                 log.debug("数据不是心跳包，处理数据{}", protocolData);
                 try {
-                    listeners.forEach(listener -> {
-                        listener.exec(protocolData);
-                    });
+                    listeners.forEach(listener -> listener.exec(protocolData));
                 } catch (Throwable e) {
                     this.eventCenter.receiveError(src, data, e);
                     log.error("底层传来的数据处理过程中失败，数据为{}", data, e);
