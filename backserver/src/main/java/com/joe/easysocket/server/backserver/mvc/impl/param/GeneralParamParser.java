@@ -23,7 +23,7 @@ public class GeneralParamParser implements ParamInterceptor {
     private static final JsonParser parser = JsonParser.getInstance();
 
     @Override
-    public boolean isReadable(Param<?> param, String data) {
+    public boolean isReadable(Param param, String data) {
         Annotation[] annotations = param.getType().getAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation instanceof GeneralParam) {
@@ -34,7 +34,7 @@ public class GeneralParamParser implements ParamInterceptor {
     }
 
     @Override
-    public Object read(Param<?> param, RequestContext.RequestWrapper request, String data) throws ParamParserException {
+    public Object read(Param param, RequestContext.RequestWrapper request, String data) throws ParamParserException {
         JavaType type = param.getType();
         logger.debug("将{}解析为{};参数{}的类型为{}", data, type, param.getName(), type);
         try {

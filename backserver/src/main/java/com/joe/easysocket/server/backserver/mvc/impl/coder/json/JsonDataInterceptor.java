@@ -49,7 +49,7 @@ public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor
     }
 
     @Override
-    public Object[] read(List<Param<?>> params, RequestContext requestContext, String data) throws
+    public Object[] read(List<Param> params, RequestContext requestContext, String data) throws
             ParamParserException {
         logger.debug("要解析的参数格式为：{}", params);
         // 方法没有参数
@@ -62,7 +62,7 @@ public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor
         boolean hasContext = false;
         int contextIndex = 0;
         for (; contextIndex < params.size(); contextIndex++) {
-            Param<?> param = params.get(contextIndex);
+            Param param = params.get(contextIndex);
             Annotation[] annotations = param.getType().getAnnotations();
             if (annotations != null) {
                 for (Annotation annotation : annotations) {
@@ -89,7 +89,7 @@ public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor
         if (params.size() == 1) {
             // 只有一个参数
             logger.debug("该资源只有一个参数");
-            Param<?> param = params.get(0);
+            Param param = params.get(0);
             JavaType type = params.get(0).getType();
             logger.debug("参数{}的类型为{}", param.getName(), type);
             Object obj = paramParserContainer.parse(param, requestContext.getRequest(), data);
@@ -97,7 +97,7 @@ public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor
         } else if (params.size() == 2 && hasContext) {
             // 除了注入的context外只有一个参数
             logger.debug("该资源除了context外只有一个参数");
-            Param<?> param = params.get(1 - contextIndex);
+            Param param = params.get(1 - contextIndex);
             JavaType type = params.get(1 - contextIndex).getType();
             logger.debug("参数{}的类型为{}", param.getName(), type);
 
@@ -113,7 +113,7 @@ public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor
             // 分别解析多个参数
             for (int i = 0; i < params.size(); i++) {
                 // 解析参数
-                Param<?> param = params.get(i);
+                Param param = params.get(i);
                 String paramName = param.getName();
                 logger.debug("参数{}的类型为{}", paramName, param.getType());
                 String paramData = paramMap.get(paramName);

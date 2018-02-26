@@ -20,7 +20,7 @@ public interface ParamInterceptor extends Bean {
      * @return <li>true：可读</li>
      * <li>false：不可读</li>
      */
-    boolean isReadable(Param<?> param, String data);
+    boolean isReadable(Param param, String data);
 
     /**
      * 将数据读取为需要的参数，该方法不能抛出异常
@@ -30,5 +30,5 @@ public interface ParamInterceptor extends Bean {
      * @param data    参数数据
      * @return 读取的参数，发生异常时返回null
      */
-    Object read(Param<?> param, RequestContext.RequestWrapper request, String data) throws ParamParserException;
+    Object read(Param param, RequestContext.RequestWrapper request, String data) throws ParamParserException;
 }

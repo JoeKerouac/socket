@@ -28,7 +28,7 @@ public class ParamParserContainer extends AbstractSpringContainer<ParamIntercept
      * @return 解析后的参数
      * @throws ParamParserException 参数解析完成但是校验失败
      */
-    public Object parse(Param<?> param, RequestContext.RequestWrapper request, String data) throws
+    public Object parse(Param param, RequestContext.RequestWrapper request, String data) throws
             ParamParserException {
         logger.debug("开始解析参数{}", param);
         List<ParamInterceptor> paramInterceptors = select(t -> t.isReadable(param, data));

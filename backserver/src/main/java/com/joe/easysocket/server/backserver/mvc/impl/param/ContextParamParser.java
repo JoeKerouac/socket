@@ -20,7 +20,7 @@ public class ContextParamParser implements ParamInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(ContextParamParser.class);
 
     @Override
-    public boolean isReadable(Param<?> param, String data) {
+    public boolean isReadable(Param param, String data) {
         Annotation[] annotations = param.getType().getAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation instanceof Context) {
@@ -37,7 +37,7 @@ public class ContextParamParser implements ParamInterceptor {
     }
 
     @Override
-    public Object read(Param<?> param, RequestContext.RequestWrapper request, String data) {
+    public Object read(Param param, RequestContext.RequestWrapper request, String data) {
         try {
             logger.debug("要解析的参数格式为：{}，request为：{}，data为：{}", param, request, data);
             BaseType type = (BaseType) param.getType();
