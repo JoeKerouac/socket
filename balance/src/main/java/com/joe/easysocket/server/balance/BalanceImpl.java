@@ -228,12 +228,12 @@ public class BalanceImpl extends Balance {
                         addServer(info);
                         break;
                     case NODE_REMOVED:
-                        log.debug("添加后端服务器节点：{}", event.getData());
-                        updateServer(info.getId(), info);
+                        log.debug("删除后端服务器节点：{}", event.getData());
+                        removeServer(info.getId());
                         break;
                     case NODE_UPDATED:
                         log.debug("更新后端服务器节点：{}", event.getData());
-                        removeServer(info.getId());
+                        updateServer(info.getId(), info);
                         break;
                 }
             }));
