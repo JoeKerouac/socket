@@ -1,4 +1,4 @@
-package com.joe.easysocket.server.backserver.mvc.impl;
+package com.joe.easysocket.server.backserver.mvc;
 
 /**
  * 组件接口

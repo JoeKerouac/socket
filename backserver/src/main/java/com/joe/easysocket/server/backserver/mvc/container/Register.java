@@ -1,7 +1,7 @@
-package com.joe.easysocket.server.backserver.mvc.impl.container;
+package com.joe.easysocket.server.backserver.mvc.container;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.Bean;
+import com.joe.easysocket.server.backserver.mvc.Bean;
 
 import java.util.Map;
 

@@ -1,6 +1,7 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context.session;
 
 
+import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.common.protocol.ChannelProxy;
 
 import java.util.Map;

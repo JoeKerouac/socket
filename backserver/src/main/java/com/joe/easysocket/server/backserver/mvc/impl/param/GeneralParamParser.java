@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver.mvc.impl.param;
 
-import com.joe.easysocket.server.backserver.mvc.impl.container.Provider;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 import com.joe.utils.parse.json.JsonParser;
@@ -34,7 +34,7 @@ public class GeneralParamParser implements ParamInterceptor {
     }
 
     @Override
-    public Object read(Param param, RequestContext.RequestWrapper request, String data) throws ParamParserException {
+    public Object read(Param param, HttpRequestContext.RequestWrapper request, String data) throws ParamParserException {
         JavaType type = param.getType();
         logger.debug("将{}解析为{};参数{}的类型为{}", data, type, param.getName(), type);
         try {

@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver.manager;
 
 import com.joe.easysocket.server.backserver.Config;
-import com.joe.easysocket.server.backserver.mvc.impl.data.InterfaceData;
+import com.joe.easysocket.server.backserver.mvc.data.InterfaceData;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.data.Datagram;
 import com.joe.easysocket.server.common.data.DatagramUtil;

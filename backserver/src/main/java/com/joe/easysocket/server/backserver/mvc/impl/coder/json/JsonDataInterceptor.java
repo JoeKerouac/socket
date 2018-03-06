@@ -1,9 +1,9 @@
 package com.joe.easysocket.server.backserver.mvc.impl.coder.json;
 
-import com.joe.easysocket.server.backserver.mvc.impl.coder.ReaderInterceptor;
-import com.joe.easysocket.server.backserver.mvc.impl.coder.WriterInterceptor;
-import com.joe.easysocket.server.backserver.mvc.impl.container.Provider;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
+import com.joe.easysocket.server.backserver.mvc.coder.ReaderInterceptor;
+import com.joe.easysocket.server.backserver.mvc.coder.WriterInterceptor;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
 import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
@@ -49,7 +49,7 @@ public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor
     }
 
     @Override
-    public Object[] read(List<Param> params, RequestContext requestContext, String data) throws
+    public Object[] read(List<Param> params, HttpRequestContext requestContext, String data) throws
             ParamParserException {
         logger.debug("要解析的参数格式为：{}", params);
         // 方法没有参数

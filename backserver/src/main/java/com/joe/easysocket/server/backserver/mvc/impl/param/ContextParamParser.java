@@ -1,8 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.impl.param;
 
-import com.joe.easysocket.server.backserver.mvc.impl.container.Provider;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
-import com.joe.easysocket.server.backserver.mvc.impl.context.session.Session;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
+import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 import com.joe.utils.type.BaseType;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class ContextParamParser implements ParamInterceptor {
         for (Annotation annotation : annotations) {
             if (annotation instanceof Context) {
                 BaseType type = (BaseType) param.getType();
-                if (RequestContext.RequestWrapper.class.isAssignableFrom(type.getType()) || Session.class
+                if (HttpRequestContext.RequestWrapper.class.isAssignableFrom(type.getType()) || Session.class
                         .isAssignableFrom(type.getType())) {
                     return true;
                 } else {
@@ -37,11 +37,11 @@ public class ContextParamParser implements ParamInterceptor {
     }
 
     @Override
-    public Object read(Param param, RequestContext.RequestWrapper request, String data) {
+    public Object read(Param param, HttpRequestContext.RequestWrapper request, String data) {
         try {
             logger.debug("要解析的参数格式为：{}，request为：{}，data为：{}", param, request, data);
             BaseType type = (BaseType) param.getType();
-            if (RequestContext.RequestWrapper.class.isAssignableFrom(type.getType())) {
+            if (HttpRequestContext.RequestWrapper.class.isAssignableFrom(type.getType())) {
                 logger.debug("参数要注入Request");
                 return request;
             } else if (Session.class.isAssignableFrom(type.getType())) {

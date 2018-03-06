@@ -1,8 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.impl.exceptionmapper;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.Bean;
-import com.joe.easysocket.server.backserver.mvc.impl.context.ResponseContext;
+import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 
 /**
  * 异常处理器
@@ -25,5 +25,5 @@ public interface ExceptionMapper extends Bean {
      * @param e 请求中的异常
      * @return 异常处理后的响应
      */
-    ResponseContext.Response toResponse(Throwable e);
+    HttpResponseContext.Response toResponse(Throwable e);
 }

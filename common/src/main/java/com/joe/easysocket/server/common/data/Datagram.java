@@ -19,6 +19,7 @@ package com.joe.easysocket.server.common.data;
  */
 @lombok.Data
 public class Datagram {
+    private static final byte[] EMPTY_DATA = new byte[0];
     /**
      * 数据报的报头长度
      */
@@ -64,14 +65,14 @@ public class Datagram {
      */
     public Datagram(byte[] data, int size, byte[] body, byte version, String charset, byte type, byte[] id) {
         if (data == null) {
-            this.data = null;
+            this.data = EMPTY_DATA;
         } else {
             this.data = new byte[data.length];
             System.arraycopy(data, 0, this.data, 0, data.length);
         }
 
         if (body == null) {
-            this.body = null;
+            this.body = EMPTY_DATA;
         } else {
             this.body = new byte[body.length];
             System.arraycopy(body, 0, this.body, 0, body.length);
@@ -85,12 +86,18 @@ public class Datagram {
     }
 
     public byte[] getData() {
+        if (this.data == null || this.data.length == 0) {
+            return EMPTY_DATA;
+        }
         byte[] data = new byte[this.data.length];
         System.arraycopy(this.data, 0, data, 0, data.length);
         return data;
     }
 
     public byte[] getBody() {
+        if (this.body == null || this.body.length == 0) {
+            return EMPTY_DATA;
+        }
         byte[] body = new byte[this.body.length];
         System.arraycopy(this.body, 0, body, 0, body.length);
         return body;

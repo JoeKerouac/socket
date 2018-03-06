@@ -1,7 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context;
 
-import com.joe.easysocket.server.backserver.mvc.impl.coder.ReaderInterceptor;
-import com.joe.easysocket.server.backserver.mvc.impl.context.session.Session;
+import com.joe.easysocket.server.backserver.mvc.coder.ReaderInterceptor;
+import com.joe.easysocket.server.backserver.mvc.context.RequestContext;
+import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Resource;
 import com.joe.easysocket.server.common.data.Datagram;
 import lombok.Data;
@@ -17,10 +18,12 @@ import java.util.stream.Collectors;
  * @author joe
  */
 @Data
-public class RequestContext {
+public class HttpRequestContext implements RequestContext{
     // 请求来源
     private final String source;
-    // 请求的数据报
+    // 请求body
+    private final byte[] data;
+    //请求数据包
     private final Datagram datagram;
     // 请求开始时间
     private final long beginTime;
@@ -47,9 +50,10 @@ public class RequestContext {
      * @param datagram 本次请求对应的数据报
      * @param charset  本次请求的编码
      */
-    public RequestContext(String source, String topic, Datagram datagram, String charset) {
+    public HttpRequestContext(String source, String topic, Datagram datagram, String charset) {
         this.beginTime = System.currentTimeMillis();
         this.source = source;
+        this.data = datagram.getBody();
         this.datagram = datagram;
         this.charset = charset;
         this.request = new RequestWrapper(this);
@@ -62,11 +66,11 @@ public class RequestContext {
      * @author joe
      */
     public static class RequestWrapper {
-        private final RequestContext requestContext;
+        private final HttpRequestContext requestContext;
         private InputStream inputStream;
         private Object[] entity;
 
-        private RequestWrapper(RequestContext requestContext) {
+        private RequestWrapper(HttpRequestContext requestContext) {
             this.requestContext = requestContext;
         }
 
@@ -95,8 +99,8 @@ public class RequestContext {
          */
         public synchronized Object[] getEntity() {
             if (entity == null) {
-                entity = Arrays.stream(requestContext.getParams()).filter(param -> !(param instanceof RequestContext
-                        || param instanceof Session || param instanceof ResponseContext)).collect(Collectors.toList()
+                entity = Arrays.stream(requestContext.getParams()).filter(param -> !(param instanceof HttpRequestContext
+                        || param instanceof Session || param instanceof HttpResponseContext)).collect(Collectors.toList()
                 ).toArray();
             }
             return entity;
@@ -109,7 +113,7 @@ public class RequestContext {
          */
         public synchronized InputStream getInputStream() {
             if (inputStream == null) {
-                inputStream = new ByteArrayInputStream(requestContext.datagram.getBody());
+                inputStream = new ByteArrayInputStream(requestContext.data);
             }
             return inputStream;
         }

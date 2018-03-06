@@ -1,9 +1,9 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.BeanContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractSpringContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.Selector;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
+import com.joe.easysocket.server.backserver.mvc.container.Selector;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author joe
  */
-public class ResourceContainer extends AbstractSpringContainer<Resource> {
+public class ResourceContainer extends AbstractContainer<Resource> {
     public ResourceContainer(BeanContainer beanContainer) {
         super(beanContainer);
     }

@@ -1,4 +1,4 @@
-package com.joe.easysocket.server.backserver.mvc.impl.data;
+package com.joe.easysocket.server.backserver.mvc.data;
 
 import lombok.Data;
 

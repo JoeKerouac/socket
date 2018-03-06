@@ -1,12 +1,12 @@
 package com.joe.easysocket.server.backserver.mvc.impl.filter;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.BeanContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractSpringContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.Provider;
-import com.joe.easysocket.server.backserver.mvc.impl.container.Selector;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
-import com.joe.easysocket.server.backserver.mvc.impl.context.ResponseContext;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.container.Selector;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.FilterException;
 import com.joe.utils.scan.ScannerException;
 
@@ -20,7 +20,7 @@ import java.util.TreeMap;
  *
  * @author joe
  */
-public class FilterContainer extends AbstractSpringContainer<NioFilter> {
+public class FilterContainer extends AbstractContainer<NioFilter> {
     public FilterContainer(BeanContainer beanContainer) {
         super(beanContainer);
     }
@@ -117,7 +117,7 @@ public class FilterContainer extends AbstractSpringContainer<NioFilter> {
      *
      * @param request 请求信息
      */
-    public void requestFilter(RequestContext.RequestWrapper request) throws FilterException {
+    public void requestFilter(HttpRequestContext.RequestWrapper request) throws FilterException {
         try {
             logger.debug("开始请求filter");
             filters.entrySet().forEach(entry -> entry.getValue().requestFilter(request));
@@ -134,7 +134,7 @@ public class FilterContainer extends AbstractSpringContainer<NioFilter> {
      * @param request  请求信息
      * @param response 响应信息
      */
-    public void responseFilter(RequestContext.RequestWrapper request, ResponseContext.Response response) throws
+    public void responseFilter(HttpRequestContext.RequestWrapper request, HttpResponseContext.Response response) throws
             FilterException {
         try {
             logger.debug("开始响应filter");

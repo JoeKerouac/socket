@@ -1,4 +1,4 @@
-package com.joe.easysocket.server.backserver.mvc.impl.context.session;
+package com.joe.easysocket.server.backserver.mvc.context;
 
 import com.joe.easysocket.server.common.protocol.ChannelProxy;
 

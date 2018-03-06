@@ -1,17 +1,18 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context;
 
-import com.joe.easysocket.server.backserver.mvc.impl.coder.WriterInterceptor;
-import com.joe.easysocket.server.backserver.mvc.impl.data.BaseDTO;
+import com.joe.easysocket.server.backserver.mvc.coder.WriterInterceptor;
+import com.joe.easysocket.server.backserver.mvc.context.ResponseContext;
+import com.joe.easysocket.server.backserver.mvc.data.BaseDTO;
 import lombok.Data;
 
 @Data
-public class ResponseContext {
+public class HttpResponseContext implements ResponseContext{
     // 响应对象
     private Response response = null;
     // 响应数据编码器
     private WriterInterceptor writer;
 
-    public ResponseContext() {
+    public HttpResponseContext() {
         this.response = new Response();
     }
 

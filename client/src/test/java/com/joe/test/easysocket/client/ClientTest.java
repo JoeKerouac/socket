@@ -119,11 +119,11 @@ public class ClientTest {
         JsonObject object = new JsonObject().data("account", 123).data("password", "345");
         client.write("user/login", object.toJson());
 
-        ThreadUtil.sleep(15);
-        for (int i = 0; i < 100000; i++) {
-            Thread.sleep(3000);
-            client.write("user/print", null);
-        }
+//        ThreadUtil.sleep(15);
+//        for (int i = 0; i < 3; i++) {
+//            Thread.sleep(3000);
+//            client.write("user/print", null);
+//        }
         System.out.println("完成");
     }
 }

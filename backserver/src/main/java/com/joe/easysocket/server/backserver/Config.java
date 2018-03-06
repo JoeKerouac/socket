@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver;
 
 import com.joe.easysocket.server.backserver.spi.DataWorker;
-import com.joe.easysocket.server.backserver.mvc.impl.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import lombok.Builder;
 import lombok.Data;

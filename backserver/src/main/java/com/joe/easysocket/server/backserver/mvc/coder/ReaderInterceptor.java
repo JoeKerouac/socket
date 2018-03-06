@@ -1,8 +1,9 @@
-package com.joe.easysocket.server.backserver.mvc.impl.coder;
+package com.joe.easysocket.server.backserver.mvc.coder;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.Bean;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
@@ -10,7 +11,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 import java.util.List;
 
 /**
- * 数据解析器接口，必须实现该接口并且注解{@link com.joe.easysocket.server.backserver.mvc.impl.container.Provider}才会生效
+ * 数据解析器接口，必须实现该接口并且注解{@link Provider}才会生效
  *
  * @author joe
  */
@@ -33,7 +34,7 @@ public interface ReaderInterceptor extends Bean {
      * @return 读取的参数数组
      * @throws ParamParserException 数据读取成功但是校验失败
      */
-    Object[] read(List<Param> params, RequestContext requestContext, String data) throws ParamParserException;
+    Object[] read(List<Param> params, HttpRequestContext requestContext, String data) throws ParamParserException;
 
     /**
      * 初始化

@@ -1,8 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.impl.param;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.Bean;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
+import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 
@@ -30,5 +30,5 @@ public interface ParamInterceptor extends Bean {
      * @param data    参数数据
      * @return 读取的参数，发生异常时返回null
      */
-    Object read(Param param, RequestContext.RequestWrapper request, String data) throws ParamParserException;
+    Object read(Param param, HttpRequestContext.RequestWrapper request, String data) throws ParamParserException;
 }

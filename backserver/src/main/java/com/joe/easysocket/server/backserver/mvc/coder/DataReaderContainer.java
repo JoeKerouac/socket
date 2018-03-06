@@ -1,8 +1,8 @@
-package com.joe.easysocket.server.backserver.mvc.impl.coder;
+package com.joe.easysocket.server.backserver.mvc.coder;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.BeanContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractSpringContainer;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author joe
  */
-public class DataReaderContainer extends AbstractSpringContainer<ReaderInterceptor> {
+public class DataReaderContainer extends AbstractContainer<ReaderInterceptor> {
     private ParamParserContainer paramParserContainer;
 
     public DataReaderContainer(BeanContainer beanContainer, ParamParserContainer paramParserContainer) {

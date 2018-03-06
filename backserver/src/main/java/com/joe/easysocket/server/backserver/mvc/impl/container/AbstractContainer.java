@@ -1,7 +1,10 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
-import com.joe.easysocket.server.backserver.mvc.impl.Bean;
-import com.joe.easysocket.server.backserver.mvc.impl.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.container.Container;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.container.Selector;
+import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,12 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 抽象容器，类必须加上注解{@link com.joe.easysocket.server.backserver.mvc.impl.container.Provider}才能被该容器发现
+ * 抽象容器，类必须加上注解{@link Provider}才能被该容器发现
  *
  * @param <T>
  * @author joe
  */
-public abstract class AbstractSpringContainer<T extends Bean> implements Container<T> {
+public abstract class AbstractContainer<T extends Bean> implements Container<T> {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     //bean容器
     protected BeanContainer beanContainer;
@@ -28,7 +31,7 @@ public abstract class AbstractSpringContainer<T extends Bean> implements Contain
     private boolean init;
 
     @SuppressWarnings("unchecked")
-    public AbstractSpringContainer(BeanContainer beanContainer) {
+    public AbstractContainer(BeanContainer beanContainer) {
         this.beanContainer = beanContainer;
         // 反射获取Container存放的Bean类型
         try {

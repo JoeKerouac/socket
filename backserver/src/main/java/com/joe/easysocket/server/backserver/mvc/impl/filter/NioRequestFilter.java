@@ -1,8 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.impl.filter;
 
 
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
-import com.joe.easysocket.server.backserver.mvc.impl.context.ResponseContext;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 
 /**
  * 请求filter
@@ -12,10 +12,10 @@ import com.joe.easysocket.server.backserver.mvc.impl.context.ResponseContext;
 public abstract class NioRequestFilter implements NioFilter {
 
     @Override
-    public abstract void requestFilter(RequestContext.RequestWrapper request);
+    public abstract void requestFilter(HttpRequestContext.RequestWrapper request);
 
     @Override
-    public final void responseFilter(RequestContext.RequestWrapper request, ResponseContext.Response response) {
+    public final void responseFilter(HttpRequestContext.RequestWrapper request, HttpResponseContext.Response response) {
         //加上final防止子类继承
     }
 

@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
-import com.joe.easysocket.server.backserver.mvc.impl.Bean;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
+import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ResourceInvokeException;
 import lombok.Data;
 
@@ -45,7 +45,7 @@ public class Resource<T> implements Bean {
      * @return 调用结果
      * @throws ResourceInvokeException 资源调用异常
      */
-    public Object invoke(RequestContext requestContext) throws ResourceInvokeException {
+    public Object invoke(HttpRequestContext requestContext) throws ResourceInvokeException {
         try {
             return resourceMethod.invoke(instance, requestContext.getParams());
         } catch (Throwable e) {

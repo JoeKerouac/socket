@@ -1,6 +1,6 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
-import com.joe.easysocket.server.backserver.mvc.impl.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.utils.concurrent.LockService;
 import com.joe.utils.scan.ClassScanner;
 import lombok.NonNull;

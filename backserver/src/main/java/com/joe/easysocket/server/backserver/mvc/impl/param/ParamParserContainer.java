@@ -1,8 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.impl.param;
 
-import com.joe.easysocket.server.backserver.mvc.impl.BeanContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractSpringContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.context.RequestContext;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author joe
  */
-public class ParamParserContainer extends AbstractSpringContainer<ParamInterceptor> {
+public class ParamParserContainer extends AbstractContainer<ParamInterceptor> {
 
     public ParamParserContainer(BeanContainer beanContainer) {
         super(beanContainer);
@@ -28,7 +28,7 @@ public class ParamParserContainer extends AbstractSpringContainer<ParamIntercept
      * @return 解析后的参数
      * @throws ParamParserException 参数解析完成但是校验失败
      */
-    public Object parse(Param param, RequestContext.RequestWrapper request, String data) throws
+    public Object parse(Param param, HttpRequestContext.RequestWrapper request, String data) throws
             ParamParserException {
         logger.debug("开始解析参数{}", param);
         List<ParamInterceptor> paramInterceptors = select(t -> t.isReadable(param, data));
