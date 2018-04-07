@@ -1,5 +1,5 @@
 <configuration scan="true">
-    <property name="LOG_HOME" value="/applogs/server" />
+    <property name="LOG_HOME" value="/applogs/server"/>
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
