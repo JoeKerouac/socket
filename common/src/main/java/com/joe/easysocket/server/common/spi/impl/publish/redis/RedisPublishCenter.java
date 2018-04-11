@@ -1,4 +1,4 @@
-package com.joe.test.redis;
+package com.joe.easysocket.server.common.spi.impl.publish.redis;
 
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.lambda.Serializer;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 public class RedisPublishCenter implements PublishCenter {
-    RedissonClient client;
+    private RedissonClient client;
     /**
      * listener与topic的映射，用于根据listener查找topic
      */

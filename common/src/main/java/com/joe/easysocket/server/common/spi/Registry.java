@@ -1,10 +1,8 @@
 package com.joe.easysocket.server.common.spi;
 
 
-import com.joe.easysocket.server.common.registry.ConnectionStateListener;
-import com.joe.easysocket.server.common.registry.NodeListener;
-import com.joe.easysocket.server.common.registry.zk.ZKConfig;
-import com.joe.easysocket.server.common.registry.zk.ZKRegistry;
+import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKConfig;
+import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKRegistry;
 
 import java.io.Closeable;
 import java.util.List;

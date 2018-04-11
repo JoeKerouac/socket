@@ -1,6 +1,4 @@
-package com.joe.easysocket.server.common.registry;
-
-import com.joe.easysocket.server.common.spi.Registry;
+package com.joe.easysocket.server.common.spi;
 
 /**
  * 注册中心连接状态监听器

@@ -1,8 +1,8 @@
-package com.joe.easysocket.server.common.registry.zk;
+package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
 
-import com.joe.easysocket.server.common.registry.ConnectionStateListener;
-import com.joe.easysocket.server.common.registry.NodeListener;
+import com.joe.easysocket.server.common.spi.ConnectionStateListener;
+import com.joe.easysocket.server.common.spi.NodeListener;
 import com.joe.easysocket.server.common.spi.Registry;
 
 import java.io.IOException;

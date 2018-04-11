@@ -1,4 +1,4 @@
-package com.joe.easysocket.server.common.registry;
+package com.joe.easysocket.server.common.spi;
 
 /**
  * @author joe

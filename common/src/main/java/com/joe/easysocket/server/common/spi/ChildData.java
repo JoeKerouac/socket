@@ -1,4 +1,4 @@
-package com.joe.easysocket.server.common.registry;
+package com.joe.easysocket.server.common.spi;
 
 import lombok.Data;
 import org.apache.curator.utils.PathUtils;

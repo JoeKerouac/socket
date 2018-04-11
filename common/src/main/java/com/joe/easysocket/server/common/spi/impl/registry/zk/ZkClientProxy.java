@@ -1,8 +1,8 @@
-package com.joe.easysocket.server.common.registry.zk;
+package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
 import com.joe.easysocket.server.common.exception.ZKClientException;
 import com.joe.easysocket.server.common.lambda.Serializer;
-import com.joe.easysocket.server.common.registry.NodeEvent;
+import com.joe.easysocket.server.common.spi.NodeEvent;
 import com.joe.utils.concurrent.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -63,7 +63,7 @@ class ZkClientProxy implements ZKClient {
         this.client = CuratorFrameworkFactory.newClient(config.getConnectStr(), retryPolicy);
         this.client.getConnectionStateListenable().addListener(new ConnectionStateListenerAdapter(this, ((client1,
                                                                                                           newState) -> {
-            if (newState.equals(com.joe.easysocket.server.common.registry.ConnectionState.CONNECTED)) {
+            if (newState.equals(com.joe.easysocket.server.common.spi.ConnectionState.CONNECTED)) {
                 log.info("客户端连接成功，准备启动节点监听器");
                 listenerLock.lock();
                 try {
@@ -559,7 +559,7 @@ class ZkClientProxy implements ZKClient {
         @Override
         public void stateChanged(CuratorFramework client, ConnectionState newState) {
             log.debug("客户端{}状态发生变化，当前客户端状态为：{}", client, newState);
-            listener.stateChanged(this.client, com.joe.easysocket.server.common.registry.ConnectionState.valueOf
+            listener.stateChanged(this.client, com.joe.easysocket.server.common.spi.ConnectionState.valueOf
                     (newState.name()));
         }
     }
@@ -587,8 +587,7 @@ class ZkClientProxy implements ZKClient {
                 case CHILD_REMOVED:
                     log.info("接收到节点变化事件{}", event);
                     ChildData d = event.getData();
-                    com.joe.easysocket.server.common.registry.ChildData data = new com.joe.easysocket.server.common.registry
-                            .ChildData(d.getPath(), d.getData());
+                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi.ChildData(d.getPath(), d.getData());
                     NodeEvent internalEvent = new NodeEvent(NodeEvent.Type.valueOf(type
                             .name().replace("CHILD", "NODE")), data);
                     childrenCacheListener.childEvent(this.client, internalEvent);
@@ -609,8 +608,7 @@ class ZkClientProxy implements ZKClient {
                 case NODE_REMOVED:
                     log.info("接收到节点变化事件{}", event);
                     ChildData d = event.getData();
-                    com.joe.easysocket.server.common.registry.ChildData data = new com.joe.easysocket.server.common.registry
-                            .ChildData(d.getPath(), d.getData());
+                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi.ChildData(d.getPath(), d.getData());
                     NodeEvent internalEvent = new NodeEvent(NodeEvent.Type.valueOf(type
                             .name()), data);
                     childrenCacheListener.childEvent(this.client, internalEvent);

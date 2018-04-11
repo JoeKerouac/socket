@@ -1,4 +1,4 @@
-package com.joe.easysocket.server.common.registry.zk;
+package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
 import java.io.Closeable;
 import java.util.List;
