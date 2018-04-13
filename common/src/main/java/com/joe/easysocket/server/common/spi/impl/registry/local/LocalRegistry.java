@@ -1,10 +1,9 @@
 package com.joe.easysocket.server.common.spi.impl.registry.local;
 
-import com.joe.easysocket.server.common.spi.ConnectionStateListener;
-import com.joe.easysocket.server.common.spi.NodeListener;
-import com.joe.easysocket.server.common.spi.Registry;
+import com.joe.easysocket.server.common.spi.*;
 import com.joe.utils.collection.Tree;
 import com.joe.utils.common.StringUtils;
+import com.joe.utils.parse.json.JsonParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @version 2018.04.11 18:13
  */
 public class LocalRegistry implements Registry {
+    private static final JsonParser PARSER = JsonParser.getInstance();
     private Tree registry;
     private Tree<List<NodeListener>> listeners;
     private AtomicLong counter;
@@ -42,7 +42,7 @@ public class LocalRegistry implements Registry {
     @Override
     public <T> String add(String path, T data) {
         path = StringUtils.trim(path, "/") + "/" + counter.getAndAdd(1);
-        registry.add(path, data);
+        registry.add(path, PARSER.toJson(data));
         return path;
     }
 
@@ -92,6 +92,8 @@ public class LocalRegistry implements Registry {
             }
         }
         list.add(listener);
+        String data = getData(path, String.class);
+        listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path, data.getBytes())));
     }
 
     @Override
