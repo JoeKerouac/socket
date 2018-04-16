@@ -5,18 +5,10 @@ import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.balance.Balance;
 import com.joe.easysocket.server.balance.BalanceImpl;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.spi.ConnectionStateListener;
-import com.joe.easysocket.server.common.spi.NodeListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.easysocket.server.common.spi.impl.publish.local.LocalPublishCenter;
-import com.joe.easysocket.server.common.spi.impl.publish.redis.RedisPublishCenter;
-import com.joe.test.core.LocalRegistry;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
 
 /**
  * @author joe
