@@ -93,7 +93,9 @@ public class LocalRegistry implements Registry {
         }
         list.add(listener);
         String data = getData(path, String.class);
-        listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path, data.getBytes())));
+        if (data != null) {
+            listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path, data.getBytes())));
+        }
     }
 
     @Override
