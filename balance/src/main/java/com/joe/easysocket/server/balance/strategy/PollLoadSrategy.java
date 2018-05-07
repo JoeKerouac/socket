@@ -103,14 +103,14 @@ public class PollLoadSrategy implements LoadStrategy {
     @Override
     public void addLoad(BackServer server) {
         log.debug("添加负载{}：{}", server.getId(), server);
-        if (backServers.isEmpty()) {
+        backServers.add(server);
+        if (backServers.size() == 1) {
             DataMsg msg;
             while ((msg = deque.pollFirst()) != null) {
                 log.debug("当前队列中有消息未读，将消息{}发送到后端{}：{}", msg, server.getId(), server);
                 server.write(msg);
             }
         }
-        backServers.add(server);
     }
 
     @Override
