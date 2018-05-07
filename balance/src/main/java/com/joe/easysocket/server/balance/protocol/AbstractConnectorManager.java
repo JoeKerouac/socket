@@ -10,10 +10,7 @@ import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.utils.common.StringUtils;
 import com.joe.utils.concurrent.ThreadUtil;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -29,10 +26,6 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 public abstract class AbstractConnectorManager implements ConnectorManager {
     /**
-     * 协议栈事件中心
-     */
-    protected EventCenter eventCenter;
-    /**
      * 当前所有通道，key为链接的ID，value为通道
      */
     private Map<String, PChannel> pChannels;
@@ -43,13 +36,13 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
     /**
      * 当前协议栈是否销毁，默认销毁
      */
-    private volatile boolean destroy = true;
+    private volatile ConnectorManagerState state;
     /**
-     * 心跳周期
+     * 心跳周期，单位：秒
      */
     private int heartbeat;
     /**
-     * 心跳超时清理线程
+     * 心跳超时清理线程，守护线程
      */
     private Thread cleanupThread;
     /**
@@ -64,10 +57,28 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
      * 发送线程
      */
     private Thread writer;
+    /**
+     * 协议栈事件中心
+     */
+    protected EventCenter eventCenter;
 
+    /**
+     * ConnectorManager状态
+     */
+    private enum ConnectorManagerState {
+        CREATE, INIT, RUNNING, STOP;
+    }
+
+    public AbstractConnectorManager() {
+        changeState(ConnectorManagerState.CREATE);
+    }
 
     @Override
     public void init(Config config, EventCenter eventCenter) {
+        if (!changeState(ConnectorManagerState.INIT)) {
+            log.warn("当前已经初始化，不能重复初始化，本次将忽略");
+            return;
+        }
         if (eventCenter == null || eventCenter == this) {
             log.info("事件中心为空，采用默认事件中心[{}]", DefaultEventCenter.class);
             this.eventCenter = new DefaultEventCenter();
@@ -80,10 +91,26 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
         this.listeners = new CopyOnWriteArrayList<>();
         this.pChannels = new ConcurrentHashMap<>();
         this.queue = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public void start() {
+        if (!changeState(ConnectorManagerState.RUNNING)) {
+            log.warn("协议栈已经初始化，不能重复初始化");
+            return;
+        }
+
+        log.info("初始化协议栈，心跳周期为：{}秒", heartbeat);
+
+        log.debug("初始化底层数据线程池");
+        //初始化信息
+        service = ThreadUtil.createPool(ThreadUtil.PoolType.IO, "channel-data-worker");
+        log.debug("底层数据线程池初始化完毕");
+
         this.writer = new Thread(() -> {
             //除非服务器关闭并且没有待发送数据，否则将会一直
             //循环（最多3秒 -> 消息最多重试30次，每次100毫秒，所以是最多3秒）
-            while (!destroy || !queue.isEmpty()) {
+            while (state == ConnectorManagerState.RUNNING || !queue.isEmpty()) {
                 if (!queue.isEmpty()) {
                     log.debug("开始发送需要ACK的数据，本次需要发送{}", queue.size());
                 }
@@ -116,24 +143,11 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             }
 
             log.info("数据发送线程关闭，中断心跳过期清理线程");
-            cleanupThread.interrupt();
-        }, "数据发送线程");
-    }
-
-    @Override
-    public synchronized void start() {
-        log.info("初始化协议栈，心跳周期为：{}秒", heartbeat);
-        if (!destroy) {
-            log.warn("协议栈已经初始化，不能重复初始化");
-            return;
-        }
-
-        //初始化信息
-        service = ThreadUtil.createPool(ThreadUtil.PoolType.IO);
+        }, "data-writer");
 
         //心跳超时清理线程
         cleanupThread = new Thread(() -> {
-            while (true) {
+            while (state == ConnectorManagerState.RUNNING) {
                 log.debug("开始扫描是否有客户端心跳超时");
                 long now = System.currentTimeMillis();
                 try {
@@ -154,21 +168,13 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
                 try {
                     Thread.sleep(heartbeat / 5 * 1000);
                 } catch (InterruptedException e) {
-                    log.debug("应用关闭，清理线程被中断");
-
-                    if (!destroy) {
-                        log.error("线程被非正常中断，将会忽略本次中断", e);
-                    } else {
-                        pChannels.clear();
-                        listeners.clear();
-                        break;
-                    }
+                    log.warn("心跳线程被异常中断", e);
                 }
             }
-        }, "过期连接清理线程");
+        }, "heartbeat-clean");
+        cleanupThread.setDaemon(true);
         cleanupThread.start();
 
-        destroy = false;
         this.writer.start();
         log.info("协议栈初始化完成");
     }
@@ -180,66 +186,19 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
     @Override
     public synchronized void shutdown() {
         log.info("开始关闭协议栈");
-        if (destroy) {
+        if (state == ConnectorManagerState.STOP) {
             log.warn("协议栈已经关闭，请不要重复关闭");
             return;
+        } else if (state == ConnectorManagerState.CREATE) {
+            throw new IllegalStateException("当前协议栈未启动，不能关闭");
         }
+
+        state = ConnectorManagerState.STOP;
+
+        pChannels.clear();
+        listeners.clear();
         service.shutdown();
-        destroy = true;
         log.info("协议栈关闭成功，等待数据发送线程关闭");
-    }
-
-    @Override
-    public void register(@NonNull PChannel channel) {
-        log.debug("注册ID为：{}的连接{}", channel.id(), channel);
-        String id = channel.id();
-
-        if (this.pChannels.containsKey(id) && channel != this.pChannels.get(id)) {
-            log.warn("当前连接池中存在id为{}的通道，并且该通道与新通道不是同一个通道，将注销该通道并注册新的通道 ");
-            close(id, CloseCause.SYSTEM);
-            this.pChannels.put(id, channel);
-        } else if (this.pChannels.containsKey(id)) {
-            log.warn("通道{}重复注册 ", id);
-        } else {
-            log.debug("注册通道id为{}的通道{}", id, channel);
-            this.pChannels.put(id, channel);
-            this.eventCenter.register(channel.id());
-        }
-    }
-
-    @Override
-    public void receive(byte[] data, String src) {
-        log.debug("接收到底层{}传来的数据，开始处理", src);
-        eventCenter.receive(src, data);
-        service.submit(() -> {
-            PChannel channel = this.pChannels.get(src);
-            if (channel == null) {
-                log.error("接收到来自通道{}的数据{}，但是并未找到通道", src, data);
-                return;
-            }
-            //只要收到消息就心跳一次
-            channel.heartbeat();
-            ProtocolData protocolData = new ProtocolData(data, channel.getPort(), channel.getRemoteHost(), channel.id
-                    (), 0, 0);
-            //获取数据报的类型
-            byte type = protocolData.getData()[Datagram.TYPEINDEX];
-
-            if (type == 0) {
-                log.debug("数据报是心跳包，返回一个心跳包");
-                write(ProtocolData.buildHeartbeat(channel.getPort(), channel.getRemoteHost(), src));
-            } else if (type == 2) {
-                log.debug("数据报是ACK，处理ACK");
-                ack(protocolData);
-            } else {
-                log.debug("数据不是心跳包，处理数据{}", protocolData);
-                try {
-                    listeners.forEach(listener -> listener.exec(protocolData));
-                } catch (Throwable e) {
-                    this.eventCenter.receiveError(src, data, e);
-                    log.error("底层传来的数据处理过程中失败，数据为{}", data, e);
-                }
-            }
-        });
     }
 
     @Override
@@ -318,6 +277,117 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
     }
 
     /**
+     * 注册连接
+     * @param channel 要注册的链接
+     */
+    public void register(@NonNull PChannel channel) {
+        log.debug("注册ID为：{}的连接{}", channel.id(), channel);
+        String id = channel.id();
+
+        if (this.pChannels.containsKey(id) && channel != this.pChannels.get(id)) {
+            log.warn("当前连接池中存在id为{}的通道，并且该通道与新通道不是同一个通道，将注销该通道并注册新的通道 ");
+            close(id, CloseCause.SYSTEM);
+            this.pChannels.put(id, channel);
+        } else if (this.pChannels.containsKey(id)) {
+            log.warn("通道{}重复注册 ", id);
+        } else {
+            log.debug("注册通道id为{}的通道{}", id, channel);
+            this.pChannels.put(id, channel);
+            this.eventCenter.register(channel.id());
+        }
+    }
+
+    /**
+     * 处理底层数据，底层socket通道接收到数据后调用该方法处理
+     *
+     * @param data 数据
+     * @param src  通道ID
+     */
+    public void receive(byte[] data, String src) {
+        log.debug("接收到底层{}传来的数据，开始处理", src);
+        eventCenter.receive(src, data);
+        service.submit(() -> {
+            PChannel channel = this.pChannels.get(src);
+            if (channel == null) {
+                log.error("接收到来自通道{}的数据{}，但是并未找到对应的通道", src, data);
+                return;
+            }
+            //只要收到消息就心跳一次
+            channel.heartbeat();
+            ProtocolData protocolData = new ProtocolData(data, channel.getPort(), channel.getRemoteHost(), channel.id
+                    (), 0, 0);
+            //获取数据报的类型
+            byte type = protocolData.getData()[Datagram.TYPEINDEX];
+
+            if (type == 0) {
+                log.debug("数据报是心跳包，返回一个心跳包");
+                write(ProtocolData.buildHeartbeat(channel.getPort(), channel.getRemoteHost(), src));
+            } else if (type == 2) {
+                log.debug("数据报是ACK，处理ACK");
+                ack(protocolData);
+            } else {
+                log.debug("数据不是心跳包，处理数据{}", protocolData);
+                try {
+                    listeners.forEach(listener -> listener.exec(protocolData));
+                } catch (Throwable e) {
+                    this.eventCenter.receiveError(src, data, e);
+                    log.error("底层传来的数据处理过程中失败，数据为{}", data, e);
+                }
+            }
+        });
+    }
+
+    /**
+     * 更新当前状态
+     *
+     * @param state 要更新的状态
+     * @return 更新是否成功，如果当前状态和要更新的状态一致返回false，如果当前状态可以转换到要更新的状态那么返回false，否则抛出异常
+     * @throws IllegalStateException 如果当前状态不能更新到指定状态则抛出异常
+     */
+    private synchronized boolean changeState(ConnectorManagerState state) throws IllegalStateException {
+        if (this.state == state) {
+            return false;
+        }
+
+        switch (state) {
+            case CREATE:
+                return true;
+            case INIT:
+                switch (this.state) {
+                    case CREATE:
+                        return true;
+                    case RUNNING:
+                    case STOP:
+                        throw new IllegalStateException("now state:" + this.state);
+                    default:
+                        throw new IllegalStateException("unknown state:" + this.state);
+                }
+            case RUNNING:
+                switch (this.state) {
+                    case INIT:
+                        return true;
+                    case CREATE:
+                    case STOP:
+                        throw new IllegalStateException("now state:" + this.state);
+                    default:
+                        throw new IllegalStateException("unknown state:" + this.state);
+                }
+            case STOP:
+                switch (this.state) {
+                    case RUNNING:
+                        return true;
+                    case CREATE:
+                    case INIT:
+                        throw new IllegalStateException("now state:" + this.state);
+                    default:
+                        throw new IllegalStateException("unknown state:" + this.state);
+                }
+            default:
+                throw new IllegalStateException("unknown state:" + state);
+        }
+    }
+
+    /**
      * 处理客户端ACK
      *
      * @param data 客户端响应数据
@@ -330,21 +400,33 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
         log.debug("删除ID为{}的数据报{}", id, old);
     }
 
+    /**
+     * 将后端数据加入待发送队列
+     *
+     * @param data 后端处理后的响应数据
+     * @param id   数据ID
+     */
     private void addQueue(ProtocolData data, String id) {
         log.debug("将ID为{}的数据报{}加入待发送队列", id, data);
-        if (!destroy) {
+        if (state == ConnectorManagerState.RUNNING) {
             queue.put(id, new RetryData(data));
         } else {
             log.warn("当前连接池已经关闭，不接受发送数据，数据{}:{}将会被抛弃", id, data);
         }
     }
 
-    @ToString
+    /**
+     * 重试数据
+     */
+    @Data
     private static class RetryData {
-        @Getter
-        private ProtocolData data;
-        @Getter
-        @Setter
+        /**
+         * 实际数据
+         */
+        private final ProtocolData data;
+        /**
+         * 重试次数
+         */
         private int retry;
 
         public RetryData(ProtocolData data) {

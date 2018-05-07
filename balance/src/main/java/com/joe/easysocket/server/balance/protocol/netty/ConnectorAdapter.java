@@ -1,5 +1,6 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
+import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.protocol.CloseCause;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
@@ -32,7 +33,7 @@ public class ConnectorAdapter extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         // 注册IO通道
-        connectorManager.register(new NettyChannel(ctx.channel()));
+        ((AbstractConnectorManager)connectorManager).register(new NettyChannel(ctx.channel()));
         super.channelRegistered(ctx);
     }
 
@@ -53,7 +54,7 @@ public class ConnectorAdapter extends ChannelInboundHandlerAdapter {
         String id = ctx.channel().id().asLongText();
         ByteBufRef ref = (ByteBufRef) msg;
         byteBuf = ref.getByteBuf();
-        connectorManager.receive(ref.getData(), id);
+        ((AbstractConnectorManager)connectorManager).receive(ref.getData(), id);
         // 将请求传递到处理链的下一个处理器，如果没有这一行则将终止处理
         super.channelRead(ctx, msg);
     }
