@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * 本地注册中心，不能用于分布式项目，测试使用
+ * 本地注册中心，不能用于分布式项目
+ * <p>
+ * <strong>极度不稳定，仅用于测试使用，正式使用请用{@link com.joe.easysocket.server.common.spi.impl.registry.zk.ZKRegistry ZKRegistry
+ * }</strong>
  *
  * @author joe
  * @version 2018.04.11 18:13
@@ -48,7 +51,8 @@ public class LocalRegistry implements Registry {
 
         List<NodeListener> listenerList = listeners.getData(pathPre);
         if (listenerList != null && !listenerList.isEmpty()) {
-            listenerList.stream().forEach(listener -> listener.listen(this,new NodeEvent(NodeEvent.Type.NODE_ADDED , new ChildData("/" + pathPre , dataStr.getBytes()))));
+            listenerList.stream().forEach(listener -> listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED,
+                    new ChildData("/" + pathPre, dataStr.getBytes()))));
         }
         return path;
     }
@@ -101,7 +105,8 @@ public class LocalRegistry implements Registry {
         list.add(listener);
         List<String> datas = registry.getAllChildData(path);
         if (!datas.isEmpty()) {
-            datas.forEach(data -> listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path, data.getBytes()))));
+            datas.forEach(data -> listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path,
+                    data.getBytes()))));
         }
     }
 
