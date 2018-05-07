@@ -145,11 +145,13 @@ public class BalanceImpl extends Balance {
         connectorManager.init(config, eventCenter);
         log.debug("ConnectorManager初始化完毕");
 
+        log.debug("初始化服务器信息");
         this.msgRecTopic = clusterConfig.getTopic() + "/" + id;
         this.balanceGroup = clusterConfig.getBalanceGroup();
         this.registryBase = clusterConfig.getRegistryBase();
         this.port = config.getPort() <= 0 ? 10051 : config.getPort();
         this.host = config.getHost();
+        log.debug("服务器信息初始化完毕");
 
         //当有通道关闭时发出通知
         this.connectorManager.register(new ProtocolEventListener() {

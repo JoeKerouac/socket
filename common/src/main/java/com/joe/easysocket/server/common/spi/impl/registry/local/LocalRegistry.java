@@ -23,7 +23,7 @@ public class LocalRegistry implements Registry {
     private AtomicLong counter;
 
     public LocalRegistry() {
-        registry = new Tree();
+        this.registry = new Tree();
         this.listeners = new Tree<>();
         this.counter = new AtomicLong(0);
     }
@@ -41,8 +41,15 @@ public class LocalRegistry implements Registry {
 
     @Override
     public <T> String add(String path, T data) {
-        path = StringUtils.trim(path, "/") + "/" + counter.getAndAdd(1);
-        registry.add(path, PARSER.toJson(data));
+        String pathPre = StringUtils.trim(path, "/");
+        path = pathPre + "/" + counter.getAndAdd(1);
+        String dataStr = PARSER.toJson(data);
+        registry.add(path, dataStr);
+
+        List<NodeListener> listenerList = listeners.getData(pathPre);
+        if (listenerList != null && !listenerList.isEmpty()) {
+            listenerList.stream().forEach(listener -> listener.listen(this,new NodeEvent(NodeEvent.Type.NODE_ADDED , new ChildData("/" + pathPre , dataStr.getBytes()))));
+        }
         return path;
     }
 
@@ -92,9 +99,9 @@ public class LocalRegistry implements Registry {
             }
         }
         list.add(listener);
-        String data = getData(path, String.class);
-        if (data != null) {
-            listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path, data.getBytes())));
+        List<String> datas = registry.getAllChildData(path);
+        if (!datas.isEmpty()) {
+            datas.forEach(data -> listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path, data.getBytes()))));
         }
     }
 
