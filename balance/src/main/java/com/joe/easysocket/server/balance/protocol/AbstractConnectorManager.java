@@ -349,10 +349,12 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
 
         switch (state) {
             case CREATE:
+                this.state = state;
                 return true;
             case INIT:
                 switch (this.state) {
                     case CREATE:
+                        this.state = state;
                         return true;
                     case RUNNING:
                     case STOP:
@@ -363,6 +365,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             case RUNNING:
                 switch (this.state) {
                     case INIT:
+                        this.state = state;
                         return true;
                     case CREATE:
                     case STOP:
@@ -373,6 +376,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             case STOP:
                 switch (this.state) {
                     case RUNNING:
+                        this.state = state;
                         return true;
                     case CREATE:
                     case INIT:
