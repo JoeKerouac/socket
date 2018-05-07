@@ -14,7 +14,6 @@
         <utils.version>1.7</utils.version>
         <logback.version>1.2.3</logback.version>
         <validator.version>6.0.2.Final</validator.version>
-        <el.version>3.0.1-b08</el.version>
         <curator.version>4.0.0</curator.version>
     </properties>
 
@@ -30,6 +29,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- 常用工具类 -->
         <dependency>
