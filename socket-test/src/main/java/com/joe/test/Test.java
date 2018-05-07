@@ -19,9 +19,9 @@ public class Test {
     static Registry registry = new LocalRegistry();
 
     public static void main(String[] args) throws Exception {
-        new Thread(Test::startBackserver).start();
-        Thread.sleep(1000 * 5);
-        new Thread(Test::startBalance).start();
+        new Thread(Test::startBackserver , "backserver").start();
+        Thread.sleep(1000 * 6);
+        new Thread(Test::startBalance , "balance").start();
     }
 
     static void startBalance() {
