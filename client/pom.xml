@@ -11,7 +11,7 @@
 
     <properties>
         <lombok.version>1.16.10</lombok.version>
-        <utils.version>1.7</utils.version>
+        <utils.version>1.8</utils.version>
     </properties>
 
     <dependencies>
