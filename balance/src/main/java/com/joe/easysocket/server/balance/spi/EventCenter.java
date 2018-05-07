@@ -5,6 +5,8 @@ import com.joe.easysocket.server.balance.protocol.ProtocolEventListener;
 
 /**
  * 抽象事件中心
+ * <p>
+ * <strong>数据不应该在监听器中处理</strong>
  *
  * @author joe
  * @version 2018.01.29 11:50
