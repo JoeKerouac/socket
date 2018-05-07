@@ -7,7 +7,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 
 /**
- * filter接口，用户必须实现该接口并且加上{@link Provider}注解
+ * filter接口，用户必须实现该接口并且加上{@link Provider @Provider}注解
  *
  * @author joe
  */

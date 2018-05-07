@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 /**
- * bean容器，需要可以扫描生成带有{@link Provider}注解的bean
+ * bean容器，需要可以扫描生成带有{@link Provider @Provider}注解的bean
  * <p>
  * 如果使用系统自带的MVC容器，那么还需要bean容器可以扫描生成带有{@link com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path
  * }注解的bean
