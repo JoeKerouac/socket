@@ -66,11 +66,11 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
      * ConnectorManager状态
      */
     private enum ConnectorManagerState {
-        CREATE, INIT, RUNNING, STOP;
+        CREATE, INIT, RUNNING, STOP
     }
 
     public AbstractConnectorManager() {
-        changeState(ConnectorManagerState.CREATE);
+        this.state = ConnectorManagerState.CREATE;
     }
 
     @Override
@@ -192,8 +192,6 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
         } else if (state == ConnectorManagerState.CREATE) {
             throw new IllegalStateException("当前协议栈未启动，不能关闭");
         }
-
-        state = ConnectorManagerState.STOP;
 
         pChannels.clear();
         listeners.clear();
