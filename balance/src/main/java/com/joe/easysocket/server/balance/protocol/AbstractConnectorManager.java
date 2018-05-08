@@ -136,7 +136,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
                 });
                 //等待100毫秒后继续发送
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     log.warn("数据发送线程被异常中断，忽略该中断", e);
                 }
