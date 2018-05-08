@@ -201,4 +201,14 @@ public class Datagram {
     public static boolean isFile(byte type) {
         return type == FILE;
     }
+
+    /**
+     * 数据报类型是否是后端主动发送的消息
+     *
+     * @param type 类型
+     * @return 返回true表示该类型是后端主动发送的消息类型
+     */
+    public static boolean isBack(byte type) {
+        return type == BACK;
+    }
 }
