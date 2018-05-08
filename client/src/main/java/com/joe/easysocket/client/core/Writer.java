@@ -108,7 +108,7 @@ public class Writer extends Worker {
                 if (msg.getInvoke() == null) {
                     if (msg.isAck()) {
                         //ack包
-                        datagram = datagramUtil.build(null, (byte) 0, (byte) 3, msg.getId());
+                        datagram = datagramUtil.build(null, (byte) 3, (byte) 1, msg.getId());
                     } else {
                         //心跳包
                         datagram = datagramUtil.build(null, (byte) 0, (byte) 1);

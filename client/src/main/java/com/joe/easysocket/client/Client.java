@@ -101,10 +101,9 @@ public class Client {
 
     /**
      * 注册监听器
-     * @param listener
-     * 监听器
-     * @return
-     * 监听器ID，用于移除使用
+     *
+     * @param listener 监听器
+     * @return 监听器ID，用于移除使用
      */
     public int register(EventListener listener) {
         return eventCenter.register(listener);
@@ -112,8 +111,8 @@ public class Client {
 
     /**
      * 移除指定ID的监听器
-     * @param id
-     * 监听器ID
+     *
+     * @param id 监听器ID
      */
     public void unregister(int id) {
         eventCenter.unregister(id);
@@ -124,16 +123,6 @@ public class Client {
      */
     public void unregisterAll() {
         eventCenter.unregisterAll();
-    }
-
-    /**
-     * 丢弃事件
-     *
-     * @param event 要丢弃的事件
-     * @param args  事件参数
-     */
-    private void discard(SocketEvent event, Object... args) {
-        logger.warn("事件[" + event + "]将被丢弃");
     }
 
     public synchronized void start() {
@@ -155,25 +144,23 @@ public class Client {
         try {
             channel = SocketChannel.open();
             if (!channel.connect(new InetSocketAddress(host, port))) {
-                logger.debug("启动失败");
+                logger.debug(Client.class.getName(),"启动失败");
                 return false;
             }
 
             this.lastActive = System.currentTimeMillis();
-            this.reader = new Reader(channel, logger, this::reconnect, serializer, this,this.eventCenter);
+            this.reader = new Reader(channel, logger, this::reconnect, serializer, this, this.eventCenter);
             this.writer = new Writer(channel.socket().getOutputStream(), logger, serializer, this::reconnect);
 
-            register(new MessageListener() {
+            logger.debug(Client.class.getName(), "注册自动ACK监听器");
+            register(new EventListenerAdapter() {
                 @Override
-                public void receive(InterfaceData data) {
-                    ack(data.getId().getBytes());
-                }
-
-                @Override
-                public Serializer getSerializer() {
-                    return serializer;
+                public void receive(Datagram data) {
+                    logger.debug(Client.class.getName(), "数据[" + data + "]需要ack，进行ACK");
+                    ack(data.getId());
                 }
             });
+            logger.debug(Client.class.getName(), "ACK监听器注册完毕");
 
             this.reader.start();
             this.writer.start();
@@ -203,7 +190,7 @@ public class Client {
                 } catch (InterruptedException e) {
                     proxy.info("服务器关闭,心跳线程关闭");
                 }
-            }, "心跳线程");
+            }, "hearbeat");
             this.heartbeatThread.start();
             eventCenter.listen(SocketEvent.REGISTER, this);
         } else {

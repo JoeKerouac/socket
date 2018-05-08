@@ -161,16 +161,7 @@ public class Reader extends Worker {
 
                     service.submit(() -> {
                         Datagram datagram = datagramUtil.decode(realData);
-                        logger.debug("解析出来的数据报为[" + datagram + "]");
-                        if (datagram.getType() == 0) {
-                            logger.debug("收到的数据报为心跳包，忽略处理");
-                            return;
-                        }
-
-                        logger.debug("开始解析数据报 [" + datagram + "] 的body");
-                        InterfaceData data = serializer.read(datagram.getBody(), InterfaceData.class);
-                        logger.debug("解析出来的数据报body为：" + data);
-                        eventCenter.listen(SocketEvent.RECEIVE, data);
+                        eventCenter.listen(SocketEvent.RECEIVE, datagram);
                     });
                 } else {
                     logger.debug("当前数据不够长，等待下一次读取");

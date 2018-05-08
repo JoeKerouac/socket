@@ -19,10 +19,23 @@ package com.joe.easysocket.client.data;
  */
 @lombok.Data
 public class Datagram {
+    private static final byte[] EMPTY_DATA = new byte[0];
+    /**
+     * 需要ACK的数据类型
+     */
+    private static final byte[] ACKS = {1, 2, 4};
     /**
      * 数据报的报头长度
      */
     public static final int HEADER = 56;
+    /**
+     * 请求头中长度字段起始位置
+     */
+    public static final int LENOFFSET = 1;
+    /**
+     * 请求头中长度字段的长度
+     */
+    public static final int LENLIMIT = 4;
     //数据报类型字段的位置
     public static final int TYPEINDEX = 5;
     // 数据报的最大长度，包含请求头和请求体
@@ -38,7 +51,7 @@ public class Datagram {
     // 数据报body
     private final byte[] body;
     // 数据报数据类型（0：心跳包；1：内置MVC数据处理器数据类型；2：文件传输；3：ACK；4：后端主动发往前端的数据；
-    // 除了0、1、2外可以自己定义数据类型）
+    // 除了0、1、2、3、4外可以自己定义数据类型）
     private final byte type;
     //数据报的ID
     private final byte[] id;
@@ -56,14 +69,14 @@ public class Datagram {
      */
     public Datagram(byte[] data, int size, byte[] body, byte version, String charset, byte type, byte[] id) {
         if (data == null) {
-            this.data = null;
+            this.data = EMPTY_DATA;
         } else {
             this.data = new byte[data.length];
             System.arraycopy(data, 0, this.data, 0, data.length);
         }
 
         if (body == null) {
-            this.body = new byte[0];
+            this.body = EMPTY_DATA;
         } else {
             this.body = new byte[body.length];
             System.arraycopy(body, 0, this.body, 0, body.length);
@@ -77,12 +90,18 @@ public class Datagram {
     }
 
     public byte[] getData() {
+        if (this.data == null || this.data.length == 0) {
+            return EMPTY_DATA;
+        }
         byte[] data = new byte[this.data.length];
         System.arraycopy(this.data, 0, data, 0, data.length);
         return data;
     }
 
     public byte[] getBody() {
+        if (this.body == null || this.body.length == 0) {
+            return EMPTY_DATA;
+        }
         byte[] body = new byte[this.body.length];
         System.arraycopy(this.body, 0, body, 0, body.length);
         return body;
@@ -94,6 +113,41 @@ public class Datagram {
      * @return 返回true表示需要ACK
      */
     public boolean ack() {
-        return type != 0 && type != 3;
+        return shouldAck(type);
+    }
+
+    /**
+     * 是否需要ACK
+     *
+     * @param type 数据类型
+     * @return 返回true表示该类型的数据需要ACK
+     */
+    public static boolean shouldAck(byte type) {
+        for (byte b : ACKS) {
+            if (type == b) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否是ACK数据类型
+     *
+     * @param type 数据类型
+     * @return 返回true表示该数据类型是ACK类型
+     */
+    public static boolean isAck(byte type) {
+        return type == 3;
+    }
+
+    /**
+     * 是否是心跳包
+     *
+     * @param type 数据类型
+     * @return 如果数据是心跳包返回true
+     */
+    public static boolean isHeartbeat(byte type) {
+        return type == 0;
     }
 }
