@@ -317,7 +317,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             //获取数据报的类型
             byte type = protocolData.getData()[Datagram.TYPEINDEX];
 
-            if (type == 0) {
+            if (Datagram.isHeartbeat(type)) {
                 log.debug("数据报是心跳包，返回一个心跳包");
                 write(ProtocolData.buildHeartbeat(channel.getPort(), channel.getRemoteHost(), src));
             } else if (Datagram.isAck(type)) {
