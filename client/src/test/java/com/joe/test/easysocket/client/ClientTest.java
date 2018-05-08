@@ -3,6 +3,7 @@ package com.joe.test.easysocket.client;
 import com.joe.easysocket.client.data.InterfaceData;
 import com.joe.easysocket.client.ext.EventListenerAdapter;
 import com.joe.easysocket.client.ext.Logger;
+import com.joe.easysocket.client.ext.MessageListener;
 import com.joe.easysocket.client.ext.Serializer;
 import com.joe.easysocket.client.Client;
 import com.joe.easysocket.client.core.EventListener;
@@ -85,7 +86,7 @@ public class ClientTest {
             }
         };
 
-        EventListener listener = new EventListenerAdapter() {
+        EventListener listener = new MessageListener() {
             @Override
             public void faild(Throwable cause) {
                 System.out.println("faild");
@@ -110,11 +111,16 @@ public class ClientTest {
             public void receive(InterfaceData data) {
                 System.out.println("receive:" + data);
             }
+
+            @Override
+            public Serializer getSerializer() {
+                return serializer;
+            }
         };
 
         //构建client对象，其中logger和listener都是非必须的，但是没有listener就无法处理服务器消息，所以正式使用时该对象必须有
-        Client client = Client.builder().heartbeat(30).host("127.0.0.1").port(10051).serializer(serializer).listener
-                (listener).logger(logger).build();
+        Client client = Client.builder().heartbeat(30).host("127.0.0.1").port(10051).serializer(serializer).logger(logger).build();
+        client.register(listener);
         client.start();
         JsonObject object = new JsonObject().data("account", 123).data("password", "345");
         client.write("user/login", object.toJson());
@@ -124,6 +130,5 @@ public class ClientTest {
 //            Thread.sleep(3000);
 //            client.write("user/print", null);
 //        }
-        System.out.println("完成");
     }
 }

@@ -34,6 +34,20 @@ public class DatagramUtil {
      * @throws DataOutOfMemory 当数据长度过长时会抛出该异常
      */
     public Datagram build(byte[] body, byte type, byte version) throws DataOutOfMemory {
+        return build(body, type, version, null);
+    }
+
+    /**
+     * 根据要发送的数据构建数据报（编码采用当前系统默认编码）
+     *
+     * @param body    要发送的数据
+     * @param type    数据报类型
+     * @param version 数据报版本
+     * @param id      数据报ID
+     * @return 构建好的数据报对象
+     * @throws DataOutOfMemory 当数据长度过长时会抛出该异常
+     */
+    public Datagram build(byte[] body, byte type, byte version, byte[] id) throws DataOutOfMemory {
         int dataLen = 0;
         if (body != null && body.length != 0) {
             // 获取要发送的数据的长度
@@ -71,7 +85,7 @@ public class DatagramUtil {
         }
         buffer.append(charsetBuffer.getData());
 
-        byte[] id = createId();
+        id = id == null ? createId() : id;
         buffer.append(id);
 
         if (dataLen != 0) {

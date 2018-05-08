@@ -67,7 +67,23 @@ public class Writer extends Worker {
      */
     public boolean write(String invoke, String data) {
         try {
-            queue.put(new Msg(invoke, data));
+            queue.put(new Msg(invoke, data, false, null));
+            return true;
+        } catch (InterruptedException e) {
+            logger.error("写入失败");
+            return false;
+        }
+    }
+
+    /**
+     * 对消息ack
+     *
+     * @param id 消息ID
+     * @return 返回true表示成功（成功加入队列）
+     */
+    public boolean ack(byte[] id) {
+        try {
+            queue.put(new Msg(null, null, true, id));
             return true;
         } catch (InterruptedException e) {
             logger.error("写入失败");
@@ -90,8 +106,13 @@ public class Writer extends Worker {
 
                 Datagram datagram;
                 if (msg.getInvoke() == null) {
-                    //心跳包
-                    datagram = datagramUtil.build(null, (byte) 0, (byte) 1);
+                    if (msg.isAck()) {
+                        //ack包
+                        datagram = datagramUtil.build(null, (byte) 0, (byte) 3, msg.getId());
+                    } else {
+                        //心跳包
+                        datagram = datagramUtil.build(null, (byte) 0, (byte) 1);
+                    }
                 } else {
                     //普通接口请求包
                     InterfaceData interfaceData = new InterfaceData(String.valueOf(System.currentTimeMillis()), msg
@@ -117,5 +138,13 @@ public class Writer extends Worker {
     private static class Msg {
         private String invoke;
         private Object data;
+        /**
+         * 是否是ACK，如果为true表示该消息是ack消息
+         */
+        private boolean ack = false;
+        /**
+         * ack消息ID
+         */
+        private byte[] id;
     }
 }

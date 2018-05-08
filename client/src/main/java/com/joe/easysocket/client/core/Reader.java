@@ -1,18 +1,22 @@
 package com.joe.easysocket.client.core;
 
 
+import com.joe.easysocket.client.Client;
 import com.joe.easysocket.client.common.DatagramUtil;
 import com.joe.easysocket.client.data.Datagram;
 import com.joe.easysocket.client.data.InterfaceData;
-import com.joe.easysocket.client.ext.InternalLogger;
-import com.joe.easysocket.client.ext.Logger;
-import com.joe.easysocket.client.ext.Serializer;
+import com.joe.easysocket.client.ext.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * socket数据读取器
@@ -24,33 +28,37 @@ public class Reader extends Worker {
     private final int lengthFieldOffset = 1;
     // 数据报head的长度
     private final int headLength = Datagram.HEADER;
-    //事件监听器
-    private EventListener listener;
     //socket输入流
     private SocketChannel channel;
     //缓冲区大小
     private int bufferSize;
     //线程池
     private ExecutorService service;
+    //客户端
+    private Client client;
+    //事件中心
+    private EventCenter eventCenter;
 
 
     /**
      * 读取器构造器
      *
-     * @param channel    socket的输入流
-     * @param logger     日志对象
-     * @param listener   事件监听器
-     * @param callback   关闭回调
-     * @param serializer 序列化器
+     * @param channel     socket的输入流
+     * @param logger      日志对象
+     * @param callback    关闭回调
+     * @param serializer  序列化器
+     * @param client      client
+     * @param eventCenter 事件中心
      */
-    public Reader(SocketChannel channel, Logger logger, EventListener listener, Callback
-            callback, Serializer serializer) {
+    public Reader(SocketChannel channel, Logger logger, Callback callback, Serializer serializer, Client client,
+                  EventCenter eventCenter) {
         super(logger instanceof InternalLogger ? logger : InternalLogger.getLogger(logger, Reader.class), callback,
                 serializer);
         this.channel = channel;
-        this.listener = listener;
         this.bufferSize = 1024;
         this.service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+        this.client = client;
+        this.eventCenter = eventCenter;
     }
 
     /**
@@ -162,7 +170,7 @@ public class Reader extends Worker {
                         logger.debug("开始解析数据报 [" + datagram + "] 的body");
                         InterfaceData data = serializer.read(datagram.getBody(), InterfaceData.class);
                         logger.debug("解析出来的数据报body为：" + data);
-                        listener.listen(SocketEvent.RECEIVE, data);
+                        eventCenter.listen(SocketEvent.RECEIVE, data);
                     });
                 } else {
                     logger.debug("当前数据不够长，等待下一次读取");

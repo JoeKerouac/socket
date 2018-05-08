@@ -1,13 +1,10 @@
 package com.joe.easysocket.client;
 
-import com.joe.easysocket.client.core.EventListener;
-import com.joe.easysocket.client.core.Reader;
-import com.joe.easysocket.client.core.SocketEvent;
-import com.joe.easysocket.client.core.Writer;
+import com.joe.easysocket.client.core.*;
+import com.joe.easysocket.client.data.Datagram;
+import com.joe.easysocket.client.data.InterfaceData;
 import com.joe.easysocket.client.exception.NoRequireParamException;
-import com.joe.easysocket.client.ext.InternalLogger;
-import com.joe.easysocket.client.ext.Logger;
-import com.joe.easysocket.client.ext.Serializer;
+import com.joe.easysocket.client.ext.*;
 import lombok.Builder;
 
 import java.io.IOException;
@@ -70,7 +67,6 @@ public class Client {
     private String host;
     private int port;
     private volatile boolean shutdown = true;
-    private EventListener listener;
     //心跳线程
     private Thread heartbeatThread;
     //最后一次发送数据的时间的时间戳
@@ -79,10 +75,11 @@ public class Client {
     private long heartbeat;
     //序列化器
     private Serializer serializer;
+    //事件中心
+    private EventCenter eventCenter;
 
     @Builder
-    private Client(String host, int port, Logger logger, Serializer serializer,
-                   EventListener listener, int heartbeat) {
+    private Client(String host, int port, Logger logger, Serializer serializer, int heartbeat) {
         if (host == null || host.trim().isEmpty()) {
             throw new NoRequireParamException("host");
         }
@@ -97,9 +94,36 @@ public class Client {
         this.port = port;
         this.logger = logger == null ? DEFAULT : logger;
         this.proxy = logger instanceof InternalLogger ? logger : InternalLogger.getLogger(logger, Client.class);
-        this.listener = listener != null ? listener : this::discard;
         this.heartbeat = heartbeat > 30 ? heartbeat : 30;
         this.serializer = serializer;
+        this.eventCenter = new EventCenter();
+    }
+
+    /**
+     * 注册监听器
+     * @param listener
+     * 监听器
+     * @return
+     * 监听器ID，用于移除使用
+     */
+    public int register(EventListener listener) {
+        return eventCenter.register(listener);
+    }
+
+    /**
+     * 移除指定ID的监听器
+     * @param id
+     * 监听器ID
+     */
+    public void unregister(int id) {
+        eventCenter.unregister(id);
+    }
+
+    /**
+     * 移除所有监听器
+     */
+    public void unregisterAll() {
+        eventCenter.unregisterAll();
     }
 
     /**
@@ -136,13 +160,25 @@ public class Client {
             }
 
             this.lastActive = System.currentTimeMillis();
-            this.reader = new Reader(channel, logger, listener, this::reconnect, serializer);
+            this.reader = new Reader(channel, logger, this::reconnect, serializer, this,this.eventCenter);
             this.writer = new Writer(channel.socket().getOutputStream(), logger, serializer, this::reconnect);
+
+            register(new MessageListener() {
+                @Override
+                public void receive(InterfaceData data) {
+                    ack(data.getId().getBytes());
+                }
+
+                @Override
+                public Serializer getSerializer() {
+                    return serializer;
+                }
+            });
+
             this.reader.start();
             this.writer.start();
         } catch (IOException e) {
             proxy.error("连接构建时发生异常:" + e);
-            listener.listen(SocketEvent.FAILD, e);
             if (invoker == 1) {
                 heartbeatThread.interrupt();
             }
@@ -169,9 +205,9 @@ public class Client {
                 }
             }, "心跳线程");
             this.heartbeatThread.start();
-            listener.listen(SocketEvent.REGISTER, this);
+            eventCenter.listen(SocketEvent.REGISTER, this);
         } else {
-            listener.listen(SocketEvent.RECONNECT, this);
+            eventCenter.listen(SocketEvent.RECONNECT, this);
         }
         return true;
     }
@@ -192,6 +228,10 @@ public class Client {
         }
         this.lastActive = System.currentTimeMillis();
         return writer.write(invoke, data);
+    }
+
+    private void ack(byte[] id) {
+        writer.ack(id);
     }
 
     /**
