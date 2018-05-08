@@ -1,9 +1,7 @@
 package com.joe.easysocket.client.core;
 
-import com.joe.easysocket.client.ext.EventListenerAdapter;
-
 /**
- * 事件监听器，推荐使用事件适配器{@link EventListenerAdapter}
+ * 事件监听器，推荐使用{@link com.joe.easysocket.client.ext.MessageListener MessageListener}
  *
  * @author joe
  */
