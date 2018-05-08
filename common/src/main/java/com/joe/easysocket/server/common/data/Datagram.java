@@ -21,6 +21,10 @@ package com.joe.easysocket.server.common.data;
 public class Datagram {
     private static final byte[] EMPTY_DATA = new byte[0];
     /**
+     * 需要ACK的数据类型
+     */
+    private static final byte[] ACKS = {1, 2, 4};
+    /**
      * 数据报的报头长度
      */
     public static final int HEADER = 56;
@@ -109,6 +113,41 @@ public class Datagram {
      * @return 返回true表示需要ACK
      */
     public boolean ack() {
-        return type != 0 && type != 3;
+        return shouldAck(type);
+    }
+
+    /**
+     * 是否需要ACK
+     *
+     * @param type 数据类型
+     * @return 返回true表示该类型的数据需要ACK
+     */
+    public static boolean shouldAck(byte type) {
+        for (byte b : ACKS) {
+            if (type == b) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否是ACK数据类型
+     *
+     * @param type 数据类型
+     * @return 返回true表示该数据类型是ACK类型
+     */
+    public static boolean isAck(byte type) {
+        return type == 3;
+    }
+
+    /**
+     * 是否是心跳包
+     *
+     * @param type 数据类型
+     * @return 如果数据是心跳包返回true
+     */
+    public static boolean isHeartbeat(byte type) {
+        return type == 0;
     }
 }

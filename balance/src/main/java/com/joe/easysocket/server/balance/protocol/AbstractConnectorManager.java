@@ -320,7 +320,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             if (type == 0) {
                 log.debug("数据报是心跳包，返回一个心跳包");
                 write(ProtocolData.buildHeartbeat(channel.getPort(), channel.getRemoteHost(), src));
-            } else if (type == 2) {
+            } else if (Datagram.isAck(type)) {
                 log.debug("数据报是ACK，处理ACK");
                 ack(protocolData);
             } else {
