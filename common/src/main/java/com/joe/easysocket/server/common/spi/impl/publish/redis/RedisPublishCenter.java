@@ -4,18 +4,17 @@ import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.utils.cluster.ClusterManager;
+import com.joe.utils.cluster.redis.RedisBaseConfig;
+import com.joe.utils.cluster.redis.RedisClusterManagerFactory;
 import com.joe.utils.common.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * redis pub/sub模型
@@ -24,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 public class RedisPublishCenter implements PublishCenter {
-    private RedissonClient client;
+    private ClusterManager clusterManager;
     /**
      * listener与topic的映射，用于根据listener查找topic
      */
@@ -38,18 +37,28 @@ public class RedisPublishCenter implements PublishCenter {
      */
     private Map<String, List<CustomMessageListener<?>>> listenerMap;
 
+    /**
+     * 利用完整配置构建发布中心
+     *
+     * @param config 完整配置
+     */
+    public RedisPublishCenter(RedisBaseConfig config) {
+        this.clusterManager = RedisClusterManagerFactory.getInstance(config);
+    }
+
+    /**
+     * 使用端口号和主机地址快速构建发布中心
+     *
+     * @param host 主机地址
+     * @param port 端口
+     */
     public RedisPublishCenter(String host, int port) {
-        Config config = new Config();
-        config.useSingleServer().setAddress(host + ":" + port);
-        this.client = Redisson.create(config);
-        this.listenerStringMap = new ConcurrentHashMap<>();
-        this.listenerMap = new ConcurrentHashMap<>();
-        this.listenerId = new ConcurrentHashMap<>();
+        this.clusterManager = RedisClusterManagerFactory.getInstance(host, port);
     }
 
     @Override
     public <T> void pub(String channel, T message) {
-        client.<T>getTopic(channel).publish(message);
+        clusterManager.<T>getTopic(channel).publish(message);
     }
 
     @Override
@@ -82,7 +91,7 @@ public class RedisPublishCenter implements PublishCenter {
             }
         }
 
-        client.<T>getTopic(channel).addListener((s, t) -> listener.onMessage(channel.getBytes(), t));
+        clusterManager.<T>getTopic(channel).addListener((s, t) -> listener.onMessage(channel.getBytes(), t));
     }
 
     @Override
@@ -121,7 +130,7 @@ public class RedisPublishCenter implements PublishCenter {
         }
         Integer id = listenerId.remove(new ID(channel, listener));
         if (id != null) {
-            client.<T>getTopic(channel).removeListener(id);
+            clusterManager.<T>getTopic(channel).removeListener(id);
         }
     }
 
