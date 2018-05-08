@@ -120,7 +120,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
                     try {
                         if (v.getRetry() >= 30) {
                             //重试超过30次不再重试
-                            log.debug("数据{}重试次数过多，不再重试该数据", v);
+                            log.warn("数据{}重试次数过多，不再重试该数据", v);
                             queue.remove(k);
                         } else if (channel == null) {
                             log.debug("当前通道{}已经不存在，删除数据{}", k, v);
@@ -136,7 +136,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
                 });
                 //等待100毫秒后继续发送
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     log.warn("数据发送线程被异常中断，忽略该中断", e);
                 }

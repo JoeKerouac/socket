@@ -25,18 +25,30 @@ public class Resource<T> implements Bean {
     private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final ExecutableValidator executableValidator = validator.forExecutables();
     // 该资源对应的实体类
-    private Class<T> resourceClass;
+    private final Class<T> resourceClass;
     // 该资源对应的方法
-    private Method resourceMethod;
+    private final Method resourceMethod;
     // 该资源的访问路径，格式是/aa/bb，以/开头
-    private String name;
+    private final String name;
     // 访问该资源需要的参数
-    private List<Param> params;
-    private T instance;
+    private final List<Param> params;
+    private final T instance;
     // 响应数据格式
-    private String produce;
+    private final String produce;
     // 接收数据格式
-    private String consume;
+    private final String consume;
+
+    public Resource(Class<T> resourceClass, Method resourceMethod, String name, List<Param> params, T instance,
+                    String produce, String consume) {
+        this.resourceClass = resourceClass;
+        this.resourceMethod = resourceMethod;
+        this.name = name;
+        this.params = params;
+        this.instance = instance;
+        this.produce = produce;
+        this.consume = consume;
+        this.resourceMethod.setAccessible(true);
+    }
 
     /**
      * 调用资源

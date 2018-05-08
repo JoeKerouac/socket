@@ -91,16 +91,8 @@ class ApiUtil {
             }
         }
 
-        resourceMethod.setAccessible(true);
-
-        Resource resource = new Resource();
-        resource.setName(getURI(resourceMethod, resourceClass));
-        resource.setConsume(getConsume(resourceMethod));
-        resource.setProduce(getProduce(resourceMethod));
-        resource.setParams(params);
-        resource.setResourceClass(resourceClass);
-        resource.setResourceMethod(resourceMethod);
-        resource.setInstance(instance);
+        Resource resource = new Resource(resourceClass, resourceMethod, getURI(resourceMethod, resourceClass),
+                params, instance, getProduce(resourceMethod), getConsume(resourceMethod));
         return resource;
     }
 

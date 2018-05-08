@@ -47,7 +47,7 @@ public class Datagram {
     // 数据报body
     private final byte[] body;
     // 数据报数据类型（0：心跳包；1：内置MVC数据处理器数据类型；2：文件传输；3：ACK；4：后端主动发往前端的数据；
-    // 除了0、1、2外可以自己定义数据类型）
+    // 除了0、1、2、3、4外可以自己定义数据类型）
     private final byte type;
     //数据报的ID
     private final byte[] id;
