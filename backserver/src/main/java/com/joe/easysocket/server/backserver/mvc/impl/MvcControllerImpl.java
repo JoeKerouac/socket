@@ -76,15 +76,18 @@ public class MvcControllerImpl implements MvcController {
      * MVC控制器
      *
      * @param sessionManager  session管理器
-     * @param beanContainer   bean容器
+     * @param beanContainer   bean容器，不能为null
      * @param maxThread       MVC处理器线程池的最大线程数
      * @param minThread       MVC处理器线程池的最小线程数
      * @param threadAliveTime MVC处理器线程池空闲线程存活时间，单位为秒
      */
     public MvcControllerImpl(SessionManager sessionManager, BeanContainer beanContainer, int maxThread, int minThread,
                              long threadAliveTime) {
+        if (sessionManager == null || beanContainer == null) {
+            throw new NullPointerException("sessionManager or beanContainer must not be null");
+        }
         this.sessionManager = sessionManager;
-        this.beanContainer = beanContainer == null ? new BeanContainerImpl("com") : beanContainer;
+        this.beanContainer = beanContainer;
         this.maxThread = maxThread <= 0 ? Runtime.getRuntime().availableProcessors() * 150 : maxThread;
         this.minThread = minThread <= 0 ? Runtime.getRuntime().availableProcessors() * 50 : minThread;
         this.threadAliveTime = threadAliveTime <= 0 ? 30 : threadAliveTime;
@@ -162,9 +165,6 @@ public class MvcControllerImpl implements MvcController {
      */
     private void init() {
         logger.info("开始初始化MVC数据处理器");
-
-        //判断bean容器是否为null，不为null则使用默认
-        this.beanContainer = beanContainer == null ? new BeanContainerImpl("com") : this.beanContainer;
 
         //构建数据处理ThreadFactory
         ThreadFactory factory = new ThreadFactory() {

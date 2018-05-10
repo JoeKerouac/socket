@@ -59,11 +59,8 @@ public class MvcDataworker implements DataWorker {
         BeanContainer beanContainer = config.getBeanContainer() == null ? new BeanContainerImpl("com") : config
                 .getBeanContainer();
         int maxThread = config.getMaxThreadCount();
-        maxThread = maxThread <= 0 ? Runtime.getRuntime().availableProcessors() * 150 : maxThread;
         int minThread = config.getMinThreadCount();
-        minThread = minThread <= 0 ? Runtime.getRuntime().availableProcessors() * 50 : minThread;
         long threadAliveTime = config.getThreadAliveTime();
-        threadAliveTime = threadAliveTime <= 0 ? 30 : threadAliveTime;
         this.mvcController = new MvcControllerImpl(sessionManager, beanContainer, maxThread, minThread,
                 threadAliveTime);
     }
