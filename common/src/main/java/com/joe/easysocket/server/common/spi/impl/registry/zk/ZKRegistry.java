@@ -27,9 +27,7 @@ public class ZKRegistry implements Registry {
 
     @Override
     public void addListener(ConnectionStateListener listener) {
-        client.addListener(((client1, newState) -> {
-            listener.stateChanged(this, newState);
-        }));
+        client.addListener(((client1, newState) -> listener.stateChanged(this, newState)));
     }
 
     @Override
@@ -74,8 +72,6 @@ public class ZKRegistry implements Registry {
 
     @Override
     public void addListener(String path, NodeListener listener) throws Exception {
-        client.addListener(path, true, ((client1, event) -> {
-            listener.listen(this, event);
-        }));
+        client.addListener(path, true, ((client1, event) -> listener.listen(this, event)));
     }
 }

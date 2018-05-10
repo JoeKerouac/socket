@@ -14,10 +14,7 @@ import com.joe.easysocket.server.backserver.mvc.data.InterfaceData;
 import com.joe.easysocket.server.backserver.mvc.impl.container.BeanContainerImpl;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
-import com.joe.easysocket.server.backserver.mvc.impl.exception.FilterException;
-import com.joe.easysocket.server.backserver.mvc.impl.exception.MediaTypeNoSupportException;
-import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
-import com.joe.easysocket.server.backserver.mvc.impl.exception.ResourceNotFoundException;
+import com.joe.easysocket.server.backserver.mvc.impl.exception.*;
 import com.joe.easysocket.server.backserver.mvc.impl.exceptionmapper.ExceptionMapper;
 import com.joe.easysocket.server.backserver.mvc.impl.exceptionmapper.ExceptionMapperContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.filter.FilterContainer;
@@ -31,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.ValidationException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -233,6 +231,11 @@ public class MvcControllerImpl implements MvcController {
             // MVC数据处理器只有这一种请求data，直接读取
             logger.debug("开始解析请求数据");
             message = parser.readAsObject(body, InterfaceData.class);
+            if (message == null) {
+                String msg = Arrays.toString(body);
+                logger.debug("数据解析异常，用户数据为：[{}]，要解析的类型为：[{}]", msg, InterfaceData.class);
+                throw new RequestDataError("请求数据异常，数据为：" + msg);
+            }
             logger.debug("请求数据解析完毕，请求数据为：{}", message);
 
             // 搜索指定的resource

@@ -17,7 +17,7 @@ public abstract class MessageListener implements EventListenerAdapter {
     /**
      * 用来辅助cache做并发控制
      */
-    private ConcurrentHashMap<String, String> lock;
+    private final ConcurrentHashMap<String, String> lock;
 
     public MessageListener() {
         this.cache = new LRUCacheMap<>(CACHE_SIZE);

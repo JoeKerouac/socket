@@ -61,10 +61,8 @@ public class SessionManagerImpl implements SessionManager {
     public Session get(String channel, String balanceId, int port, String host) {
         if (cache.get(channel) == null) {
             LockService.lock(channel);
-            if (cache.get(channel) == null) {
-                cache.put(channel, new LocalSession(channel, host, port, channelManager.getChannel(channel,
-                        balanceId, host, port)));
-            }
+            cache.computeIfAbsent(channel, c -> new LocalSession(c, host, port, channelManager.getChannel(c,
+                    balanceId, host, port)));
             LockService.unlock(channel);
         }
         return cache.get(channel);

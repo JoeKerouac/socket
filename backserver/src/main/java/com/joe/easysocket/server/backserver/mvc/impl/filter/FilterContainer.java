@@ -120,7 +120,7 @@ public class FilterContainer extends AbstractContainer<NioFilter> {
     public void requestFilter(HttpRequestContext.RequestWrapper request) throws FilterException {
         try {
             logger.debug("开始请求filter");
-            filters.entrySet().forEach(entry -> entry.getValue().requestFilter(request));
+            filters.forEach((key, value) -> value.requestFilter(request));
             logger.debug("filter结束");
         } catch (Throwable e) {
             logger.error("请求filter过程中发生了异常");
@@ -138,7 +138,7 @@ public class FilterContainer extends AbstractContainer<NioFilter> {
             FilterException {
         try {
             logger.debug("开始响应filter");
-            filters.entrySet().forEach(entry -> entry.getValue().responseFilter(request, response));
+            filters.forEach((key, value) -> value.responseFilter(request, response));
             logger.debug("响应filter结束");
         } catch (Throwable e) {
             logger.error("响应filter过程中发生了异常");

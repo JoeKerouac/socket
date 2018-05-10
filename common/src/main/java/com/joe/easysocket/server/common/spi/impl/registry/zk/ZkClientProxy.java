@@ -414,9 +414,7 @@ class ZkClientProxy implements ZKClient {
                 String newRoot = path.endsWith("/") ? path : path + "/";
 
                 if (!childs.isEmpty()) {
-                    all.addAll(childs.parallelStream().map(child -> {
-                        return newRoot + child;
-                    }).collect(Collectors.toList()));
+                    all.addAll(childs.parallelStream().map(child -> newRoot + child).collect(Collectors.toList()));
 
                     all.addAll(getAll(newRoot, childs));
                 }

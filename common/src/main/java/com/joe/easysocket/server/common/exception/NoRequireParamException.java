@@ -16,14 +16,13 @@ public class NoRequireParamException extends SystemException {
     }
 
     private static String convert(String... args){
-        String arg = "缺少必要的参数：";
+        StringBuilder arg = new StringBuilder("缺少必要的参数：");
         for (String str : args) {
             if(str == null){
                 continue;
             }
-            arg += str + "、";
+            arg.append(str).append("、");
         }
-        arg = arg.substring(0 , arg.length() - 1);
-        return arg;
+        return arg.toString().substring(0, arg.length() - 1);
     }
 }

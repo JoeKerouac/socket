@@ -15,7 +15,7 @@ import java.util.TreeMap;
 @Data
 public class BaseDTO<T> implements Serializable {
 	private static final long serialVersionUID = 5075924626508128661L;
-	private static final Map<String, String> msg = new TreeMap<String, String>();
+	private static final Map<String, String> msg = new TreeMap<>();
 	static {
 		// 成功
 		msg.put("200", "Success");
@@ -103,7 +103,7 @@ public class BaseDTO<T> implements Serializable {
 	 * @return 成功DTO
 	 */
 	public static <T> BaseDTO<T> buildSuccess() {
-		return new BaseDTO<T>();
+		return new BaseDTO<>();
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class BaseDTO<T> implements Serializable {
 	 * @return 包含指定结果的DTO
 	 */
 	public static <T> BaseDTO<T> build(T t) {
-		BaseDTO<T> dto = new BaseDTO<T>();
+		BaseDTO<T> dto = new BaseDTO<>();
 		dto.setData(t);
 		return dto;
 	}
@@ -125,7 +125,7 @@ public class BaseDTO<T> implements Serializable {
 	 * @return 系统错误DTO
 	 */
 	public static <T> BaseDTO<T> buildError() {
-		BaseDTO<T> dto = new BaseDTO<T>();
+		BaseDTO<T> dto = new BaseDTO<>();
 		dto.systemError();
 		return dto;
 	}
@@ -138,7 +138,7 @@ public class BaseDTO<T> implements Serializable {
 	 * @return 错误DTO
 	 */
 	public static <T> BaseDTO<T> buildError(String status) {
-		return new BaseDTO<T>(status);
+		return new BaseDTO<>(status);
 	}
 
 	/**
@@ -151,6 +151,6 @@ public class BaseDTO<T> implements Serializable {
 	 * @return 错误消息
 	 */
 	public static <T> BaseDTO<T> buildError(String status, String message) {
-		return new BaseDTO<T>(status, message);
+		return new BaseDTO<>(status, message);
 	}
 }

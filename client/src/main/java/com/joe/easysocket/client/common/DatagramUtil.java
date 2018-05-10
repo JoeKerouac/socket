@@ -8,6 +8,7 @@ import com.joe.easysocket.client.exception.SystemException;
 import com.joe.easysocket.client.ext.Logger;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -57,7 +58,7 @@ public class DatagramUtil {
             logger.debug("要构建一个空的数据报");
         }
 
-        logger.debug("要发送的数据为：" + body);
+        logger.debug("要发送的数据为：" + Arrays.toString(body));
         if (dataLen > MAX_LENGTH) {
             // 数据报超出最大值
             logger.error("数据报数据长度超过最大值：" + MAX_LENGTH);
@@ -106,7 +107,7 @@ public class DatagramUtil {
      */
     public Datagram decode(final byte[] data) throws IllegalRequestException {
         try {
-            logger.debug("要解析的数据为：" + data);
+            logger.debug("要解析的数据为：" + Arrays.toString(data));
             // 字符集数据
             ByteArray charsetData = new ByteArray(10);
             for (int i = 6; i < 16; i++) {

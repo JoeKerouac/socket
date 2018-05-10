@@ -138,7 +138,7 @@ public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor
      * @return 解析后的字符串
      */
     private String convert(byte[] data, String charset) {
-        String dataStr = null;
+        String dataStr;
         if (data == null) {
             logger.debug("data为null");
             return null;

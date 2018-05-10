@@ -12,9 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * redis pub/sub模型
@@ -27,15 +28,15 @@ public class RedisPublishCenter implements PublishCenter {
     /**
      * listener与topic的映射，用于根据listener查找topic
      */
-    private Map<CustomMessageListener<?>, List<String>> listenerStringMap;
+    private final Map<CustomMessageListener<?>, List<String>> listenerStringMap;
     /**
      * listener与ID的映射
      */
-    private Map<ID, Integer> listenerId;
+    private final Map<ID, Integer> listenerId;
     /**
      * topic与listener的映射，用于根据topic查找listener
      */
-    private Map<String, List<CustomMessageListener<?>>> listenerMap;
+    private final Map<String, List<CustomMessageListener<?>>> listenerMap;
 
     /**
      * 利用完整配置构建发布中心
@@ -44,6 +45,9 @@ public class RedisPublishCenter implements PublishCenter {
      */
     public RedisPublishCenter(RedisBaseConfig config) {
         this.clusterManager = RedisClusterManagerFactory.getInstance(config);
+        this.listenerStringMap = new ConcurrentHashMap<>();
+        this.listenerMap = new ConcurrentHashMap<>();
+        this.listenerId = new ConcurrentHashMap<>();
     }
 
     /**
@@ -53,7 +57,7 @@ public class RedisPublishCenter implements PublishCenter {
      * @param port 端口
      */
     public RedisPublishCenter(String host, int port) {
-        this.clusterManager = RedisClusterManagerFactory.getInstance(host, port);
+        this(RedisClusterManagerFactory.buildRedisConfig(host, port, null));
     }
 
     @Override
@@ -71,25 +75,16 @@ public class RedisPublishCenter implements PublishCenter {
             log.warn("listener不能为空");
             throw new IllegalArgumentException("[RedisPublishCenter.register]listener不能为空");
         }
-        synchronized (listenerStringMap) {
-            if (listenerStringMap.containsKey(listener)) {
-                listenerStringMap.get(listener).add(channel);
-            } else {
-                List<String> list = new ArrayList<>();
-                list.add(channel);
-                listenerStringMap.put(listener, list);
-            }
-        }
 
-        synchronized (listenerMap) {
-            if (listenerMap.containsKey(channel)) {
-                listenerMap.get(channel).add(listener);
-            } else {
-                List<CustomMessageListener<?>> list = new ArrayList<>();
-                list.add(listener);
-                listenerMap.put(channel, list);
-            }
+        if (!listenerStringMap.containsKey(listener)) {
+            listenerStringMap.putIfAbsent(listener, new CopyOnWriteArrayList<>());
         }
+        listenerStringMap.get(listener).add(channel);
+
+        if (!listenerMap.containsKey(channel)) {
+            listenerMap.putIfAbsent(channel, new CopyOnWriteArrayList<>());
+        }
+        listenerMap.get(channel).add(listener);
 
         clusterManager.<T>getTopic(channel).addListener((s, t) -> listener.onMessage(channel.getBytes(), t));
     }
@@ -100,11 +95,10 @@ public class RedisPublishCenter implements PublishCenter {
             log.warn("listener不能为空");
             throw new IllegalArgumentException("[RedisPublishCenter.unregister]listener不能为空");
         }
-        synchronized (listenerStringMap) {
-            List<String> channels = listenerStringMap.get(listener);
-            if (channels != null && !channels.isEmpty()) {
-                channels.forEach(channel -> unregister(channel, listener));
-            }
+
+        List<String> channels = listenerStringMap.get(listener);
+        if (channels != null && !channels.isEmpty()) {
+            channels.forEach(channel -> unregister(channel, listener));
         }
     }
 
@@ -116,18 +110,16 @@ public class RedisPublishCenter implements PublishCenter {
             unregister(channel);
         }
 
-        synchronized (listenerMap) {
-            List<CustomMessageListener<?>> listeners = listenerMap.get(channel);
-            if (listeners != null) {
-                listeners.remove(listener);
-            }
+        List<CustomMessageListener<?>> listeners = listenerMap.get(channel);
+        if (listeners != null) {
+            listeners.remove(listener);
         }
-        synchronized (listenerStringMap) {
-            List<String> channels = listenerStringMap.get(listener);
-            if (channels != null) {
-                channels.remove(channel);
-            }
+
+        List<String> channels = listenerStringMap.get(listener);
+        if (channels != null) {
+            channels.remove(channel);
         }
+
         Integer id = listenerId.remove(new ID(channel, listener));
         if (id != null) {
             clusterManager.<T>getTopic(channel).removeListener(id);
@@ -140,11 +132,10 @@ public class RedisPublishCenter implements PublishCenter {
             log.warn("channel不能为空");
             throw new IllegalArgumentException("[RedisPublishCenter.unregister]channel不能为空");
         }
-        synchronized (listenerMap) {
-            List<CustomMessageListener<?>> listeners = listenerMap.get(channel);
-            if (listeners != null && !listeners.isEmpty()) {
-                listeners.forEach(listener -> unregister(channel, listener));
-            }
+
+        List<CustomMessageListener<?>> listeners = listenerMap.get(channel);
+        if (listeners != null && !listeners.isEmpty()) {
+            listeners.forEach(listener -> unregister(channel, listener));
         }
     }
 
@@ -160,7 +151,7 @@ public class RedisPublishCenter implements PublishCenter {
 
     @Override
     public void shutdown() throws SystemException {
-
+        listenerMap.values().forEach(listeners -> listeners.forEach(this::unregister));
     }
 
     @Data
