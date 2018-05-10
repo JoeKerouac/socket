@@ -53,12 +53,12 @@ public abstract class MessageListener implements EventListenerAdapter {
      *
      * @param data 收到的数据
      */
-    abstract void receive(InterfaceData data);
+    public abstract void receive(InterfaceData data);
 
     /**
      * 数据报解析器
      *
      * @return 解析器
      */
-    abstract Serializer getSerializer();
+    public abstract Serializer getSerializer();
 }
