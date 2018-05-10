@@ -152,6 +152,10 @@ public class RedisPublishCenter implements PublishCenter {
     @Override
     public void shutdown() throws SystemException {
         listenerMap.values().forEach(listeners -> listeners.forEach(this::unregister));
+        listenerMap.clear();
+        listenerId.clear();
+        listenerStringMap.clear();
+        clusterManager.shutdown();
     }
 
     @Data
