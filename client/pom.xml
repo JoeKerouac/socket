@@ -22,12 +22,11 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- 常用工具类，测试使用，使用其中的JSON解析器 -->
+        <!-- 常用工具类 -->
         <dependency>
             <groupId>com.github.935237604</groupId>
             <artifactId>utils</artifactId>
             <version>${utils.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
