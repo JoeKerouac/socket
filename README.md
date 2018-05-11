@@ -6,7 +6,132 @@
 - [client](https://github.com/935237604/socket/tree/master/client "client")：client项目为客户端参考实现，用于测试使用，不建议直接用于生产环境。
 - [socket-test](https://github.com/935237604/socket/tree/master/socket-test "socket-test")：socket-test项目使用balance项目和backserver项目实现了一个简易的socket服务器，用于给用户提供使用参考。
 
+# Getting Started
+## Server端
+### Server端组件和简单逻辑
+server端包含backserver和balance两个组件，其中balance负责管理客户端的socket连接和数据报的解析，解析后的数据报会交给backserver来处理。
+### 构建自己的项目
+添加maven依赖如下：
+```
+<dependencies>
+    <dependency>
+        <groupId>com.github.JoeKerouac</groupId>
+        <artifactId>socket-backserver</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.github.JoeKerouac</groupId>
+        <artifactId>socket-balance</artifactId>
+        <version>1.0</version>
+    </dependency>
+</dependencies>
+```
+
+首先要启动一个backserver，用于处理用户发来的数据，然后要启动一个balance，用于处理socket连接和对实际数据处理器backserver的负载均衡，示例代码如下：
+```
+import com.joe.easysocket.server.backserver.BackServer;
+import com.joe.easysocket.server.backserver.Config;
+import com.joe.easysocket.server.balance.Balance;
+import com.joe.easysocket.server.balance.BalanceImpl;
+import com.joe.easysocket.server.common.config.ClusterConfig;
+import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.Registry;
+import com.joe.easysocket.server.common.spi.impl.publish.local.LocalPublishCenter;
+import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
+
+/**
+ * @author joe
+ */
+public class Test {
+    static String host = "192.168.2.71";
+    static PublishCenter publishCenter = new LocalPublishCenter();
+    static Registry registry = new LocalRegistry();
+
+    public static void main(String[] args) throws Exception {
+        new Thread(Test::startBackserver , "backserver").start();
+        new Thread(Test::startBalance , "balance").start();
+    }
+
+    static void startBalance() {
+        try {
+            com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
+                    .clusterConfig(ClusterConfig.builder().publishCenter(publishCenter).registry(registry).build())
+                    .host(host).build();
+
+            Balance balance = new BalanceImpl(config);
+            balance.start(() -> System.out.println("***************服务器关闭了***************"));
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    static void startBackserver() {
+        try {
+            Config config = Config.builder().clusterConfig(ClusterConfig.builder().registry(registry).publishCenter
+                    (publishCenter).build()).host(host).name("后端" +
+                    System.currentTimeMillis()).build();
+            BackServer backServer = BackServer.build(config);
+            backServer.start(() -> System.out.println("系统关闭了"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+```
+这样一个简单的服务器就启动成功了，但是该服务器不能提供服务，因为该服务器还没有实际处理逻辑，下面加一个简单的处理逻辑：
+```
+import com.joe.easysocket.server.backserver.mvc.context.Session;
+import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
+import com.joe.easysocket.server.backserver.mvc.impl.param.GeneralParam;
+import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
+import com.joe.easysocket.server.common.protocol.ChannelProxy;
+import com.joe.utils.concurrent.ThreadUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * @author joe
+ */
+@Path("user")
+public class UserController {
+    AtomicInteger count = new AtomicInteger(0);
+
+    @Path("login")
+    public void login(@GeneralParam("account") String account, @GeneralParam("password") String password, @Context
+            Session session) {
+        System.out.println("\n\n\n\n\n\n\n\n账号是：" + account + "，密码是：" + password + "\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        Map<String, String> map = new HashMap<>();
+        map.put("account", account);
+        map.put("password", password);
+        System.out.println("\n\n\n\n\n\n\nsession is " + session + "\n\n\n\n\n\n\n");
+        session.setAttribute("user", map);
+        ChannelProxy channel = session.getChannel();
+        new Thread(() -> {
+            ThreadUtil.sleep(5);
+            channel.write("测试一下", "你好啊，这是一条主动发往客户端的消息");
+        }).start();
+    }
+
+    @Path("print")
+    public void print(@Context Session session) {
+        System.out.println("session中用户是:" + session.getAttribute("user"));
+    }
+}
+```
+这样就有了简单的逻辑处理，需要注意的是上面的UserController必须放到com开头的包下，例如com.UserController，而不能是org.UserController，因为这里没有配置BeanContainer，使用了默认的BeanContainer，默认会扫描com包下的内容。
+
+有了服务端后还需要有客户端来请求，客户端编写参照[客户端](client/README.md)
+
+[下一步](catalog.md)，让我们来完整的开始学习吧！
+
+PS：（本示例代码在[test](socket-test)项目中）
+
 # 联系我
 QQ：1213812243
 
 微信：qiao1213812243
+
+添加请注明来源github
