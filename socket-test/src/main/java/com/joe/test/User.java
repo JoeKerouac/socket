@@ -36,12 +36,6 @@ public class User {
 
     @Path("print")
     public void print(@Context Session session) {
-        int i = count.getAndAdd(1);
-        if ((i < 90000) && i % 1000 == 0) {
-            System.out.println("当前是：" + i + ";时间是：" + System.currentTimeMillis());
-        } else if (i > 90000) {
-            System.out.println("当前是：" + i + ";时间是：" + System.currentTimeMillis());
-        }
-//        System.out.println("session中用户是:" + session.getAttribute("user"));
+        System.out.println("session中用户是:" + session.getAttribute("user"));
     }
 }
