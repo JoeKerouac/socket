@@ -1,4 +1,4 @@
-package com.joe.test.easysocket.client;
+package com.joe.easysocket.client;
 
 import com.joe.easysocket.client.Client;
 import com.joe.easysocket.client.core.EventListener;
@@ -6,6 +6,7 @@ import com.joe.easysocket.client.data.InterfaceData;
 import com.joe.easysocket.client.ext.Logger;
 import com.joe.easysocket.client.ext.MessageListener;
 import com.joe.easysocket.client.ext.Serializer;
+import com.joe.utils.concurrent.ThreadUtil;
 import com.joe.utils.parse.json.JsonObject;
 import com.joe.utils.parse.json.JsonParser;
 
@@ -95,12 +96,15 @@ public class ClientTest {
         client.register(listener);
         client.start();
         JsonObject object = new JsonObject().data("account", 123).data("password", "345");
+
+        //调用登录方法
         client.write("user/login", object.toJson());
 
-//        ThreadUtil.sleep(15);
-//        for (int i = 0; i < 3; i++) {
-//            Thread.sleep(3000);
-//            client.write("user/print", null);
-//        }
+        //调用服务端的打印方法
+        ThreadUtil.sleep(15);
+        for (int i = 0; i < 3; i++) {
+            Thread.sleep(3000);
+            client.write("user/print", null);
+        }
     }
 }
