@@ -3,6 +3,19 @@
 
 # Getting Started
 客户端相比服务端简单许多，只需要如下代码就可以完成对服务端示例的请求：
+
+首先添加maven依赖
+```
+<dependencies>
+    <dependency>
+        <groupId>com.github.JoeKerouac</groupId>
+        <artifactId>socket-client</artifactId>
+        <version>1.0</version>
+    </dependency>
+</dependencies>
+```
+然后编写代码
+
 ```
 import com.joe.easysocket.client.Client;
 import com.joe.easysocket.client.core.EventListener;
