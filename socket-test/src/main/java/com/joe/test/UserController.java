@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author joe
  */
 @Path("user")
-public class User {
+public class UserController {
     AtomicInteger count = new AtomicInteger(0);
 
     @Path("login")
