@@ -33,20 +33,12 @@ import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
 import com.joe.easysocket.server.backserver.mvc.impl.param.GeneralParam;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
-import com.joe.easysocket.server.common.protocol.ChannelProxy;
-import com.joe.utils.concurrent.ThreadUtil;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author joe
  */
 @Path("user")
 public class UserController {
-    AtomicInteger count = new AtomicInteger(0);
-
     @Path("login")
     public void login(@GeneralParam("account") String account, @GeneralParam("password") String password, @Context
             Session session) {
