@@ -13,7 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * 默认的发布中心（单机版，无法实现分布式，同时本实现可能会有BUG，仅为测试使用，线上使用请自行实现发布中心！！！）
+ * 默认的发布中心（单机版，无法实现分布式，同时本实现可能会有BUG，仅为测试使用，线上使用请自行实现发布中心，如果
+ *使用redis可以使用{@link com.joe.easysocket.server.common.spi.impl.publish.redis.RedisPublishCenter RedisPublishCenter}）
  *
  * @author joe
  */
