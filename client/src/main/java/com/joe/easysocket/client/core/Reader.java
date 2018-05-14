@@ -106,8 +106,7 @@ public class Reader extends Worker {
             //重置会写指针
             buffer.position(writePoint);
             //开始从socket读取
-            int readLen = channel.read(buffer);
-            if ((writePoint += readLen) == -1) {
+            if ((writePoint += channel.read(buffer)) == -1) {
                 logger.error("socket输入流被关闭，读取结束");
                 shutdown();
             }

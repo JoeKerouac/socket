@@ -216,20 +216,22 @@ public class MvcControllerImpl implements MvcController {
      */
     private <R extends RequestContext> InterfaceData accept(byte[] body, R r) {
         logger.debug("接收到数据，开始处理。[{}]", body);
-        HttpResponseContext responseContext = null;
+        HttpResponseContext responseContext;
         InterfaceData resultData;
         InterfaceData message = null;
         HttpRequestContext requestContext = (HttpRequestContext) r;
+
+        if (body == null || body.length == 0) {
+            //请求必须有请求体，否则最基本的invoke信息都没有
+            logger.warn("该请求没有请求体，请求内容为null");
+            return null;
+        }
+        // 构建响应上下文，必须在此处初始化，否则当发生异常的时候异常中获取到的responseContext是空，无法获取到信息
+        responseContext = new HttpResponseContext();
+        // MVC数据处理器只有这一种请求data，直接读取
+        logger.debug("开始解析请求数据");
+
         try {
-            if (body == null || body.length == 0) {
-                //请求必须有请求体，否则最基本的invoke信息都没有
-                logger.warn("该请求没有请求体，请求内容为null");
-                return null;
-            }
-            // 构建响应上下文，必须在此处初始化，否则当发生异常的时候异常中获取到的responseContext是空，无法获取到信息
-            responseContext = new HttpResponseContext();
-            // MVC数据处理器只有这一种请求data，直接读取
-            logger.debug("开始解析请求数据");
             message = parser.readAsObject(body, InterfaceData.class);
             if (message == null) {
                 String msg = Arrays.toString(body);
