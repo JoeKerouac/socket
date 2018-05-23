@@ -1,6 +1,6 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context;
 
-import com.joe.easysocket.server.backserver.mvc.coder.ReaderInterceptor;
+import com.joe.easysocket.server.backserver.mvc.coder.DataReader;
 import com.joe.easysocket.server.backserver.mvc.context.RequestContext;
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Resource;
@@ -40,7 +40,7 @@ public class HttpRequestContext implements RequestContext{
     //本次请求编码
     private final String charset;
     // 数据编码器
-    private ReaderInterceptor reader;
+    private DataReader reader;
     //前端接收数据的topic
     private String topic;
 

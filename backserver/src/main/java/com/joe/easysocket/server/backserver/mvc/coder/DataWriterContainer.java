@@ -9,7 +9,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer
  *
  * @author joe
  */
-public class DataWriterContainer extends AbstractContainer<WriterInterceptor> {
+public class DataWriterContainer extends AbstractContainer<DataWriter> {
     public DataWriterContainer(BeanContainer beanContainer) {
         super(beanContainer);
     }

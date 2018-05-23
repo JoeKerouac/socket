@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author joe
  */
-public class DataReaderContainer extends AbstractContainer<ReaderInterceptor> {
+public class DataReaderContainer extends AbstractContainer<DataReader> {
     private ParamParserContainer paramParserContainer;
 
     public DataReaderContainer(BeanContainer beanContainer, ParamParserContainer paramParserContainer) {
@@ -21,7 +21,7 @@ public class DataReaderContainer extends AbstractContainer<ReaderInterceptor> {
     }
 
     @Override
-    public void initBean(List<ReaderInterceptor> beans) {
+    public void initBean(List<DataReader> beans) {
         beans.forEach(bean -> bean.init(paramParserContainer));
     }
 }

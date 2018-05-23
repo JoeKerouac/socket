@@ -9,7 +9,7 @@ import com.joe.easysocket.server.backserver.mvc.Bean;
  *
  * @author joe
  */
-public interface WriterInterceptor extends Bean {
+public interface DataWriter extends Bean {
     /**
      * 是否可写
      *

@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver.mvc.impl.coder.json;
 
-import com.joe.easysocket.server.backserver.mvc.coder.ReaderInterceptor;
-import com.joe.easysocket.server.backserver.mvc.coder.WriterInterceptor;
+import com.joe.easysocket.server.backserver.mvc.coder.DataReader;
+import com.joe.easysocket.server.backserver.mvc.coder.DataWriter;
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
@@ -24,8 +24,8 @@ import java.util.Map;
  * @author joe
  */
 @Provider
-public class JsonDataInterceptor implements ReaderInterceptor, WriterInterceptor {
-    private static final Logger logger = LoggerFactory.getLogger(JsonDataInterceptor.class);
+public class JsonDataRW implements DataReader, DataWriter {
+    private static final Logger logger = LoggerFactory.getLogger(JsonDataRW.class);
     private static final JsonParser parser = JsonParser.getInstance();
     private ParamParserContainer paramParserContainer;
 

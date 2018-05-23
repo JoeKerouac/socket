@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author joe
  */
-public interface ReaderInterceptor extends Bean {
+public interface DataReader extends Bean {
     /**
      * 是否可读
      *
