@@ -60,7 +60,7 @@ public class BaseDTO<T> implements Serializable {
 	}
 
 	public BaseDTO(String status) {
-		this.setStatus(status);
+		this.status(status);
 	}
 
 	/**
@@ -83,18 +83,16 @@ public class BaseDTO<T> implements Serializable {
 
 	/**
 	 * 系统错误，未知原因（异常）
-	 * 
-	 * @param status
 	 */
 	public void systemError() {
-		this.setStatus("500");
+		this.status("500");
 	}
 
 	/**
 	 * 请求成功
 	 */
 	public void success() {
-		setStatus("200");
+		status("200");
 	}
 
 	/**
