@@ -185,7 +185,7 @@ public class Reader extends Worker {
         if (writeable <= threshold) {
             if (grow) {
                 //扩容四分之一后直接返回
-                buffer = CollectionUtil.grow(buffer, readPoint, writePoint - readPoint, threshold << 1);
+                buffer = CollectionUtil.grow(buffer, readPoint, writePoint - readPoint, bufferSize >> 2);
                 bufferSize = buffer.capacity();
                 writeable = buffer.capacity() - writePoint;
                 threshold = bufferSize >> 3;
