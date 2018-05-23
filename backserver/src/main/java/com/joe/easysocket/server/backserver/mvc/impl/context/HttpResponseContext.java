@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class HttpResponseContext implements ResponseContext{
     // 响应对象
-    private Response response = null;
+    private Response response;
     // 响应数据编码器
     private WriterInterceptor writer;
 
