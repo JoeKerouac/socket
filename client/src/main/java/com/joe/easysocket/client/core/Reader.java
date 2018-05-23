@@ -178,7 +178,7 @@ public class Reader extends Worker {
      * @param grow 扩容参数，如果发现需要扩容，当该参数为true时会直接扩容，当该参数为false时会先整理内存
      */
     private void checkGrow(boolean grow) {
-        //扩容阀值
+        //扩容阀值，1/8
         int threshold = bufferSize >> 3;
         int writeable = buffer.capacity() - writePoint;
         //判断可写空间是否到达扩容阀值
