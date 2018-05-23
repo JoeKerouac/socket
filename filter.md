@@ -1,5 +1,5 @@
 # filter使用
-后台[backserver](backserver)内置的[MvcDataworker](backserver/src/main/java/com/joe/easysocket/server/backserver/impl/MvcDataworker)支持filter操作（就像SpringMVC中一样，不过支持没有SpringMVC的强大），使用时只需要继承com.joe.easysocket.server.backserver.mvc.impl.filter.NioRequestFilter或者com.joe.easysocket.server.backserver.mvc.impl.filter.NioResponseFilter或者com.joe.easysocket.server.backserver.mvc.impl.filter.NioFilter，然后在类上添加com.joe.easysocket.server.backserver.mvc.container.Provider注解即可。
+后台[backserver](backserver)内置的[MvcDataworker](backserver/src/main/java/com/joe/easysocket/server/backserver/impl/MvcDataworker)支持filter操作（就像SpringMVC中一样，不过支持没有SpringMVC的强大），使用时只需要继承NioRequestFilter或者NioResponseFilter或者NioFilter，然后在类上添加Provider注解即可。
 
 RequestFilter示例：
 ```
