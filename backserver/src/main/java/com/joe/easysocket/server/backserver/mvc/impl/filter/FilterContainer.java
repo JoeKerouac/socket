@@ -8,6 +8,7 @@ import com.joe.easysocket.server.backserver.mvc.container.Selector;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.FilterException;
+import com.joe.easysocket.server.backserver.mvc.impl.exception.ResponseFilterException;
 import com.joe.utils.scan.ScannerException;
 
 import java.util.Collections;
@@ -142,7 +143,7 @@ public class FilterContainer extends AbstractContainer<NioFilter> {
             logger.debug("响应filter结束");
         } catch (Throwable e) {
             logger.error("响应filter过程中发生了异常");
-            throw new FilterException(e);
+            throw new ResponseFilterException(e);
         }
     }
 }

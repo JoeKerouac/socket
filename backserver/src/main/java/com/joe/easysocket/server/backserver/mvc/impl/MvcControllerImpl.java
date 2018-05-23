@@ -293,6 +293,10 @@ public class MvcControllerImpl implements MvcController {
             logger.error("参数验证失败", e);
             resultData = buildResult(BaseDTO.buildError("505"), message.getId(), message
                     .getInvoke(), resolveDataInterceptor(requestContext, responseContext));
+        } catch (FilterException e) {
+            logger.error("filter异常");
+            resultData = buildResult(BaseDTO.buildError(), message.getId(), message
+                    .getInvoke(), resolveDataInterceptor(requestContext, responseContext));
         } catch (Throwable e) {
             // 请求过程中发生了异常
             logger.error("请求过程中发生了异常，开始查找相应的异常处理器处理异常", e);
