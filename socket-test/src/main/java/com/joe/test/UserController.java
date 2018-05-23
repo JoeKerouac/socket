@@ -19,7 +19,7 @@ public class UserController {
     AtomicInteger count = new AtomicInteger(0);
 
     @Path("login")
-    public void login(@GeneralParam("account") String account, @GeneralParam("password") String password, @Context
+    public String login(@GeneralParam("account") String account, @GeneralParam("password") String password, @Context
             Session session) {
         System.out.println("\n\n\n\n\n\n\n\n账号是：" + account + "，密码是：" + password + "\n\n\n\n\n\n\n\n\n\n\n\n\n");
         Map<String, String> map = new HashMap<>();
@@ -32,6 +32,7 @@ public class UserController {
             ThreadUtil.sleep(5);
             channel.write("测试一下", "你好啊，这是一条主动发往客户端的消息");
         }).start();
+        return "success";
     }
 
     @Path("print")
