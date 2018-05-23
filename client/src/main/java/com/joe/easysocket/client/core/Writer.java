@@ -47,7 +47,7 @@ public class Writer extends Worker {
             } catch (IOException e) {
                 logger.debug("发送器输出流发生异常，中断工作" + e);
             } catch (InterruptedException e) {
-                logger.debug("发送器被外部中断，停止工作");
+                logger.debug("队列数据添加失败");
             } finally {
                 if (!isShutdown()) {
                     shutdown();

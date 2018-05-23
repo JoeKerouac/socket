@@ -84,8 +84,6 @@ public class Reader extends Worker {
                 read();
             } catch (IOException e) {
                 logger.debug("读取器输入流读取发生异常，中断工作" + e);
-            } catch (InterruptedException e) {
-                logger.debug("读取器被外部中断，停止工作");
             } finally {
                 if (!isShutdown()) {
                     shutdown();
@@ -101,7 +99,7 @@ public class Reader extends Worker {
      *
      * @throws IOException
      */
-    private void read() throws IOException, InterruptedException {
+    private void read() throws IOException {
         while (!isShutdown()) {
             //重置会写指针
             buffer.position(writePoint);

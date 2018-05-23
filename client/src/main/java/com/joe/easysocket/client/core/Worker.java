@@ -42,7 +42,6 @@ public abstract class Worker {
         logger.debug("读取/发送 线程关闭");
         //必须先将shutdown置为true，work线程的正常中断依赖于该变量
         shutdown = true;
-        worker.interrupt();
         callback.exec();
         return true;
     }
