@@ -17,7 +17,9 @@ import java.nio.charset.Charset;
  */
 public class DatagramUtil {
     private static final Logger logger = LoggerFactory.getLogger(DatagramUtil.class);
-    // 数据报数据除去请求头的最大长度
+    /**
+     * 数据报数据除去请求头的最大长度
+     */
     private static final int MAX_LENGTH = Datagram.MAX_LENGTH - Datagram.HEADER;
 
     /**

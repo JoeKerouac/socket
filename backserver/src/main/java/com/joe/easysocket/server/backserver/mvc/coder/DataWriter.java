@@ -14,8 +14,7 @@ public interface DataWriter extends Bean {
      * 是否可写
      *
      * @param contentType 接口返回的数据格式
-     * @return <li>true：可写</li>
-     * <li>false：不可写</li>
+     * @return true：可写；false：不可写
      */
     boolean isWriteable(String contentType);
 

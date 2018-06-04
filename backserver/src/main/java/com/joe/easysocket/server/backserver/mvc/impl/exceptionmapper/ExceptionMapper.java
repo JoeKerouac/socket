@@ -14,8 +14,7 @@ public interface ExceptionMapper extends Bean {
      * 该处理器是否能处理
      *
      * @param e 异常原因
-     * @return <li>true：能处理</li>
-     * <li>false：不能处理</li>
+     * @return true：能处理;false：不能处理
      */
     boolean mapper(Throwable e);
 

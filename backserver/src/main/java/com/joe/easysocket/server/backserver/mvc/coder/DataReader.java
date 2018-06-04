@@ -20,8 +20,7 @@ public interface DataReader extends Bean {
      * 是否可读
      *
      * @param contentType 接口的参数格式
-     * @return <li>true：可读</li>
-     * <li>false：不可读</li>
+     * @return true：可读;false：不可读
      */
     boolean isReadable(String contentType);
 

@@ -17,8 +17,7 @@ public interface ParamInterceptor extends Bean {
      *
      * @param param 参数说明
      * @param data  参数数据
-     * @return <li>true：可读</li>
-     * <li>false：不可读</li>
+     * @return true：可读;false：不可读
      */
     boolean isReadable(Param param, String data);
 

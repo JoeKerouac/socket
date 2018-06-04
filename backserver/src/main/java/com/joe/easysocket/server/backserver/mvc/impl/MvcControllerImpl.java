@@ -9,7 +9,6 @@ import com.joe.easysocket.server.backserver.mvc.coder.DataWriterContainer;
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.backserver.mvc.context.RequestContext;
 import com.joe.easysocket.server.backserver.mvc.context.SessionManager;
-import com.joe.easysocket.server.backserver.mvc.data.BaseDTO;
 import com.joe.easysocket.server.backserver.mvc.data.InterfaceData;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
@@ -22,6 +21,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.resource.Resource;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.ResourceContainer;
 import com.joe.easysocket.server.common.data.Datagram;
 import com.joe.utils.common.StringUtils;
+import com.joe.utils.data.BaseDTO;
 import com.joe.utils.parse.json.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -491,5 +491,24 @@ public class MvcControllerImpl implements MvcController {
      */
     private boolean worker(int type) {
         return type == 1;
+    }
+
+    static {
+        // 参数错误
+        BaseDTO.addStatus("400", "Fail Param");
+        // 找不到参数解析器
+        BaseDTO.addStatus("505", "Data Parser Not Found");
+        // 找不到指定资源
+        BaseDTO.addStatus("404", "NotFoundResource");
+        // 数据非法
+        BaseDTO.addStatus("501", "DataError");
+        // 已经有其他用户登录
+        BaseDTO.addStatus("502", "Other User Login");
+        // 密码修改，请重新登录
+        BaseDTO.addStatus("503", "Password Has Changed");
+        // 心跳超时
+        BaseDTO.addStatus("504", "Timeout");
+        // 参数验证失败
+        BaseDTO.addStatus("505", "validation fail");
     }
 }

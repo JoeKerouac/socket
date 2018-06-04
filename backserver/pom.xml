@@ -7,17 +7,119 @@
     <groupId>com.github.JoeKerouac</groupId>
     <artifactId>socket-backserver</artifactId>
     <version>1.0</version>
+    <description>socket框架，方便快速开发socket服务端和客户端</description>
+    <url>https://github.com/JoeKerouac/socket</url>
 
-    <properties>
-        <netty.version>4.1.5.Final</netty.version>
-        <lombok.version>1.16.18</lombok.version>
-        <utils.version>1.8</utils.version>
-        <logback.version>1.2.3</logback.version>
-        <validator.version>6.0.2.Final</validator.version>
-        <el.version>3.0.1-b08</el.version>
-        <curator.version>4.0.0</curator.version>
-        <common.version>1.0</common.version>
-    </properties>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git@github.com:JoeKerouac/socket.git</connection>
+        <developerConnection>scm:git@github.com:JoeKerouac/socket.git</developerConnection>
+        <url>https://github.com/JoeKerouac/socket</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>joe</name>
+            <email>1213812243@qq.com</email>
+        </developer>
+    </developers>
+
+    <profiles>
+        <profile>
+            <!--打包源码和javadoc-->
+            <id>javadoc</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven-source-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>local</id>
+            <distributionManagement>
+                <repository>
+                    <id>wggyl</id>
+                    <url>http://192.168.2.222:8081/repository/local-maven</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <!-- Gpg Signature -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+    <parent>
+        <groupId>com.joe.easysocket</groupId>
+        <artifactId>socket-parent</artifactId>
+        <version>1.0</version>
+    </parent>
 
 
     <dependencies>
@@ -25,49 +127,42 @@
         <dependency>
             <groupId>com.github.JoeKerouac</groupId>
             <artifactId>socket-common</artifactId>
-            <version>${common.version}</version>
         </dependency>
         <!--zookeeper的客户端-->
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
-            <version>${curator.version}</version>
         </dependency>
         <!--bean验证框架-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>${validator.version}</version>
         </dependency>
         <!--bean验证框架需要，容器中会提供该依赖，但是由于该包提供独立运行的能力，所以需要包含，如果在容器中运行可以删除该依赖-->
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
-            <version>${el.version}</version>
         </dependency>
         <!-- getter setter等方法自动生成依赖 -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- 常用工具类 -->
         <dependency>
-            <groupId>com.github.935237604</groupId>
+            <groupId>com.github.JoeKerouac</groupId>
             <artifactId>utils</artifactId>
-            <version>${utils.version}</version>
         </dependency>
         <!--日志-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -78,9 +173,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF8</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${encode}</encoding>
                 </configuration>
             </plugin>
         </plugins>

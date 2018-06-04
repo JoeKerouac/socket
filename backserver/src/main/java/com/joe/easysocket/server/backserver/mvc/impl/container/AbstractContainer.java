@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * 抽象容器，类必须加上注解{@link Provider}才能被该容器发现
  *
- * @param <T>
+ * @param <T> 容器中存放的bean类型
  * @author joe
  */
 public abstract class AbstractContainer<T extends Bean> implements Container<T> {

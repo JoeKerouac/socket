@@ -2,11 +2,11 @@ package com.joe.easysocket.server.backserver.mvc.impl.context;
 
 import com.joe.easysocket.server.backserver.mvc.coder.DataWriter;
 import com.joe.easysocket.server.backserver.mvc.context.ResponseContext;
-import com.joe.easysocket.server.backserver.mvc.data.BaseDTO;
+import com.joe.utils.data.BaseDTO;
 import lombok.Data;
 
 @Data
-public class HttpResponseContext implements ResponseContext{
+public class HttpResponseContext implements ResponseContext {
     // 响应对象
     private Response response;
     // 响应数据编码器

@@ -25,7 +25,7 @@ public interface Session {
     /**
      * 获取session的ID，该ID应该与session对应的通道ID一致
      *
-     * @return
+     * @return 该session的ID
      */
     String getId();
 
