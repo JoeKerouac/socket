@@ -129,6 +129,9 @@ public class UserController {
 
 PS：（本示例代码在[test](socket-test)项目中）
 
+# Future
+添加后端组件优雅下线功能。
+
 # 联系我
 QQ：1213812243
 
