@@ -126,6 +126,9 @@ public abstract class Balance {
         addCloseListener();
     }
 
+    /**
+     * 关闭前端
+     */
     public void shutdown() {
         shutdownCallback();
         this.started = false;
@@ -143,6 +146,9 @@ public abstract class Balance {
         }));
     }
 
+    /**
+     * 关闭回调函数
+     */
     private void shutdownCallback() {
         try {
             if (callback != null) {
@@ -154,6 +160,11 @@ public abstract class Balance {
         }
     }
 
+    /**
+     * 发送通道关闭广播
+     *
+     * @param channel 关闭的通道
+     */
     protected void pub(String channel) {
         log.debug("通道{}关闭，发送广播", channel);
 

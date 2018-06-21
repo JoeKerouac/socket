@@ -1,10 +1,7 @@
-package com.joe.easysocket.server.balance.protocol;
+package com.joe.easysocket.server.balance.protocol.netty;
 
 import com.joe.easysocket.server.balance.Config;
-import com.joe.easysocket.server.balance.protocol.netty.ConnectorAdapter;
-import com.joe.easysocket.server.balance.protocol.netty.CustomFrameDecoder;
-import com.joe.easysocket.server.balance.protocol.netty.DatagramDecoder;
-import com.joe.easysocket.server.balance.protocol.netty.DatagramEncoder;
+import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.common.exception.SystemException;

@@ -5,7 +5,6 @@ import com.joe.easysocket.server.balance.protocol.CloseCause;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.lambda.Endpoint;
-import com.joe.easysocket.server.common.protocol.PChannel;
 
 
 /**
