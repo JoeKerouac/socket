@@ -5,6 +5,7 @@ import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.common.data.ProtocolData;
+import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.utils.common.StringUtils;
 import com.joe.utils.concurrent.ThreadUtil;
@@ -25,6 +26,8 @@ import java.util.concurrent.ExecutorService;
  */
 @Slf4j
 public abstract class AbstractConnectorManager implements ConnectorManager {
+    // 是否是linux系统
+    protected static boolean LINUX;
     /**
      * 当前所有通道，key为链接的ID，value为通道
      */
@@ -61,6 +64,22 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
      * 协议栈事件中心
      */
     protected EventCenter eventCenter;
+    // 监听端口
+    protected int port;
+    //队列的最大长度
+    protected int backlog;
+    //是否延迟发送
+    protected boolean nodelay;
+
+    static {
+        if (System.getProperty("os.name").contains("Linux")) {
+            log.debug("当前系统是linux");
+            LINUX = true;
+        } else {
+            log.debug("当前系统是windows");
+            LINUX = false;
+        }
+    }
 
     /**
      * ConnectorManager状态
@@ -79,6 +98,9 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             log.warn("当前已经初始化，不能重复初始化，本次将忽略");
             return;
         }
+        this.port = config.getPort() <= 0 ? 10051 : config.getPort();
+        this.backlog = config.getTcpBacklog() <= 0 ? 512 : config.getTcpBacklog();
+        this.nodelay = config.isNodelay();
         if (eventCenter == null || eventCenter == this) {
             log.info("事件中心为空，采用默认事件中心[{}]", DefaultEventCenter.class);
             this.eventCenter = new DefaultEventCenter();
@@ -276,6 +298,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
 
     /**
      * 注册连接
+     *
      * @param channel 要注册的链接
      */
     public void register(@NonNull PChannel channel) {
@@ -305,6 +328,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
         log.debug("接收到底层{}传来的数据，开始处理", src);
         eventCenter.receive(src, data);
         service.submit(() -> {
+            log.debug("获取[{}]对应的链接", src);
             PChannel channel = this.pChannels.get(src);
             if (channel == null) {
                 log.error("接收到来自通道{}的数据{}，但是并未找到对应的通道", src, data);
@@ -312,8 +336,17 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             }
             //只要收到消息就心跳一次
             channel.heartbeat();
-            ProtocolData protocolData = new ProtocolData(data, channel.getPort(), channel.getRemoteHost(), channel.id
-                    (), 0, 0);
+
+            ProtocolData protocolData;
+
+            try {
+                protocolData = new ProtocolData(data, channel.getPort(), channel.getRemoteHost(), channel.id
+                        (), 0, 0);
+            } catch (Throwable error) {
+                log.error("获取远程信息出错" , error);
+                throw new SystemException("获取远程信息出错", error);
+            }
+
             //获取数据报的类型
             byte type = protocolData.getData()[Datagram.TYPE_INDEX];
 

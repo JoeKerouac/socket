@@ -1,6 +1,5 @@
 package com.joe.easysocket.client;
 
-import com.joe.easysocket.client.Client;
 import com.joe.easysocket.client.core.EventListener;
 import com.joe.easysocket.client.data.InterfaceData;
 import com.joe.easysocket.client.ext.Logger;

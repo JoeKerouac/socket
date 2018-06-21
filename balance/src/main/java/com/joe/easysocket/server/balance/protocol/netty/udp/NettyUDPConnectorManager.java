@@ -1,65 +1,35 @@
-package com.joe.easysocket.server.balance.protocol.netty;
+package com.joe.easysocket.server.balance.protocol.netty.udp;
 
-import com.joe.easysocket.server.balance.Config;
 import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
+import com.joe.easysocket.server.balance.protocol.netty.ConnectorAdapter;
+import com.joe.easysocket.server.balance.protocol.netty.CustomFrameDecoder;
+import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPDatagramDecoder;
+import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPDatagramEncoder;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
-import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.common.exception.SystemException;
-import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.DatagramChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * ConnectorManager的netty实现类
- *
  * @author joe
- * @version 2018.01.29 15:31
+ * @version 2018.06.21 16:30
  */
 @Slf4j
-public class NettyTCPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
-    // 是否是linux系统
-    private static boolean linux;
+public class NettyUDPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
     //当前服务器是否运行，只有调用start才会改变状态
     private AtomicBoolean start = new AtomicBoolean(false);
-    // 接受请求的线程组，默认是机器核心的两倍
-    private EventLoopGroup mainGroup;
     // 处理请求的线程组，默认是机器核心的两倍
     private EventLoopGroup workerGroup;
-    // 监听端口
-    private int port;
-    //队列的最大长度
-    private int backlog;
-    //是否延迟发送
-    private boolean nodelay;
-
-    static {
-        if (System.getProperty("os.name").contains("Linux")) {
-            log.debug("当前系统是linux");
-            linux = true;
-        } else {
-            log.debug("当前系统是windows");
-            linux = false;
-        }
-    }
-
-    @Override
-    public void init(Config config, EventCenter eventCenter) {
-        log.debug("初始化NettySocketServer");
-        super.init(config, eventCenter);
-        this.port = config.getPort() <= 0 ? 10051 : config.getPort();
-        this.backlog = config.getTcpBacklog() <= 0 ? 512 : config.getTcpBacklog();
-        this.nodelay = config.isNodelay();
-        log.debug("NettySocketServer初始化完成");
-    }
 
     /**
      * 关闭服务器
@@ -71,8 +41,6 @@ public class NettyTCPConnectorManager extends AbstractConnectorManager implement
         }
         log.warn("服务器开始关闭................");
         log.debug("开始关闭主线程组");
-        mainGroup.shutdownGracefully();
-        mainGroup = null;
 
         log.debug("开始关闭工作线程组");
         workerGroup.shutdownGracefully();
@@ -100,32 +68,29 @@ public class NettyTCPConnectorManager extends AbstractConnectorManager implement
             log.debug("开始初始化客户端连接服务器，初始化端口是：{}；是否延迟发送：{}；等待建立连接的队列长度为：{}", port, nodelay, backlog);
             super.start();
             // 初始化服务端
-            ServerBootstrap bootstrap = new ServerBootstrap();
-            DatagramDecoder datagramDecoder = new DatagramDecoder();
-            DatagramEncoder datagramEncoder = new DatagramEncoder();
+            Bootstrap bootstrap = new Bootstrap();
+            UDPDatagramDecoder datagramDecoder = new UDPDatagramDecoder();
 
-            if (linux) {
+            if (LINUX) {
                 log.debug("当前系统 是 linux系统，采用epoll模型");
-                mainGroup = new EpollEventLoopGroup();
                 workerGroup = new EpollEventLoopGroup();
-                bootstrap.channel(EpollServerSocketChannel.class);
+                bootstrap.channel(EpollDatagramChannel.class);
             } else {
                 log.debug("当前系统 不是 linux系统，采用nio模型");
-                mainGroup = new NioEventLoopGroup();
                 workerGroup = new NioEventLoopGroup();
-                bootstrap.channel(NioServerSocketChannel.class);
+                bootstrap.channel(NioDatagramChannel.class);
             }
 
+
             // 带child**的方法例如childHandler（）都是对应的worker线程组，不带child的对应的boss线程组
-            bootstrap.group(mainGroup, workerGroup).childHandler(new ChannelInitializer<SocketChannel>() {
+            bootstrap.group(workerGroup).handler(new ChannelInitializer<DatagramChannel>() {
                 @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    // 下边的编码解码器顺序不能变，CustomFrameDecoder必须每次都new，其他几个对象不用每次都new但是需要在类上加上@Sharable注解
-                    ch.pipeline().addLast(new CustomFrameDecoder(), datagramDecoder, new ConnectorAdapter
-                            (NettyTCPConnectorManager.this, eventCenter), datagramEncoder);
+                public void initChannel(DatagramChannel ch) throws Exception {
+                    // UDP处理链，顺序不能变
+                    ch.pipeline().addLast(datagramDecoder, new ConnectorAdapter(NettyUDPConnectorManager.this,
+                            eventCenter));
                 }
-            }).option(ChannelOption.SO_BACKLOG, backlog).childOption(ChannelOption
-                    .TCP_NODELAY, nodelay);
+            }).option(ChannelOption.SO_BACKLOG, backlog).option(ChannelOption.TCP_NODELAY, nodelay);
 
             bootstrap.bind(port).sync();
             log.info("监听端口是：{}", port);

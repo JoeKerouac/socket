@@ -4,6 +4,7 @@ import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.protocol.CloseCause;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
+import com.joe.easysocket.server.common.exception.SystemException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -11,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 连接注册、注销管理
+ * 连接注册、注销管理，数据编码后的最终处理
  *
  * @author joe
  */
@@ -33,7 +34,7 @@ public class ConnectorAdapter extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         // 注册IO通道
-        ((AbstractConnectorManager)connectorManager).register(new NettyChannel(ctx.channel()));
+        ((AbstractConnectorManager) connectorManager).register(new NettyChannel(ctx.channel()));
         super.channelRegistered(ctx);
     }
 
@@ -52,11 +53,18 @@ public class ConnectorAdapter extends ChannelInboundHandlerAdapter {
         // 从IO通道读取信息
         logger.debug("包装请求信息，要包装的信息为：{}", msg);
         String id = ctx.channel().id().asLongText();
-        ByteBufRef ref = (ByteBufRef) msg;
-        byteBuf = ref.getByteBuf();
-        ((AbstractConnectorManager)connectorManager).receive(ref.getData(), id);
+        byte[] data;
+
+        //当前只有这一种，包含UDP和TCP
+        if (msg instanceof ByteBufRef) {
+            ByteBufRef ref = (ByteBufRef) msg;
+            data = ref.getData();
+            byteBuf = ref.getByteBuf();
+        } else {
+            throw new SystemException("数据[" + msg + "]类型未知：" + msg.getClass());
+        }
+        ((AbstractConnectorManager) connectorManager).receive(data, id);
         // 将请求传递到处理链的下一个处理器，如果没有这一行则将终止处理
-        super.channelRead(ctx, msg);
     }
 
     /**

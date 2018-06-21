@@ -4,6 +4,7 @@ import com.joe.easysocket.server.backserver.BackServer;
 import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.balance.Balance;
 import com.joe.easysocket.server.balance.BalanceImpl;
+import com.joe.easysocket.server.balance.protocol.netty.udp.NettyUDPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
@@ -19,15 +20,15 @@ public class Test {
     static Registry registry = new LocalRegistry();
 
     public static void main(String[] args) throws Exception {
-        new Thread(Test::startBackserver , "backserver").start();
-        new Thread(Test::startBalance , "balance").start();
+        new Thread(Test::startBackserver, "backserver").start();
+        new Thread(Test::startBalance, "balance").start();
     }
 
     static void startBalance() {
         try {
             com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
-                    .clusterConfig(ClusterConfig.builder().publishCenter(publishCenter).registry(registry).build())
-                    .host(host).build();
+                    .connectorManager(NettyUDPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
+                            .publishCenter(publishCenter).registry(registry).build()).port(10051).host(host).build();
 
             Balance balance = new BalanceImpl(config);
             balance.start(() -> System.out.println("***************服务器关闭了***************"));

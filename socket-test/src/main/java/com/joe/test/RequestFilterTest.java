@@ -16,6 +16,5 @@ public class RequestFilterTest extends NioRequestFilter{
     public void requestFilter(HttpRequestContext.RequestWrapper request) {
         System.out.println("用户IP为：" + request.getSession().getRemoteHost());
         System.out.println("用户端口为：" + request.getSession().getRemotePort());
-        throw new RuntimeException("中断请求");
     }
 }

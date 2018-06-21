@@ -1,12 +1,15 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
+import com.joe.easysocket.server.common.exception.UnsupportedException;
 import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ServerChannel;
 import lombok.NonNull;
 
 import java.net.InetSocketAddress;
+import java.nio.channels.DatagramChannel;
 
 /**
  * netty的channel
@@ -19,6 +22,14 @@ public class NettyChannel implements PChannel {
     private long lastActive;
     //channel的ID
     private String id;
+    /**
+     * port
+     */
+    private int port = -1;
+    /**
+     * host
+     */
+    private String host;
 
     public NettyChannel(@NonNull Channel channel) {
         this.channel = channel;
@@ -75,14 +86,20 @@ public class NettyChannel implements PChannel {
 
     @Override
     public String getRemoteHost() {
-        InetSocketAddress addr = (InetSocketAddress) channel.remoteAddress();
-        return addr.getHostString();
+        if (host == null) {
+            InetSocketAddress addr = (InetSocketAddress) channel.remoteAddress();
+            host = addr.getHostString();
+        }
+        return host;
     }
 
     @Override
     public int getPort() {
-        InetSocketAddress addr = (InetSocketAddress) channel.remoteAddress();
-        return addr.getPort();
+        if (port < 0) {
+            InetSocketAddress addr = (InetSocketAddress) channel.remoteAddress();
+            port = addr.getPort();
+        }
+        return port;
     }
 
     @Override
