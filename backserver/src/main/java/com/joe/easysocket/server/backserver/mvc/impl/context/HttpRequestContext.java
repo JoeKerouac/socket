@@ -4,7 +4,7 @@ import com.joe.easysocket.server.backserver.mvc.coder.DataReader;
 import com.joe.easysocket.server.backserver.mvc.context.RequestContext;
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Resource;
-import com.joe.easysocket.server.common.data.Datagram;
+import com.joe.utils.protocol.Datagram;
 import lombok.Data;
 
 import java.io.ByteArrayInputStream;

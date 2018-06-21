@@ -1,6 +1,6 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
-import com.joe.easysocket.server.common.data.Datagram;
+import com.joe.utils.protocol.Datagram;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 /**
@@ -25,6 +25,6 @@ public class CustomFrameDecoder extends LengthFieldBasedFrameDecoder {
      * 版本1时的默认构造，后续可能会变
      */
     public CustomFrameDecoder() {
-        this(Datagram.MAX_LENGTH, Datagram.LENOFFSET, Datagram.LENLIMIT, Datagram.HEADER);
+        this(Datagram.MAX_LENGTH, Datagram.LEN_OFFSET, Datagram.LEN_LIMIT, Datagram.HEADER_LEN);
     }
 }

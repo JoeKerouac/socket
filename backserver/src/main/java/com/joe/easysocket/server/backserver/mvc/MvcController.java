@@ -2,8 +2,8 @@ package com.joe.easysocket.server.backserver.mvc;
 
 import com.joe.easysocket.server.backserver.mvc.context.RequestContext;
 import com.joe.easysocket.server.backserver.mvc.data.InterfaceData;
-import com.joe.easysocket.server.common.data.Datagram;
 import com.joe.easysocket.server.common.lambda.Endpoint;
+import com.joe.utils.protocol.Datagram;
 
 import java.util.function.Consumer;
 

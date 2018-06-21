@@ -4,12 +4,12 @@ import com.joe.easysocket.server.balance.Config;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
-import com.joe.easysocket.server.common.data.Datagram;
-import com.joe.easysocket.server.common.data.DatagramUtil;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.utils.common.StringUtils;
 import com.joe.utils.concurrent.ThreadUtil;
+import com.joe.utils.protocol.Datagram;
+import com.joe.utils.protocol.DatagramUtil;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -315,7 +315,7 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
             ProtocolData protocolData = new ProtocolData(data, channel.getPort(), channel.getRemoteHost(), channel.id
                     (), 0, 0);
             //获取数据报的类型
-            byte type = protocolData.getData()[Datagram.TYPEINDEX];
+            byte type = protocolData.getData()[Datagram.TYPE_INDEX];
 
             if (Datagram.isHeartbeat(type)) {
                 log.debug("数据报是心跳包，返回一个心跳包");
