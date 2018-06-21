@@ -24,3 +24,13 @@
 按照编码规则逆运算即可解码。
 ### 参考
 程序中提供了[数据报的封装对象com.joe.easysocket.server.common.data.Datagram](common/src/main/java/com/joe/easysocket/server/common/data/Datagram.java))方便对数据报进行操作，同时提供了[数据报工具类com.joe.easysocket.server.common.data.DatagramUtil](common/src/main/java/com/joe/easysocket/server/common/data/DatagramUtil.java))来快速构[数据报的封装对象](common/src/main/java/com/joe/easysocket/server/common/data/Datagram.java))，客户端也可参考这两个类来实现数据报的编码解码。
+
+# 客户端与服务器通信模型（MVC）
+当服务器提供MVC类型数据的后端，需要客户端使用指定数据模型（数据报的请求体）通信，通信模型如下：
+```
+{
+    "id" : "该消息ID，需要确保短时间内是唯一的（客户端生成，响应的时候将该ID返回去），Stirng类型",
+    "invoke" : "调用的接口，例如/say，Stirng类型",
+    "data" : "要发送的数据，Stirng类型"
+}
+```
