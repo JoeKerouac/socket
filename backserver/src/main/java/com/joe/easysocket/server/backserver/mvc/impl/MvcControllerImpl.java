@@ -285,19 +285,19 @@ public class MvcControllerImpl implements MvcController {
                     findWriterInterceptor(null));
         } catch (MediaTypeNoSupportException e) {
             LOGGER.error("找不到对应的参数解析器", e);
-            resultData = buildResult(new BaseDTO<>("505"), message.getId(), message.getInvoke(),
+            resultData = buildResult(new BaseDTO<>("504"), message.getId(), message.getInvoke(),
                     resolveDataInterceptor(requestContext, responseContext));
         } catch (ParamParserException e) {
             LOGGER.error("参数解析失败", e);
-            resultData = buildResult(BaseDTO.buildError("400"), message.getId(), message.getInvoke(),
+            resultData = buildResult(new BaseDTO<>("505"), message.getId(), message.getInvoke(),
                     resolveDataInterceptor(requestContext, responseContext));
         } catch (ValidationException e) {
             LOGGER.error("参数验证失败", e);
-            resultData = buildResult(BaseDTO.buildError("505"), message.getId(), message.getInvoke(),
+            resultData = buildResult(new BaseDTO<>("506"), message.getId(), message.getInvoke(),
                     resolveDataInterceptor(requestContext, responseContext));
         } catch (FilterException e) {
             LOGGER.error("filter异常");
-            resultData = buildResult(BaseDTO.buildError(), message.getId(), message.getInvoke(),
+            resultData = buildResult(new BaseDTO<>("507"), message.getId(), message.getInvoke(),
                     resolveDataInterceptor(requestContext, responseContext));
         } catch (Throwable e) {
             // 请求过程中发生了异常
@@ -309,7 +309,7 @@ public class MvcControllerImpl implements MvcController {
             LOGGER.info("异常处理器查找完毕");
             if (exceptionMappers.isEmpty()) {
                 LOGGER.error("异常没有找到相应的处理器", e);
-                resultData = buildResult(BaseDTO.buildError(), message.getId(), message.getInvoke(),
+                resultData = buildResult(new BaseDTO<>("508"), message.getId(), message.getInvoke(),
                         resolveDataInterceptor(requestContext, responseContext));
             } else {
                 LOGGER.info("找到异常处理器，由相应的异常处理器处理");
@@ -319,7 +319,7 @@ public class MvcControllerImpl implements MvcController {
                             (requestContext, responseContext).write(response.getResult()));
                 } catch (Throwable throwable) {
                     LOGGER.error("用户异常处理器[{}]处理异常[{}]的过程中又发生了异常", exceptionMappers.get(0), e, throwable);
-                    resultData = buildResult(BaseDTO.buildError(), message.getId(), message.getInvoke(),
+                    resultData = buildResult(new BaseDTO<>("509"), message.getId(), message.getInvoke(),
                             resolveDataInterceptor(requestContext, responseContext));
                 }
             }
