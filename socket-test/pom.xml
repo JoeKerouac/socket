@@ -6,7 +6,7 @@
 
     <groupId>com.github.JoeKerouac</groupId>
     <artifactId>socket-test</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 
     <parent>
         <groupId>com.github.JoeKerouac</groupId>
@@ -18,12 +18,10 @@
         <dependency>
             <groupId>com.github.JoeKerouac</groupId>
             <artifactId>socket-backserver</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.JoeKerouac</groupId>
             <artifactId>socket-balance</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

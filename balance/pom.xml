@@ -4,9 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.JoeKerouac</groupId>
     <artifactId>socket-balance</artifactId>
-    <version>1.0</version>
     <description>socket框架，方便快速开发socket服务端和客户端</description>
     <url>https://github.com/JoeKerouac/socket</url>
 
@@ -73,7 +71,7 @@
     <parent>
         <groupId>com.github.JoeKerouac</groupId>
         <artifactId>socket-parent</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
     </parent>
 
     <dependencies>
