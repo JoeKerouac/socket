@@ -2,11 +2,16 @@ package com.joe.easysocket.server.balance.protocol.netty.udp;
 
 import com.joe.easysocket.server.balance.protocol.netty.ByteBufRef;
 import com.joe.utils.protocol.exception.IllegalRequestException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import lombok.extern.slf4j.Slf4j;
+
+import java.net.InetSocketAddress;
 
 
 /**
@@ -16,17 +21,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Sharable
-public class UDPDatagramDecoder extends ChannelInboundHandlerAdapter {
-
+public class UDPDatagramDecoder extends SimpleChannelInboundHandler<DatagramPacket> {
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         log.debug("UDP编码器编码数据");
-        if (msg instanceof DatagramPacket) {
-            DatagramPacket packet = (DatagramPacket) msg;
-            msg = new ByteBufRef(packet.content());
-        } else {
-            throw new IllegalRequestException("UDP处理器未知类型：" + msg.getClass());
-        }
-        super.channelRead(ctx, msg);
+        super.channelRead(ctx, new ByteBufRef(msg));
     }
 }

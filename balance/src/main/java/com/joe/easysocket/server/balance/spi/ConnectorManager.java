@@ -5,6 +5,7 @@ import com.joe.easysocket.server.balance.protocol.CloseCause;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.lambda.Endpoint;
+import com.joe.easysocket.server.common.protocol.PChannel;
 
 
 /**
@@ -48,4 +49,12 @@ public interface ConnectorManager extends EventCenter, Endpoint {
      * @param listener 数据处理器
      */
     void register(ProtocolDataListener listener);
+
+    /**
+     * 获取指定ID对应的channel
+     *
+     * @param id id
+     * @return 指定id对应的channel，可能为null
+     */
+    PChannel getChannel(String id);
 }

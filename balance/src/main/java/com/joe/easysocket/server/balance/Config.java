@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.balance;
 
 import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
-import com.joe.easysocket.server.balance.protocol.netty.tcp.NettyTCPConnectorManager;
+import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.balance.strategy.LoadStrategy;
 import com.joe.easysocket.server.balance.strategy.PollLoadSrategy;
 import com.joe.easysocket.server.common.config.ClusterConfig;
@@ -62,7 +62,7 @@ public class Config {
      */
     @NonNull
     @Builder.Default
-    private String connectorManager = NettyTCPConnectorManager.class.getName();
+    private String connectorManager = TCPConnectorManager.class.getName();
     /**
      * 事件中心
      */

@@ -296,6 +296,11 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
         this.eventCenter.receive(channel, data);
     }
 
+    @Override
+    public PChannel getChannel(String id) {
+        return pChannels.get(id);
+    }
+
     /**
      * 注册连接
      *

@@ -1,7 +1,6 @@
 package com.joe.easysocket.server.balance.protocol.netty.tcp;
 
 import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
-import com.joe.easysocket.server.balance.protocol.netty.ConnectorAdapter;
 import com.joe.easysocket.server.balance.protocol.netty.CustomFrameDecoder;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.common.exception.SystemException;
@@ -25,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version 2018.01.29 15:31
  */
 @Slf4j
-public class NettyTCPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
+public class TCPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
     //当前服务器是否运行，只有调用start才会改变状态
     private AtomicBoolean start = new AtomicBoolean(false);
     // 接受请求的线程组，默认是机器核心的两倍
@@ -93,8 +92,8 @@ public class NettyTCPConnectorManager extends AbstractConnectorManager implement
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
                     // 下边的编码解码器顺序不能变，CustomFrameDecoder必须每次都new，其他几个对象不用每次都new但是需要在类上加上@Sharable注解
-                    ch.pipeline().addLast(new CustomFrameDecoder(), datagramDecoder, new ConnectorAdapter
-                            (NettyTCPConnectorManager.this, eventCenter), datagramEncoder);
+                    ch.pipeline().addLast(new CustomFrameDecoder(), datagramDecoder, new TCPConnectorAdapter
+                            (TCPConnectorManager.this, eventCenter), datagramEncoder);
                 }
             }).option(ChannelOption.SO_BACKLOG, backlog).childOption(ChannelOption
                     .TCP_NODELAY, nodelay);

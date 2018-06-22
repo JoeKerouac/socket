@@ -1,35 +1,33 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
-import com.joe.easysocket.server.common.exception.UnsupportedException;
 import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ServerChannel;
 import lombok.NonNull;
 
 import java.net.InetSocketAddress;
-import java.nio.channels.DatagramChannel;
 
 /**
  * netty的channel
  *
  * @author joe
  */
-public class NettyChannel implements PChannel {
-    private Channel channel;
+public abstract class NettyChannel implements PChannel {
+    //实际netty的channel
+    protected Channel channel;
     // 最后一次活动时间
-    private long lastActive;
+    protected long lastActive;
     //channel的ID
-    private String id;
+    protected String id;
     /**
      * port
      */
-    private int port = -1;
+    protected int port = -1;
     /**
      * host
      */
-    private String host;
+    protected String host;
 
     public NettyChannel(@NonNull Channel channel) {
         this.channel = channel;
@@ -37,8 +35,13 @@ public class NettyChannel implements PChannel {
         this.lastActive = System.currentTimeMillis();
     }
 
-    @Override
-    public ProtocolFuture write(byte[] data) {
+    /**
+     * 将数据不进行任何处理写入channel
+     *
+     * @param data 数据
+     * @return 写入状态
+     */
+    public ProtocolFuture writeToChannel(Object data) {
         this.lastActive = System.currentTimeMillis();
         if (!isClosed()) {
             ChannelFuture future = channel.write(data);

@@ -4,7 +4,8 @@ import com.joe.easysocket.server.backserver.BackServer;
 import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.balance.Balance;
 import com.joe.easysocket.server.balance.BalanceImpl;
-import com.joe.easysocket.server.balance.protocol.netty.udp.NettyUDPConnectorManager;
+import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
+import com.joe.easysocket.server.balance.protocol.netty.udp.UDPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
@@ -15,7 +16,7 @@ import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
  * @author joe
  */
 public class Test {
-    static String host = "192.168.2.71";
+    static String host = "192.168.2.119";
     static PublishCenter publishCenter = new LocalPublishCenter();
     static Registry registry = new LocalRegistry();
 
@@ -27,7 +28,7 @@ public class Test {
     static void startBalance() {
         try {
             com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
-                    .connectorManager(NettyUDPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
+                    .connectorManager(TCPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
                             .publishCenter(publishCenter).registry(registry).build()).port(10051).host(host).build();
 
             Balance balance = new BalanceImpl(config);

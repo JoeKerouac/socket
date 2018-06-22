@@ -1,10 +1,6 @@
 package com.joe.easysocket.server.balance.protocol.netty.udp;
 
 import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
-import com.joe.easysocket.server.balance.protocol.netty.ConnectorAdapter;
-import com.joe.easysocket.server.balance.protocol.netty.CustomFrameDecoder;
-import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPDatagramDecoder;
-import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPDatagramEncoder;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.common.exception.SystemException;
 import io.netty.bootstrap.Bootstrap;
@@ -25,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version 2018.06.21 16:30
  */
 @Slf4j
-public class NettyUDPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
+public class UDPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
     //当前服务器是否运行，只有调用start才会改变状态
     private AtomicBoolean start = new AtomicBoolean(false);
     // 处理请求的线程组，默认是机器核心的两倍
@@ -70,6 +66,7 @@ public class NettyUDPConnectorManager extends AbstractConnectorManager implement
             // 初始化服务端
             Bootstrap bootstrap = new Bootstrap();
             UDPDatagramDecoder datagramDecoder = new UDPDatagramDecoder();
+            UDPDatagramEncoder datagramEncoder = new UDPDatagramEncoder();
 
             if (LINUX) {
                 log.debug("当前系统 是 linux系统，采用epoll模型");
@@ -87,8 +84,8 @@ public class NettyUDPConnectorManager extends AbstractConnectorManager implement
                 @Override
                 public void initChannel(DatagramChannel ch) throws Exception {
                     // UDP处理链，顺序不能变
-                    ch.pipeline().addLast(datagramDecoder, new ConnectorAdapter(NettyUDPConnectorManager.this,
-                            eventCenter));
+                    ch.pipeline().addLast(datagramDecoder, new UDPConnectorAdapter(UDPConnectorManager.this,
+                            eventCenter), datagramEncoder);
                 }
             }).option(ChannelOption.SO_BACKLOG, backlog).option(ChannelOption.TCP_NODELAY, nodelay);
 
