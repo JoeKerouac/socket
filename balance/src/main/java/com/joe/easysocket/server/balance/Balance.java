@@ -13,6 +13,7 @@ import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.utils.common.ClassUtils;
 import com.joe.utils.common.Tools;
 import lombok.extern.slf4j.Slf4j;
 
@@ -265,7 +266,7 @@ public abstract class Balance {
 
         String connectorManagerClass = config.getConnectorManager();
         try {
-            if (!ConnectorManager.class.isAssignableFrom(Class.forName(connectorManagerClass))) {
+            if (!ConnectorManager.class.isAssignableFrom(ClassUtils.loadClass(connectorManagerClass))) {
                 throw new ConfigIllegalException("指定的ConnectorManager[" + connectorManagerClass + "]不是" +
                         ConnectorManager.class.getName() + "的子类");
             }
@@ -276,7 +277,7 @@ public abstract class Balance {
 
         String eventCenterClass = config.getEventCenter();
         try {
-            if (!EventCenter.class.isAssignableFrom(Class.forName(eventCenterClass))) {
+            if (!EventCenter.class.isAssignableFrom(ClassUtils.loadClass(eventCenterClass))) {
                 throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不是" +
                         EventCenter.class.getName() + "的子类");
             }

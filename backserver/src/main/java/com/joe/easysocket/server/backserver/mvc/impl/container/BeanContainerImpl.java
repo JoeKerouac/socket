@@ -25,13 +25,16 @@ public class BeanContainerImpl implements BeanContainer {
     private List<Class<?>> allBeanClass;
     private String[] args;
     private boolean init = false;
+    private ClassLoader loader;
 
     /**
      * 默认构造器，参数传需要扫描的包（可以只传入跟目录，然后会自动递归）
      *
-     * @param args 要扫描的包
+     * @param loader 加载bean class的ClassLoader
+     * @param args   要扫描的包
      */
-    public BeanContainerImpl(@NonNull String... args) {
+    public BeanContainerImpl(@NonNull ClassLoader loader, @NonNull String... args) {
+        this.loader = loader;
         this.args = args;
     }
 
@@ -93,7 +96,7 @@ public class BeanContainerImpl implements BeanContainer {
             logger.warn("bean容器已经初始化，请勿重复初始化");
             return;
         }
-        ClassScanner scanner = ClassScanner.getInstance();
+        ClassScanner scanner = ClassScanner.getInstance(loader);
         allBeanClass = scanner.scan((Object[]) args);
         beanCache = new HashMap<>();
         init = true;
@@ -111,5 +114,10 @@ public class BeanContainerImpl implements BeanContainer {
         allBeanClass.clear();
         init = false;
         logger.info("bean容器销毁完毕");
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return loader;
     }
 }

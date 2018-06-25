@@ -18,6 +18,7 @@ import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.spi.Registry;
+import com.joe.utils.common.ClassUtils;
 import com.joe.utils.common.Tools;
 import lombok.extern.slf4j.Slf4j;
 
@@ -121,7 +122,7 @@ public class BalanceImpl extends Balance {
         String connectorManagerClass = config.getConnectorManager();
         try {
             log.debug("初始化ConnectorManager子类[{}]的实例", connectorManagerClass);
-            this.connectorManager = (ConnectorManager) Class.forName(connectorManagerClass).newInstance();
+            this.connectorManager = (ConnectorManager) ClassUtils.loadClass(connectorManagerClass).newInstance();
         } catch (Exception e) {
             log.error("构造ConnectorManager实例[{}]失败，可能是没有无参数构造器，请为ConnectorManager实现类[{}]增加无参数构造器",
                     connectorManagerClass, connectorManagerClass, e);
@@ -134,7 +135,7 @@ public class BalanceImpl extends Balance {
         EventCenter eventCenter;
         try {
             log.debug("初始化EventCenter子类[{}]的实例", eventCenterClass);
-            eventCenter = (EventCenter) Class.forName(eventCenterClass).newInstance();
+            eventCenter = (EventCenter) ClassUtils.loadClass(eventCenterClass).newInstance();
         } catch (Exception e) {
             log.warn("构造EventCenter实例[{}]失败，可能是没有无参数构造器，将采用默认EventCenter[{}]",
                     connectorManagerClass, DefaultEventCenter.class, e);

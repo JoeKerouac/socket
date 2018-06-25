@@ -5,6 +5,7 @@ import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.container.Selector;
 import com.joe.easysocket.server.backserver.mvc.Bean;
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.utils.common.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,25 +23,38 @@ import java.util.Map;
  */
 public abstract class AbstractContainer<T extends Bean> implements Container<T> {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    //bean容器
+    /**
+     * bean容器
+     */
     protected BeanContainer beanContainer;
-    // 当前container容器存放的实体类型
+    /**
+     * 容器ClassLoader
+     */
+    protected ClassLoader loader;
+    /**
+     * 当前container容器存放的实体类型
+     */
     protected Class<T> clazz;
-    // container
+    /**
+     * container
+     */
     protected List<T> container;
+    /**
+     * 是否初始化，true表示已经初始化
+     */
     private boolean init;
 
     @SuppressWarnings("unchecked")
     public AbstractContainer(BeanContainer beanContainer) {
         this.beanContainer = beanContainer;
+        this.loader = beanContainer.getClassLoader();
         // 反射获取Container存放的Bean类型
         try {
             String className = getClass().getName();
             logger.debug("当前容器名字为：{}", className);
             String beanClassName = className.replace("Container", "");
             logger.debug("获取的bean类名为：{}", beanClassName);
-            this.clazz = (Class<T>) Class.forName(beanClassName);
-            return;
+            this.clazz = ClassUtils.loadClass(beanClassName, loader);
         } catch (Exception e) {
             logger.debug("通过名字获取bean类型失败，尝试通过泛型获取");
             Type genericSuperclass = getClass().getGenericSuperclass();
@@ -50,7 +64,6 @@ public abstract class AbstractContainer<T extends Bean> implements Container<T> 
                 ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
                 Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                 this.clazz = (Class<T>) actualTypeArguments[0];
-                return;
             } else {
                 throw new RuntimeException("请检查Container类泛型或命名");
             }

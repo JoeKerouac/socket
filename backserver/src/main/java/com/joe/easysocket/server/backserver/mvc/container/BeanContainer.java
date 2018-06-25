@@ -24,4 +24,11 @@ public interface BeanContainer extends Endpoint {
      * @return 带有该注解的所有bean的map集合，其中map的key为bean的name，value为bean实例
      */
     Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annotationType);
+
+    /**
+     * 获取加载bean class的ClassLoader
+     *
+     * @return 加载bean class的ClassLoader
+     */
+    ClassLoader getClassLoader();
 }

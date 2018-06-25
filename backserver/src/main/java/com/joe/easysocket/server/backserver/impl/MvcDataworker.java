@@ -14,6 +14,7 @@ import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.NoRequireParamException;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.utils.common.ClassUtils;
 import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
@@ -56,7 +57,8 @@ public class MvcDataworker implements DataWorker {
         this.sessionManager = new SessionManagerImpl(id, config);
         this.publishCenter = config.getClusterConfig().getPublishCenter();
         SessionManager sessionManager = new SessionManagerImpl(id, config);
-        BeanContainer beanContainer = config.getBeanContainer() == null ? new BeanContainerImpl("com") : config
+        BeanContainer beanContainer = config.getBeanContainer() == null ? new BeanContainerImpl(ClassUtils
+                .getDefaultClassLoader(), "com") : config
                 .getBeanContainer();
         int maxThread = config.getMaxThreadCount();
         int minThread = config.getMinThreadCount();
