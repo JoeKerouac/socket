@@ -14,7 +14,7 @@ public class SpringTest {
 
     public static void main(String[] args) throws Exception {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        //扫描自定义的bean
+        //扫描添加自定义注解的bean
         CustomClassPathBeanDefinitionScanner scanner = new CustomClassPathBeanDefinitionScanner(context);
         scanner.scan("com");
         context.refresh();

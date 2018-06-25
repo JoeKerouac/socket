@@ -28,11 +28,15 @@ server端包含backserver和balance两个组件，其中balance负责管理客�
 ```
 
 首先要启动一个backserver，用于处理用户发来的数据，然后要启动一个balance，用于处理socket连接和对实际数据处理器backserver的负载均衡，示例代码如下：
-```
+
+首先是一个通用类：
+```java
 import com.joe.easysocket.server.backserver.BackServer;
 import com.joe.easysocket.server.backserver.Config;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.balance.Balance;
 import com.joe.easysocket.server.balance.BalanceImpl;
+import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
@@ -40,23 +44,24 @@ import com.joe.easysocket.server.common.spi.impl.publish.local.LocalPublishCente
 import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
 
 /**
+ * 辅助启动类
+ *
  * @author joe
+ * @version 2018.06.25 18:18
  */
-public class Test {
-    static String host = "192.168.2.71";
+public class Starter {
+    static String host = "192.168.2.119";
     static PublishCenter publishCenter = new LocalPublishCenter();
     static Registry registry = new LocalRegistry();
 
-    public static void main(String[] args) throws Exception {
-        new Thread(Test::startBackserver , "backserver").start();
-        new Thread(Test::startBalance , "balance").start();
-    }
-
+    /**
+     * 启动一个前端
+     */
     static void startBalance() {
         try {
             com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
-                    .clusterConfig(ClusterConfig.builder().publishCenter(publishCenter).registry(registry).build())
-                    .host(host).build();
+                    .connectorManager(TCPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
+                            .publishCenter(publishCenter).registry(registry).build()).port(10051).host(host).build();
 
             Balance balance = new BalanceImpl(config);
             balance.start(() -> System.out.println("***************服务器关闭了***************"));
@@ -65,12 +70,28 @@ public class Test {
         }
     }
 
-
+    /**
+     * 启动一个后端
+     */
     static void startBackserver() {
+        startBackserver(null);
+    }
+
+    /**
+     * 启动一个后端，并指定BeanContainer
+     *
+     * @param beanContainer BeanContainer
+     */
+    static void startBackserver(BeanContainer beanContainer) {
         try {
-            Config config = Config.builder().clusterConfig(ClusterConfig.builder().registry(registry).publishCenter
-                    (publishCenter).build()).host(host).name("后端" +
-                    System.currentTimeMillis()).build();
+            Config config = Config.builder()
+                    .beanContainer(beanContainer)
+                    .clusterConfig(ClusterConfig.builder()
+                            .registry(registry)
+                            .publishCenter(publishCenter).build())
+                    .host(host)
+                    .name("后端" + System.currentTimeMillis()).build();
+
             BackServer backServer = BackServer.build(config);
             backServer.start(() -> System.out.println("系统关闭了"));
         } catch (Exception e) {
@@ -78,9 +99,26 @@ public class Test {
         }
     }
 }
+
+```
+然后是启动类
+```java
+/**
+ * 不依赖于外部系统自启动（spring等）
+ *
+ * @author joe
+ */
+public class Test {
+
+    public static void main(String[] args) throws Exception {
+        new Thread(Starter::startBackserver, "backserver").start();
+        new Thread(Starter::startBalance, "balance").start();
+    }
+}
+
 ```
 这样一个简单的服务器就启动成功了，但是该服务器不能提供服务，因为该服务器还没有实际处理逻辑，下面加一个简单的处理逻辑：
-```
+```java
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
 import com.joe.easysocket.server.backserver.mvc.impl.param.GeneralParam;

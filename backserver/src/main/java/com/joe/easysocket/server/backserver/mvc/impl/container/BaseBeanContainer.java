@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 /**
  * 提供最基础的实现，如果bean的类不包含无参数构造器那么该bean将不会被扫描到
- * <p>
- * 该类主要用于测试，不建议正式使用
  *
  * @author joe
  */
