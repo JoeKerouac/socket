@@ -15,11 +15,11 @@ import java.util.List;
  * @version 2018.06.25 10:55
  */
 class ScanConfig {
-    static List<Class<? extends Annotation>> SOCKET_COMPONENT;
+    final static List<Class<? extends Annotation>> SOCKET_COMPONENT;
     static {
-        List<Class<? extends Annotation>> all = new ArrayList<>();
-        all.add(Provider.class);
-        all.add(Path.class);
-        SOCKET_COMPONENT =Collections.unmodifiableList(all);
+        List<Class<? extends Annotation>> temp = new ArrayList<>();
+        temp.add(Provider.class);
+        temp.add(Path.class);
+        SOCKET_COMPONENT =Collections.unmodifiableList(temp);
     }
 }
