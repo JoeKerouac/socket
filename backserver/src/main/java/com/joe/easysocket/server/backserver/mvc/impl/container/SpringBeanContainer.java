@@ -8,8 +8,8 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 /**
- * 如果使用该BeanContainer需要注册组件{@link CustomClassPathBeanDefinitionScanner CustomClassPathBeanDefinitionScanner}
- * 到spring
+ * 如果使用该BeanContainer使用组件{@link CustomClassPathBeanDefinitionScanner CustomClassPathBeanDefinitionScanner}
+ * 扫描（基于注解扫描，如果是基于xml只需要自己将组件注册即可）
  *
  * @author joe
  * @version 2018.06.25 10:44

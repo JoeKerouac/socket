@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class CustomClassPathBeanDefinitionScanner extends ClassPathBeanDefinitionScanner {
 
-    CustomClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
+    public CustomClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
         super(registry);
     }
 

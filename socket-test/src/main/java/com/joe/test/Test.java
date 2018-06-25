@@ -1,53 +1,15 @@
 package com.joe.test;
 
-import com.joe.easysocket.server.backserver.BackServer;
-import com.joe.easysocket.server.backserver.Config;
-import com.joe.easysocket.server.balance.Balance;
-import com.joe.easysocket.server.balance.BalanceImpl;
-import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
-import com.joe.easysocket.server.balance.protocol.netty.udp.UDPConnectorManager;
-import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.spi.PublishCenter;
-import com.joe.easysocket.server.common.spi.Registry;
-import com.joe.easysocket.server.common.spi.impl.publish.local.LocalPublishCenter;
-import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
 
 /**
+ * 不依赖于外部系统自启动（spring等）
+ *
  * @author joe
  */
 public class Test {
-    static String host = "192.168.2.119";
-    static PublishCenter publishCenter = new LocalPublishCenter();
-    static Registry registry = new LocalRegistry();
 
     public static void main(String[] args) throws Exception {
-        new Thread(Test::startBackserver, "backserver").start();
-        new Thread(Test::startBalance, "balance").start();
-    }
-
-    static void startBalance() {
-        try {
-            com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
-                    .connectorManager(TCPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
-                            .publishCenter(publishCenter).registry(registry).build()).port(10051).host(host).build();
-
-            Balance balance = new BalanceImpl(config);
-            balance.start(() -> System.out.println("***************服务器关闭了***************"));
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    static void startBackserver() {
-        try {
-            Config config = Config.builder().clusterConfig(ClusterConfig.builder().registry(registry).publishCenter
-                    (publishCenter).build()).host(host).name("后端" +
-                    System.currentTimeMillis()).build();
-            BackServer backServer = BackServer.build(config);
-            backServer.start(() -> System.out.println("系统关闭了"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        new Thread(Starter::startBackserver, "backserver").start();
+        new Thread(Starter::startBalance, "balance").start();
     }
 }

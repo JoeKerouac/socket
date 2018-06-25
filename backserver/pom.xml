@@ -122,7 +122,6 @@
             <artifactId>spring-context</artifactId>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
     <build>
