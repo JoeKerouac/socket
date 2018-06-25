@@ -66,7 +66,6 @@ public class ResourceContainer extends AbstractContainer<Resource> {
             logger.warn("没有找到资源");
         }
         logger.debug("资源初始化完毕");
-        return;
     }
 
     @Override
