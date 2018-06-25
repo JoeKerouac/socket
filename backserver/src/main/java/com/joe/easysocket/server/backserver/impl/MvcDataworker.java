@@ -6,7 +6,7 @@ import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.context.SessionManager;
 import com.joe.easysocket.server.backserver.mvc.impl.MvcControllerImpl;
-import com.joe.easysocket.server.backserver.mvc.impl.container.BeanContainerImpl;
+import com.joe.easysocket.server.backserver.mvc.impl.container.BaseBeanContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.session.SessionManagerImpl;
 import com.joe.easysocket.server.backserver.spi.DataWorker;
@@ -57,7 +57,7 @@ public class MvcDataworker implements DataWorker {
         this.sessionManager = new SessionManagerImpl(id, config);
         this.publishCenter = config.getClusterConfig().getPublishCenter();
         SessionManager sessionManager = new SessionManagerImpl(id, config);
-        BeanContainer beanContainer = config.getBeanContainer() == null ? new BeanContainerImpl(ClassUtils
+        BeanContainer beanContainer = config.getBeanContainer() == null ? new BaseBeanContainer(ClassUtils
                 .getDefaultClassLoader(), "com") : config
                 .getBeanContainer();
         int maxThread = config.getMaxThreadCount();
@@ -83,7 +83,6 @@ public class MvcDataworker implements DataWorker {
         mvcController.start();
         logger.debug("服务器启动成功");
         shutdown = false;
-        return;
     }
 
     @Override

@@ -116,6 +116,13 @@
             <artifactId>logback-classic</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- spring-context，用于SpringBeanContainer，如果使用SpringBeanContainer需要提供该依赖 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

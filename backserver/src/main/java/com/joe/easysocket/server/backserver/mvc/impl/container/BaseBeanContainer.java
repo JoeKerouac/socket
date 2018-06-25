@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
  *
  * @author joe
  */
-public class BeanContainerImpl implements BeanContainer {
-    private static final Logger logger = LoggerFactory.getLogger(BeanContainerImpl.class);
+public class BaseBeanContainer implements BeanContainer {
+    private static final Logger logger = LoggerFactory.getLogger(BaseBeanContainer.class);
     private Map<Class<? extends Annotation>, Map<String, Object>> beanCache;
     private List<Class<?>> allBeanClass;
     private String[] args;
@@ -33,7 +33,7 @@ public class BeanContainerImpl implements BeanContainer {
      * @param loader 加载bean class的ClassLoader
      * @param args   要扫描的包
      */
-    public BeanContainerImpl(@NonNull ClassLoader loader, @NonNull String... args) {
+    public BaseBeanContainer(@NonNull ClassLoader loader, @NonNull String... args) {
         this.loader = loader;
         this.args = args;
     }
