@@ -23,7 +23,7 @@
 ### 解码
 按照编码规则逆运算即可解码。
 ### 参考
-程序中使用了[utils](https://github.com/JoeKerouac/utils)项目提供的[数据报的封装对象Datagram](https://github.com/JoeKerouac/utils/src/main/java/com/joe/utils/protocol/Datagram.java)方便对数据报进行操作，同时提供了[数据报工具类DatagramUtil](https://github.com/JoeKerouac/utils/src/main/java/com/joe/utils/protocol/DatagramUtil.java)来快速构建[数据报的封装对象Datagram](https://github.com/JoeKerouac/utils/src/main/java/com/joe/utils/protocol/Datagram.java)，客户端也可参考这两个类来实现数据报的编码解码。
+程序中使用了[utils](https://github.com/JoeKerouac/utils)项目提供的[数据报的封装对象Datagram](https://github.com/JoeKerouac/utils/blob/master/src/main/java/com/joe/utils/protocol/Datagram.java)方便对数据报进行操作，同时提供了[数据报工具类DatagramUtil](https://github.com/JoeKerouac/utils/blob/master/src/main/java/com/joe/utils/protocol/DatagramUtil.java)来快速构建[数据报的封装对象Datagram](https://github.com/JoeKerouac/utils/blob/master/src/main/java/com/joe/utils/protocol/Datagram.java)，客户端也可参考这两个类来实现数据报的编码解码。
 
 # 客户端与服务器通信模型（MVC）
 当服务器提供MVC类型数据的后端，需要客户端使用指定数据模型（数据报的请求体）通信，通信模型如下：
