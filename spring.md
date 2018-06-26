@@ -31,4 +31,4 @@ CustomClassPathBeanDefinitionScanner scanner = new CustomClassPathBeanDefinition
 scanner.scan("com");
 ```
 
-[下一节：Resource定义](resource.md)
+[下一节：UDP支持](udp-supported.md)
