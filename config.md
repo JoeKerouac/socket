@@ -58,3 +58,5 @@ public class UserController {
 }
 ```
 需要注意到，data中的account和password名称需要与@GeneralParam("account")和@GeneralParam("password")的value一致。
+
+[下一节：集成spring](spring.md)

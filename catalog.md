@@ -2,5 +2,6 @@
 - [通信规范（编解码规范）](codec.md)
 - [使用、配置](config.md)
 - [集成spring](spring.md)
+- [Resource定义](resource.md)
 - [filter使用](filter.md)
 - [UDP支持](udp-supported.md)

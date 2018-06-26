@@ -30,3 +30,5 @@ public class SpringTest {
 CustomClassPathBeanDefinitionScanner scanner = new CustomClassPathBeanDefinitionScanner(context);
 scanner.scan("com");
 ```
+
+[下一节：Resource定义](resource.md)
