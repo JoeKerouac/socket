@@ -1,5 +1,5 @@
 # 配置
-Balance可以通过[com.joe.easysocket.server.balance.Config](balance/src/main/java/com/joe/easysocket/server/balance/Config.java)来配置，而BackServer则是可以通过[com.joe.easysocket.server.backserver.Config](backserver/src/main/java/com/joe/easysocket/server/backserver/Config.java)来配置
+Balance可以通过[Config](balance/src/main/java/com/joe/easysocket/server/balance/Config.java)来配置，而BackServer则是可以通过[Config](backserver/src/main/java/com/joe/easysocket/server/backserver/Config.java)来配置
 # 默认MvcDataworker使用：
 ## 数据
 MvcDataworker数据报的类型（type）为1，body的序列化方式为JSON，详情如下：
