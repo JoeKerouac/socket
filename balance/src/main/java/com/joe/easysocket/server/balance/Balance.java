@@ -270,7 +270,7 @@ public abstract class Balance {
                 throw new ConfigIllegalException("指定的ConnectorManager[" + connectorManagerClass + "]不是" +
                         ConnectorManager.class.getName() + "的子类");
             }
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             log.error("指定的ConnectorManager[{}]不存在");
             throw new ConfigIllegalException("指定的ConnectorManager[" + connectorManagerClass + "]不存在", e);
         }
@@ -281,7 +281,7 @@ public abstract class Balance {
                 throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不是" +
                         EventCenter.class.getName() + "的子类");
             }
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             log.error("指定的EventCenter[{}]不存在");
             throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不存在", e);
         }
