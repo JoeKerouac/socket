@@ -70,6 +70,8 @@ class ApiUtil {
             Param param = new Param();
             params.add(param);
 
+            param.setMethod(resourceMethod);
+
             JavaType type = ReflectUtil.createJavaType(parameter.getParameterizedType());
             type.setAnnotations(parameter.getAnnotations());
             param.setType(type);

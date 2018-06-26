@@ -3,6 +3,8 @@ package com.joe.easysocket.server.backserver.mvc.impl.resource;
 import com.joe.utils.type.JavaType;
 import lombok.Data;
 
+import java.lang.reflect.Method;
+
 /**
  * API参数
  *
@@ -10,12 +12,16 @@ import lombok.Data;
  */
 @Data
 public class Param {
-    /*
+    /**
      * 参数名
      */
     private String name;
-    /*
+    /**
      * 参数类型
      */
     private JavaType type;
+    /**
+     * 参数所在方法
+     */
+    private Method method;
 }

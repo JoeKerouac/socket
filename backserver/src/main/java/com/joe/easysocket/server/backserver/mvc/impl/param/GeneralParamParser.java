@@ -4,32 +4,41 @@ import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
+import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Consumes;
 import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.type.JavaType;
 import com.joe.utils.type.ReflectUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Annotation;
 
+import static com.joe.utils.parse.json.JsonParser.getInstance;
+
 /**
- * 普通参数解析器
+ * 普通参数解析器（只能解析json类型的输入参数）
  *
  * @author joe
  */
+@Slf4j
 @Provider
 public class GeneralParamParser implements ParamInterceptor {
-    private static final Logger logger = LoggerFactory.getLogger(ParamInterceptor.class);
-    private static final JsonParser parser = JsonParser.getInstance();
+    private static final JsonParser JSON_PARSER = getInstance();
 
     @Override
     public boolean isReadable(Param param, String data) {
+        Consumes consumes = param.getMethod().getAnnotation(Consumes.class);
+        if (consumes != null && !"json".equals(consumes.value())) {
+            log.debug("参数[{}]所在方法参数解析不是json类型", param);
+            return false;
+        }
         Annotation[] annotations = param.getType().getAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation instanceof GeneralParam) {
+                log.debug("参数[{}]带有@GeneralParam注解并且资源方法声明的参数解析器是json，使用GeneralParamParser处理", param);
                 return true;
             }
         }
+        log.debug("参数[{}]没有@GeneralParam注解", param);
         return false;
     }
 
@@ -37,13 +46,13 @@ public class GeneralParamParser implements ParamInterceptor {
     public Object read(Param param, HttpRequestContext.RequestWrapper request, String data) throws
             ParamParserException {
         JavaType type = param.getType();
-        logger.debug("将{}解析为{};参数{}的类型为{}", data, type, param.getName(), type);
+        log.debug("将{}解析为{};参数{}的类型为{}", data, type, param.getName(), type);
         try {
-            Object result = parser.readAsObject(data, ReflectUtil.getRealType(type));
-            logger.debug("读取出来的参数是：{}", result);
+            Object result = JSON_PARSER.readAsObject(data, ReflectUtil.getRealType(type));
+            log.debug("读取出来的参数是：{}", result);
             return result;
         } catch (Throwable e) {
-            logger.error("解析参数{}时出错，用户数据为：{}", param, data, e);
+            log.error("解析参数{}时出错，用户数据为：{}", param, data, e);
             throw new ParamParserException(param.getName(), e.toString());
         }
     }
