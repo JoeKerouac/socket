@@ -4,6 +4,7 @@ import com.joe.easysocket.server.balance.Config;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
+import com.joe.easysocket.server.balance.spi.EventCenterProxy;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.protocol.PChannel;
@@ -25,7 +26,7 @@ import java.util.concurrent.ExecutorService;
  * @author joe
  */
 @Slf4j
-public abstract class AbstractConnectorManager implements ConnectorManager {
+public abstract class AbstractConnectorManager extends EventCenterProxy implements ConnectorManager {
     // 是否是linux系统
     protected static boolean LINUX;
     /**
@@ -107,6 +108,8 @@ public abstract class AbstractConnectorManager implements ConnectorManager {
         } else {
             this.eventCenter = eventCenter;
         }
+
+        super.setEventCenter(this.eventCenter);
 
         this.heartbeat = config.getHeatbeat() < 30 ? 30 : config.getHeatbeat();
 

@@ -31,7 +31,7 @@ import java.util.*;
  * @author joe
  */
 @Slf4j
-public class BalanceImpl extends Balance {
+public class BalanceImpl extends AbstractBalance {
     /**
      * 当前是否开启
      */
@@ -89,7 +89,6 @@ public class BalanceImpl extends Balance {
      */
     private int port;
 
-
     /**
      * 默认构造器
      *
@@ -141,6 +140,8 @@ public class BalanceImpl extends Balance {
                     connectorManagerClass, DefaultEventCenter.class, e);
             eventCenter = new DefaultEventCenter();
         }
+        log.debug("设置Balance的EventCenter代理为：[{}]", eventCenter);
+        super.setEventCenter(eventCenter);
 
         log.debug("初始化ConnectorManager");
         connectorManager.init(config, eventCenter);
@@ -378,8 +379,12 @@ public class BalanceImpl extends Balance {
         return server;
     }
 
-    @Override
-    public void receiveData(ProtocolData data) {
+    /**
+     * 接受并处理后台消息（系统接收到后台消息后会传给该函数处理）
+     *
+     * @param data 后台消息
+     */
+    private void receiveData(ProtocolData data) {
         connectorManager.write(data);
     }
 

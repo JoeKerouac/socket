@@ -34,7 +34,7 @@ server端包含backserver和balance两个组件，其中balance负责管理客�
 import com.joe.easysocket.server.backserver.BackServer;
 import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
-import com.joe.easysocket.server.balance.Balance;
+import com.joe.easysocket.server.balance.AbstractBalance;
 import com.joe.easysocket.server.balance.BalanceImpl;
 import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
