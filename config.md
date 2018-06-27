@@ -3,7 +3,7 @@ Balance可以通过[Config](balance/src/main/java/com/joe/easysocket/server/bala
 # 默认MvcDataworker使用：
 ## 数据
 MvcDataworker数据报的类型（type）为1，body的序列化方式为JSON，详情如下：
-```
+```json
 {
     "id" : "请求ID，短期内唯一",
     "invoke" : "请求接口名",
@@ -11,7 +11,7 @@ MvcDataworker数据报的类型（type）为1，body的序列化方式为JSON，
 }
 ```
 对于接口需要的数据，同样需要使用JSON格式序列化数据，例如接口需要name和password两个值，那么上述的data中需要包含内容：
-```
+```json
 {
     "name" : "username",
     "password" : "123456"
@@ -28,7 +28,7 @@ MvcDataworker数据报的类型（type）为1，body的序列化方式为JSON，
 ## 示例
 ### 声明一个用户登录接口
 声明一个用户登录接口，需要account和password：
-```
+```java
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
 import com.joe.easysocket.server.backserver.mvc.impl.param.GeneralParam;
@@ -47,14 +47,11 @@ public class UserController {
 }
 ```
 该数据对应的数据报body为：
-```
+```json
 {
     "id" : "123456789",
     "invoke" : "user/login",
-    "data" : "{
-            \"account\" : \"123456\",
-            \"password\" : \"123456\"
-        }"
+    "data" : "{ \"account\" : \"123456\",\"password\" : \"123456\"}"
 }
 ```
 需要注意到，data中的account和password名称需要与@GeneralParam("account")和@GeneralParam("password")的value一致。
@@ -119,7 +116,7 @@ public class UserController {
 后台[backserver](backserver)内置的[MvcDataworker](backserver/src/main/java/com/joe/easysocket/server/backserver/impl/MvcDataworker)支持filter操作（就像SpringMVC中一样，不过支持没有SpringMVC的强大），使用时只需要继承NioRequestFilter或者NioResponseFilter或者NioFilter，然后在类上添加Provider注解即可。
 
 RequestFilter示例：
-```
+```java
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.filter.NioRequestFilter;
@@ -140,7 +137,7 @@ public class RequestFilterTest extends NioRequestFilter{
 }
 ```
 ResponseFilter示例：
-```
+```java
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;

@@ -6,14 +6,14 @@
 前后端使用PublishCenter（PUB/SUB模型）来通信。
 
 ## 前后端通信模型
-```
+```json
 {
     "data" : "客户端数据报，byte数组",
     "port" : "客户端端口，int类型",
     "host" : "客户端IP，String类型",
     "channel" : "该消息对应的channel通道ID，String类型",
     "reqTime" : "该消息请求时间戳，long类型",
-    "respTime" : "该消息响应时间戳，long类型",
+    "respTime" : "该消息响应时间戳，long类型"
 }
 ```
 
