@@ -52,10 +52,10 @@
         <appender-ref ref="Console" />
     </root>
 
-    <!--&lt;!&ndash; 框架输出 &ndash;&gt;-->
-    <!--<logger name="com.joe" level="DEBUG">-->
-        <!--<appender-ref ref="Framework" />-->
-    <!--</logger>-->
+    <!-- 框架输出 -->
+    <logger name="com.joe.utils" level="ERROR">
+        <appender-ref ref="Framework" />
+    </logger>
 
     <!--&lt;!&ndash; JVM监控输出 &ndash;&gt;-->
     <!--<logger name="JVMStatus" level="WARN">-->
