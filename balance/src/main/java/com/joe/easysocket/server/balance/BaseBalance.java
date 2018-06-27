@@ -31,7 +31,7 @@ import java.util.*;
  * @author joe
  */
 @Slf4j
-public class BalanceImpl extends AbstractBalance {
+public class BaseBalance extends AbstractBalance {
     /**
      * 当前是否开启
      */
@@ -95,7 +95,7 @@ public class BalanceImpl extends AbstractBalance {
      * @param config 前端配置
      * @throws ConfigIllegalException 配置错误时抛出该异常
      */
-    public BalanceImpl(Config config) throws ConfigIllegalException {
+    public BaseBalance(Config config) throws ConfigIllegalException {
         super(config);
         ClusterConfig clusterConfig = config.getClusterConfig();
         this.registryBackServerUrl = clusterConfig.getRegistryBase() + clusterConfig.getBackServerGroup();

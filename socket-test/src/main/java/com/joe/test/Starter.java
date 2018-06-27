@@ -4,7 +4,7 @@ import com.joe.easysocket.server.backserver.BackServer;
 import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.balance.AbstractBalance;
-import com.joe.easysocket.server.balance.BalanceImpl;
+import com.joe.easysocket.server.balance.BaseBalance;
 import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.spi.PublishCenter;
@@ -32,7 +32,7 @@ public class Starter {
                     .connectorManager(TCPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
                             .publishCenter(publishCenter).registry(registry).build()).port(10051).host(host).build();
 
-            AbstractBalance balance = new BalanceImpl(config);
+            AbstractBalance balance = new BaseBalance(config);
             balance.start(() -> System.out.println("***************服务器关闭了***************"));
         } catch (Throwable e) {
             throw new RuntimeException(e);
