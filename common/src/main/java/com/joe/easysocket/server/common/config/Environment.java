@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.joe.easysocket.server.common.config.Const.PUBLISH_CENTER;
-import static com.joe.easysocket.server.common.config.Const.REGISTRY;
+import static com.joe.easysocket.server.common.config.Const.*;
 
 /**
  * 系统环境信息
@@ -138,11 +137,11 @@ public final class Environment {
         serializers.add(SpiLoader.loadSpi(JsonSerializer.class.getName(), config.getEnvironment()));
         log.info("JSON序列化器添加完毕");
 
-        environment.put(Const.CONFIG, config);
-        environment.put(Const.CLUSTER_CONFIG, config.getClusterConfig());
-        environment.put(Const.REGISTRY, registry);
-        environment.put(Const.PUBLISH_CENTER, publishCenter);
-        environment.put(Const.SERIALIZER_LIST, serializers);
+        environment.put(CONFIG, config);
+        environment.put(CLUSTER_CONFIG, config.getClusterConfig());
+        environment.put(REGISTRY, registry);
+        environment.put(PUBLISH_CENTER, publishCenter);
+        environment.put(SERIALIZER_LIST, serializers);
         return environment;
     }
 }
