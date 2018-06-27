@@ -249,6 +249,10 @@ public abstract class AbstractConnectorManager extends EventCenterProxy implemen
 
         //无论是否需要ACK，都先直接发送
         PChannel channel = pChannels.get(data.getChannel());
+        if (channel == null) {
+            log.warn("数据[{}]对应的客户端已经关闭，不能发送" , data);
+            return;
+        }
         channel.write(data.getData());
 
         //如果数据需要ACK，那么加入队列等待ACK，如果没有收到那么将继续发送
