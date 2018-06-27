@@ -23,8 +23,9 @@ public interface BackServer extends Endpoint {
      * 更新后端信息
      *
      * @param serverInfo 后端信息
+     * @return 更新后的后端信息
      */
-    void update(BackServerInfo serverInfo);
+    BackServer update(BackServerInfo serverInfo);
 
     /**
      * 获取虚拟服务端的名称

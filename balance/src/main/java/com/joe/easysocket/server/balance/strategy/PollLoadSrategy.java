@@ -39,8 +39,8 @@ public class PollLoadSrategy implements LoadStrategy {
         }
 
         @Override
-        public void update(BackServerInfo serverInfo) {
-
+        public BackServer update(BackServerInfo serverInfo) {
+            return this;
         }
 
         @Override

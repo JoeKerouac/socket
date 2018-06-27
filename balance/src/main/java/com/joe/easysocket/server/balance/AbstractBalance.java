@@ -7,7 +7,6 @@ import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.balance.spi.EventCenterProxy;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
 import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.lambda.Function;
@@ -60,7 +59,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
     /**
      * 所有后端的集合
      */
-    protected CopyOnWriteArrayList<BackServer> allServer = new CopyOnWriteArrayList<>();
+    protected ConcurrentHashMap<String, BackServer> allServer = new ConcurrentHashMap<>();
 
 
     /**
@@ -166,7 +165,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
         log.debug("通道{}关闭，发送广播", channel);
 
         //注册监听，加入待发送列表
-        allServer.parallelStream().forEach(server -> {
+        allServer.values().parallelStream().forEach(server -> {
             log.debug("为后端{}添加channel注销消息", server);
             List<BackServer> list = pubs.get(channel);
             if (list == null) {
@@ -211,12 +210,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
      * @return 对应的后端，不存在时返回null
      */
     private BackServer getServer(String id) {
-        for (BackServer server : allServer) {
-            if (server.getId().equals(id)) {
-                return server;
-            }
-        }
-        return null;
+        return allServer.get(id);
     }
 
 

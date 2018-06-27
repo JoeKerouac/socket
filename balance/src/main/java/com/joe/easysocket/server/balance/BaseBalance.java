@@ -332,7 +332,7 @@ public class BaseBalance extends AbstractBalance {
      */
     private void addServer(BackServerInfo serverInfo) {
         BackServer server = buildServer(serverInfo);
-        allServer.add(server);
+        allServer.put(server.getId(), server);
         strategy.addLoad(server);
     }
 
@@ -343,11 +343,7 @@ public class BaseBalance extends AbstractBalance {
      */
     private void removeServer(String id) {
         strategy.removeLoad(id);
-        allServer.forEach(server -> {
-            if (server.getId().equals(id)) {
-                allServer.remove(server);
-            }
-        });
+        allServer.remove(id);
     }
 
     /**
@@ -358,9 +354,12 @@ public class BaseBalance extends AbstractBalance {
      */
     private void updateServer(String id, BackServerInfo serverInfo) {
         strategy.update(id, serverInfo);
-        allServer.forEach(server -> {
-            if (server.getId().equals(id)) {
-                server.update(serverInfo);
+        allServer.get(id);
+        allServer.compute(id, (k, v) -> {
+            if (v != null) {
+                return v.update(serverInfo);
+            } else {
+                return v;
             }
         });
     }

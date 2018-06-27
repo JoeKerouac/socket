@@ -21,6 +21,4 @@ public interface Balance extends EventCenter{
      * 关闭前端
      */
     void shutdown();
-
-
 }

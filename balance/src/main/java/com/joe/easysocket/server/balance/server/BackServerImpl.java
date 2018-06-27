@@ -73,9 +73,10 @@ public class BackServerImpl implements BackServer {
     }
 
     @Override
-    public void update(BackServerInfo info) {
+    public BackServer update(BackServerInfo info) {
         log.debug("更新虚拟后端{}的信息，更新后为：{}", this.info, info);
         this.info = info;
+        return this;
     }
 
     @Override
