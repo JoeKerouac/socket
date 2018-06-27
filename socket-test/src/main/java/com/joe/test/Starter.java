@@ -7,10 +7,11 @@ import com.joe.easysocket.server.balance.AbstractBalance;
 import com.joe.easysocket.server.balance.BaseBalance;
 import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.spi.PublishCenter;
-import com.joe.easysocket.server.common.spi.Registry;
+import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.spi.impl.publish.local.LocalPublishCenter;
 import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
+
+import java.util.Properties;
 
 /**
  * 辅助启动类
@@ -20,8 +21,19 @@ import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
  */
 public class Starter {
     static String host = "192.168.2.119";
-    static PublishCenter publishCenter = new LocalPublishCenter();
-    static Registry registry = new LocalRegistry();
+    static Properties enviroment;
+    static ClusterConfig clusterConfig;
+
+    static {
+        enviroment = new Properties();
+        LocalRegistry registry = new LocalRegistry();
+        LocalPublishCenter publishCenter = new LocalPublishCenter();
+        enviroment.put(Const.REGISTRY, registry);
+        enviroment.put(Const.PUBLISH_CENTER, publishCenter);
+
+        clusterConfig = ClusterConfig.builder().build();
+    }
+
 
     /**
      * 启动一个前端
@@ -29,8 +41,12 @@ public class Starter {
     static void startBalance() {
         try {
             com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
-                    .connectorManager(TCPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
-                            .publishCenter(publishCenter).registry(registry).build()).port(10051).host(host).build();
+                    .connectorManager(TCPConnectorManager.class.getName())
+                    .clusterConfig(clusterConfig)
+                    .port(10051)
+                    .host(host)
+                    .environment(enviroment)
+                    .build();
 
             AbstractBalance balance = new BaseBalance(config);
             balance.start(() -> System.out.println("***************服务器关闭了***************"));
@@ -55,11 +71,11 @@ public class Starter {
         try {
             Config config = Config.builder()
                     .beanContainer(beanContainer)
-                    .clusterConfig(ClusterConfig.builder()
-                            .registry(registry)
-                            .publishCenter(publishCenter).build())
+                    .clusterConfig(clusterConfig)
                     .host(host)
-                    .name("后端" + System.currentTimeMillis()).build();
+                    .name("后端" + System.currentTimeMillis())
+                    .environment(enviroment)
+                    .build();
 
             BackServer backServer = BackServer.build(config);
             backServer.start(() -> System.out.println("系统关闭了"));
