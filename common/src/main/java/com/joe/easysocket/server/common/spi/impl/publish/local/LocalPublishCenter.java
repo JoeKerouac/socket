@@ -6,6 +6,7 @@ import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -65,6 +66,11 @@ public class LocalPublishCenter implements PublishCenter {
 
     @Override
     public void shutdown() throws SystemException {
+
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
 
     }
 }

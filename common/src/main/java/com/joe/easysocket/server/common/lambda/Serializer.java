@@ -1,14 +1,17 @@
 package com.joe.easysocket.server.common.lambda;
 
 import com.joe.easysocket.server.common.exception.SerializeException;
+import com.joe.easysocket.server.common.spi.Spi;
 import com.joe.utils.parse.json.JsonParser;
+
+import java.util.Properties;
 
 /**
  * 序列化器
  *
  * @author joe
  */
-public interface Serializer {
+public interface Serializer extends Spi {
     /**
      * 序列化
      *
@@ -76,6 +79,11 @@ public interface Serializer {
         @Override
         public <T> boolean readable(Class<T> clazz) {
             return true;
+        }
+
+        @Override
+        public void setProperties(Properties environment) {
+
         }
     };
 }

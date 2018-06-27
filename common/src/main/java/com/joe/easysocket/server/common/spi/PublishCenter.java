@@ -10,12 +10,12 @@ import com.joe.easysocket.server.common.msg.CustomMessageListener;
  *
  * @author joe
  */
-public interface PublishCenter extends Endpoint {
+public interface PublishCenter extends Endpoint, Spi {
     /**
      * 发布消息
      *
      * @param channel 渠道
-     * @param message
+     * @param message 要发布的消息
      */
     <T> void pub(String channel, T message);
 

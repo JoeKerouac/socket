@@ -1,7 +1,9 @@
 package com.joe.easysocket.server.balance.server;
 
-import com.joe.easysocket.server.balance.Config;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
+import com.joe.easysocket.server.common.config.ClusterConfig;
+import com.joe.easysocket.server.common.config.Const;
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
@@ -52,18 +54,19 @@ public class BackServerImpl implements BackServer {
     /**
      * 虚拟后端构造器
      *
-     * @param config               配置
+     * @param environment          环境信息
      * @param info                 要代理的实际后端的信息
      * @param protocolDataListener 消息回复监听（后端处理完毕后的回复）
      * @param id                   前端的ID
      */
-    public BackServerImpl(Config config, BackServerInfo info, ProtocolDataListener protocolDataListener, String id) {
+    public BackServerImpl(Environment environment, BackServerInfo info, ProtocolDataListener protocolDataListener,
+                          String id) {
         this.info = info;
-        this.publishCenter = config.getClusterConfig().getPublishCenter();
+        this.publishCenter = environment.get(Const.PUBLISH_CENTER);
         this.protocolDataListener = protocolDataListener;
         this.topic = info.getTopic();
         this.id = id;
-        this.msgResp = config.getClusterConfig().getMsgResp();
+        this.msgResp = ((ClusterConfig) environment.get(Const.CLUSTER_CONFIG)).getMsgResp();
     }
 
     @Override

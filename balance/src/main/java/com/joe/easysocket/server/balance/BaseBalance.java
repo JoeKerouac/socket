@@ -1,6 +1,8 @@
 package com.joe.easysocket.server.balance;
 
-import com.joe.easysocket.server.balance.protocol.*;
+import com.joe.easysocket.server.balance.protocol.CloseCause;
+import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
+import com.joe.easysocket.server.balance.protocol.ProtocolEventListener;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.balance.server.BackServer;
 import com.joe.easysocket.server.balance.server.BackServerImpl;
@@ -8,6 +10,7 @@ import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.balance.strategy.LoadStrategy;
 import com.joe.easysocket.server.common.config.ClusterConfig;
+import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
 import com.joe.easysocket.server.common.exception.SystemException;
@@ -17,13 +20,12 @@ import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.utils.common.ClassUtils;
 import com.joe.utils.common.Tools;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 /**
  * 前端实现
@@ -65,10 +67,6 @@ public class BaseBalance extends AbstractBalance {
      */
     private ConnectorManager connectorManager;
     /**
-     * 注册中心
-     */
-    private Registry registry;
-    /**
      * 前端接受后端主动发的消息的通道
      */
     private String msgRecTopic;
@@ -99,8 +97,7 @@ public class BaseBalance extends AbstractBalance {
         super(config);
         ClusterConfig clusterConfig = config.getClusterConfig();
         this.registryBackServerUrl = clusterConfig.getRegistryBase() + clusterConfig.getBackServerGroup();
-        this.serializers = clusterConfig.getSerializers() == null ? Collections.emptyList() : clusterConfig
-                .getSerializers();
+        this.serializers = super.environment.get(Const.SERIALIZER_LIST);
         this.protocolDataListener = this::receiveData;
         //接受后端主动发来的消息
         this.customMessageListener = new CustomMessageListener<DataMsg>() {
@@ -116,11 +113,10 @@ public class BaseBalance extends AbstractBalance {
             }
         };
         this.strategy = config.getStrategy();
-        this.registry = clusterConfig.getRegistry();
 
         String connectorManagerClass = config.getConnectorManager();
+        log.debug("初始化ConnectorManager子类[{}]的实例", connectorManagerClass);
         try {
-            log.debug("初始化ConnectorManager子类[{}]的实例", connectorManagerClass);
             this.connectorManager = (ConnectorManager) ClassUtils.loadClass(connectorManagerClass).newInstance();
         } catch (Exception e) {
             log.error("构造ConnectorManager实例[{}]失败，可能是没有无参数构造器，请为ConnectorManager实现类[{}]增加无参数构造器",
@@ -128,7 +124,6 @@ public class BaseBalance extends AbstractBalance {
             throw new ConfigIllegalException("构造ConnectorManager实例[" + connectorManagerClass +
                     "]失败，可能是没有无参数构造器，请为ConnectorManager实现类[" + connectorManagerClass + "]增加无参数构造器", e);
         }
-
 
         String eventCenterClass = config.getEventCenter();
         EventCenter eventCenter;
@@ -372,7 +367,7 @@ public class BaseBalance extends AbstractBalance {
      */
     private BackServer buildServer(BackServerInfo serverInfo) {
         log.debug("根据真实后端信息{}构建虚拟后端", serverInfo);
-        BackServerImpl server = new BackServerImpl(config, serverInfo, protocolDataListener, id);
+        BackServerImpl server = new BackServerImpl(environment, serverInfo, protocolDataListener, id);
         log.debug("启动虚拟后端{}", serverInfo);
         server.start();
         return server;

@@ -10,6 +10,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.container.BaseBeanContainer
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.session.SessionManagerImpl;
 import com.joe.easysocket.server.backserver.spi.DataWorker;
+import com.joe.easysocket.server.common.config.Const;
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.NoRequireParamException;
 import com.joe.easysocket.server.common.msg.DataMsg;
@@ -50,16 +52,17 @@ public class MvcDataworker implements DataWorker {
     /**
      * 默认构造器
      *
-     * @param config 配置
-     * @param id     后端id
+     * @param environment 系统环境
+     * @param id          后端id
      */
-    public MvcDataworker(Config config, String id) {
-        this.sessionManager = new SessionManagerImpl(id, config);
-        this.publishCenter = config.getClusterConfig().getPublishCenter();
-        SessionManager sessionManager = new SessionManagerImpl(id, config);
-        BeanContainer beanContainer = config.getBeanContainer() == null ? new BaseBeanContainer(ClassUtils
-                .getDefaultClassLoader(), "com") : config
-                .getBeanContainer();
+    public MvcDataworker(Environment environment, String id) {
+        Config config = environment.get(Const.CONFIG);
+        this.sessionManager = new SessionManagerImpl(id, environment);
+        this.publishCenter = environment.get(Const.PUBLISH_CENTER);
+        BeanContainer beanContainer = config.getBeanContainer();
+        if (beanContainer == null) {
+            beanContainer = new BaseBeanContainer(ClassUtils.getDefaultClassLoader(), "com");
+        }
         int maxThread = config.getMaxThreadCount();
         int minThread = config.getMinThreadCount();
         long threadAliveTime = config.getThreadAliveTime();

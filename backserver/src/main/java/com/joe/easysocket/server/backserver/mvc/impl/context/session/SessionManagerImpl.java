@@ -1,9 +1,9 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context.session;
 
-import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.backserver.manager.ChannelManager;
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.context.SessionManager;
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.utils.concurrent.LockService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,11 +28,11 @@ public class SessionManagerImpl implements SessionManager {
     /**
      * 默认构造器
      *
-     * @param id     后端的ID
-     * @param config 后端配置
+     * @param id          后端的ID
+     * @param environment 环境信息
      */
-    public SessionManagerImpl(String id, Config config) {
-        this.channelManager = new ChannelManager(id, config);
+    public SessionManagerImpl(String id, Environment environment) {
+        this.channelManager = new ChannelManager(id, environment);
     }
 
     @Override

@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.Properties;
+
 /**
  * 前端配置，其中发布中心、注册中心、本机IP为必填项，其他都为选填项
  *
@@ -57,6 +59,11 @@ public class Config {
      */
     @Builder.Default
     private long ackTimeout = 1000;
+    /**
+     *
+     */
+    @Builder.Default
+    private Properties environment;
     /**
      * 连接管理
      */

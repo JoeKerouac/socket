@@ -1,16 +1,18 @@
 package com.joe.easysocket.server.backserver;
 
-import com.joe.easysocket.server.backserver.spi.DataWorker;
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.backserver.spi.DataWorker;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
+
+import java.util.Properties;
 
 /**
  * @author joe
  */
-@Data
+@Getter
 @Builder
 public class Config {
     /**
@@ -51,6 +53,11 @@ public class Config {
      */
     @Builder.Default
     private long threadAliveTime = 30;
+    /**
+     * 环境配置
+     */
+    @Builder.Default
+    private Properties environment;
     /**
      * 线程名字的格式，必须包含%d
      */

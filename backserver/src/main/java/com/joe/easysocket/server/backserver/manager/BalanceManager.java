@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.backserver.manager;
 
-import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.common.config.ClusterConfig;
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BalanceInfo;
 import com.joe.easysocket.server.common.lambda.Endpoint;
@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.joe.easysocket.server.common.config.Const.*;
 
 /**
  * @author joe
@@ -42,11 +44,11 @@ public class BalanceManager implements Endpoint {
      */
     private List<BalnceCloseListener> listeners;
 
-    public BalanceManager(Config config) {
-        ClusterConfig clusterConfig = config.getClusterConfig();
-        this.registry = clusterConfig.getRegistry();
+    public BalanceManager(Environment environment) {
+        ClusterConfig clusterConfig = environment.get(CLUSTER_CONFIG);
+        this.registry = environment.get(REGISTRY);
         this.registryPath = clusterConfig.getRegistryBase() + clusterConfig.getBalanceGroup();
-        this.serializers = clusterConfig.getSerializers();
+        this.serializers = environment.get(SERIALIZER_LIST);
         if (serializers == null) {
             serializers = Collections.emptyList();
         }

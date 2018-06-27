@@ -8,6 +8,7 @@ import com.joe.utils.parse.json.JsonParser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -113,5 +114,10 @@ public class LocalRegistry implements Registry {
     @Override
     public void close() throws IOException {
         registry.clear();
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+
     }
 }

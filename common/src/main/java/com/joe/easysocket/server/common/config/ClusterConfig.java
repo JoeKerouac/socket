@@ -1,8 +1,5 @@
 package com.joe.easysocket.server.common.config;
 
-import com.joe.easysocket.server.common.lambda.Serializer;
-import com.joe.easysocket.server.common.spi.PublishCenter;
-import com.joe.easysocket.server.common.spi.Registry;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -20,20 +17,20 @@ import java.util.List;
 @Getter
 public class ClusterConfig {
     /**
-     * pub/sub中心，需要保证一个topic所有端都能收到（包括前端、后端）
+     * pub/sub中心类名，需要保证一个topic所有端都能收到（包括前端、后端），优先采用环境中的，如果环境中没有实现那么采用该配置
      */
     @NonNull
-    private PublishCenter publishCenter;
+    private String publishCenter;
     /**
-     * 注册中心
+     * 注册中心类名，优先采用环境中的，如果环境中没有实现那么采用该配置
      */
     @NonNull
-    private Registry registry;
+    private String registry;
     /**
      * 序列化器，可以为null，序列化消息使用，当用户没有传入时使用默认的JSON序列化器
      */
     @Singular
-    private List<Serializer> serializers;
+    private List<String> serializers;
     /**
      * 消息ACK topic组名（系统会自动在后边添加上前端的ID保证topic唯一，所以不用担心其他前端收到该前端的消息）
      */

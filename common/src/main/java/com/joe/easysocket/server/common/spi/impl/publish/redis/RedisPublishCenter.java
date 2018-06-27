@@ -1,5 +1,6 @@
 package com.joe.easysocket.server.common.spi.impl.publish.redis;
 
+import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,37 +30,16 @@ public class RedisPublishCenter implements PublishCenter {
     /**
      * listener与topic的映射，用于根据listener查找topic
      */
-    private final Map<CustomMessageListener<?>, List<String>> listenerStringMap;
+    private Map<CustomMessageListener<?>, List<String>> listenerStringMap;
     /**
      * listener与ID的映射
      */
-    private final Map<ID, Integer> listenerId;
+    private Map<ID, Integer> listenerId;
     /**
      * topic与listener的映射，用于根据topic查找listener
      */
-    private final Map<String, List<CustomMessageListener<?>>> listenerMap;
+    private Map<String, List<CustomMessageListener<?>>> listenerMap;
 
-    /**
-     * 利用完整配置构建发布中心
-     *
-     * @param config 完整配置
-     */
-    public RedisPublishCenter(RedisBaseConfig config) {
-        this.clusterManager = RedisClusterManagerFactory.getInstance(config);
-        this.listenerStringMap = new ConcurrentHashMap<>();
-        this.listenerMap = new ConcurrentHashMap<>();
-        this.listenerId = new ConcurrentHashMap<>();
-    }
-
-    /**
-     * 使用端口号和主机地址快速构建发布中心
-     *
-     * @param host 主机地址
-     * @param port 端口
-     */
-    public RedisPublishCenter(String host, int port) {
-        this(RedisClusterManagerFactory.buildRedisConfig(host, port, null));
-    }
 
     @Override
     public <T> void pub(String channel, T message) {
@@ -156,6 +137,18 @@ public class RedisPublishCenter implements PublishCenter {
         listenerId.clear();
         listenerStringMap.clear();
         clusterManager.shutdown();
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+        RedisBaseConfig config = (RedisBaseConfig) properties.get(Const.REDIS_CONFIG);
+        if (config == null) {
+            throw new NullPointerException("redisConfig为null，使用redis发布中心请在环境中添加redisConfig");
+        }
+        this.clusterManager = RedisClusterManagerFactory.getInstance(config);
+        this.listenerStringMap = new ConcurrentHashMap<>();
+        this.listenerMap = new ConcurrentHashMap<>();
+        this.listenerId = new ConcurrentHashMap<>();
     }
 
     @Data

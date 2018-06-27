@@ -1,8 +1,9 @@
 package com.joe.easysocket.server.backserver.manager;
 
-import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.backserver.mvc.data.InterfaceData;
 import com.joe.easysocket.server.common.config.ClusterConfig;
+import com.joe.easysocket.server.common.config.Const;
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BalanceInfo;
@@ -11,9 +12,9 @@ import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.protocol.ChannelProxy;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
+import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.utils.common.Tools;
 import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.protocol.Datagram;
@@ -21,7 +22,6 @@ import com.joe.utils.protocol.DatagramUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,18 +72,17 @@ public class ChannelManager implements Endpoint {
      */
     private List<Serializer> serializers;
 
-
     /**
      * 默认构造器
      *
-     * @param id     后端ID
-     * @param config 配置
+     * @param id          后端ID
+     * @param environment 环境信息
      */
-    public ChannelManager(String id, Config config) {
+    public ChannelManager(String id, Environment environment) {
+        ClusterConfig clusterConfig = environment.get(Const.CLUSTER_CONFIG);
         this.id = id;
-        ClusterConfig clusterConfig = config.getClusterConfig();
-        this.balanceManager = new BalanceManager(config);
-        this.publishCenter = clusterConfig.getPublishCenter();
+        this.balanceManager = new BalanceManager(environment);
+        this.publishCenter = environment.get(Const.PUBLISH_CENTER);
         this.channelChangeAckTopic = clusterConfig.getChannelChangeAckTopic();
         this.channelChangeTopic = clusterConfig.getChannelChangeTopic();
         this.allChannels = new ConcurrentHashMap<>();
@@ -114,8 +113,7 @@ public class ChannelManager implements Endpoint {
             }
         };
         this.listener = this::write;
-        this.serializers = clusterConfig.getSerializers() == null ? Collections.emptyList() : clusterConfig
-                .getSerializers();
+        this.serializers = environment.get(Const.SERIALIZER_LIST);
     }
 
     /**
@@ -288,7 +286,6 @@ public class ChannelManager implements Endpoint {
         public int getPort() {
             return port;
         }
-
 
 
         @Override

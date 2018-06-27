@@ -1,9 +1,6 @@
 package com.joe.easysocket.server.common.spi;
 
 
-import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKConfig;
-import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKRegistry;
-
 import java.io.Closeable;
 import java.util.List;
 
@@ -12,7 +9,7 @@ import java.util.List;
  *
  * @author joe
  */
-public interface Registry extends Closeable {
+public interface Registry extends Closeable, Spi {
     /**
      * 启动注册中心，如果注册中心已经启动那么该方法将不会做任何事
      */
@@ -95,14 +92,4 @@ public interface Registry extends Closeable {
      * @throws Exception 添加监听器失败
      */
     void addListener(String path, NodeListener listener) throws Exception;
-
-    /**
-     * 构建zookeeper注册中心
-     *
-     * @param config zookeeper配置
-     * @return zookeeper注册中心
-     */
-    static Registry buildZKRegistry(ZKConfig config) {
-        return new ZKRegistry(config);
-    }
 }
