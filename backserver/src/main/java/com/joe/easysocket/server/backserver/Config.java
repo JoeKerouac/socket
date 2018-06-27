@@ -2,6 +2,7 @@ package com.joe.easysocket.server.backserver;
 
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.backserver.spi.DataWorker;
+import com.joe.easysocket.server.common.config.BaseConfig;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.Properties;
  */
 @Getter
 @Builder
-public class Config {
+public class Config implements BaseConfig {
     /**
      * 分布式节点配置
      */

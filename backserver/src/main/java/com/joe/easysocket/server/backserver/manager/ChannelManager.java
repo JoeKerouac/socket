@@ -8,7 +8,7 @@ import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BalanceInfo;
 import com.joe.easysocket.server.common.lambda.Endpoint;
-import com.joe.easysocket.server.common.lambda.Serializer;
+import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;

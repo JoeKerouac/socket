@@ -17,7 +17,7 @@ import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.info.BalanceInfo;
 import com.joe.easysocket.server.common.lambda.Function;
-import com.joe.easysocket.server.common.lambda.Serializer;
+import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.utils.common.ClassUtils;
@@ -398,7 +398,8 @@ public class BaseBalance extends AbstractBalance {
                     return serializer.read(data, BackServerInfo.class);
                 }
             }
-            return Serializer.DEFAULTSER.read(data, BackServerInfo.class);
+            log.warn("数据[{}]没有可用的序列化器", BackServerInfo.class);
+            return null;
         } catch (Exception e) {
             log.error("序列化数据{}出错", data, e);
             return null;

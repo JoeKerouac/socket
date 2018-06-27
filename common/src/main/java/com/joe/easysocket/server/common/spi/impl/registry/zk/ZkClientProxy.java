@@ -1,8 +1,8 @@
 package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
 import com.joe.easysocket.server.common.exception.ZKClientException;
-import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.spi.NodeEvent;
+import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.concurrent.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -442,8 +442,8 @@ class ZkClientProxy implements ZKClient {
                 return serializer.write(data);
             }
         }
-        log.debug("用户的序列化器没有可用的，使用默认序列化器序列化{}", data);
-        return Serializer.DEFAULTSER.write(data);
+        log.debug("对于数据[{}]没有可用的序列器", data);
+        return null;
     }
 
     /**
@@ -467,8 +467,8 @@ class ZkClientProxy implements ZKClient {
                 return serializer.read(data, clazz);
             }
         }
-        log.debug("用户的序列化器没有可用的，使用默认序列化器反序列化{}", data);
-        return Serializer.DEFAULTSER.read(data, clazz);
+        log.debug("对于数据[{}]、类型[{}]没有可用的序列化器", data, clazz);
+        return null;
     }
 
     /**
@@ -585,7 +585,8 @@ class ZkClientProxy implements ZKClient {
                 case CHILD_REMOVED:
                     log.info("接收到节点变化事件{}", event);
                     ChildData d = event.getData();
-                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi.ChildData(d.getPath(), d.getData());
+                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi
+                            .ChildData(d.getPath(), d.getData());
                     NodeEvent internalEvent = new NodeEvent(NodeEvent.Type.valueOf(type
                             .name().replace("CHILD", "NODE")), data);
                     childrenCacheListener.childEvent(this.client, internalEvent);
@@ -606,7 +607,8 @@ class ZkClientProxy implements ZKClient {
                 case NODE_REMOVED:
                     log.info("接收到节点变化事件{}", event);
                     ChildData d = event.getData();
-                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi.ChildData(d.getPath(), d.getData());
+                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi
+                            .ChildData(d.getPath(), d.getData());
                     NodeEvent internalEvent = new NodeEvent(NodeEvent.Type.valueOf(type
                             .name()), data);
                     childrenCacheListener.childEvent(this.client, internalEvent);

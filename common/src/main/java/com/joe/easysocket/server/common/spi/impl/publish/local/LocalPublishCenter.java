@@ -1,7 +1,7 @@
 package com.joe.easysocket.server.common.spi.impl.publish.local;
 
 import com.joe.easysocket.server.common.exception.SystemException;
-import com.joe.easysocket.server.common.lambda.Serializer;
+import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 

@@ -2,7 +2,7 @@ package com.joe.easysocket.server.common.spi.impl.publish.redis;
 
 import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.exception.SystemException;
-import com.joe.easysocket.server.common.lambda.Serializer;
+import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.utils.cluster.ClusterManager;

@@ -4,25 +4,16 @@ package com.joe.easysocket.server.backserver;
 import com.joe.easysocket.server.backserver.impl.MvcDataworker;
 import com.joe.easysocket.server.backserver.spi.DataWorker;
 import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.config.Environment;
-import com.joe.easysocket.server.common.exception.ConfigIllegalException;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.lambda.Function;
-import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
-import com.joe.easysocket.server.common.spi.SpiLoader;
-import com.joe.utils.collection.CollectionUtil;
 import com.joe.utils.common.Tools;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import static com.joe.easysocket.server.common.config.Const.PUBLISH_CENTER;
 import static com.joe.easysocket.server.common.config.Const.REGISTRY;
@@ -91,7 +82,7 @@ public interface BackServer {
 
         BackServerImpl(Config config) {
             ClusterConfig clusterConfig = config.getClusterConfig();
-            this.environment = build(config);
+            this.environment = Environment.build(config);
 
             this.registry = this.environment.get(REGISTRY);
             this.publishCenter = this.environment.get(PUBLISH_CENTER);
@@ -185,63 +176,6 @@ public interface BackServer {
                     log.error("执行关闭回调过程中异常", throwable);
                 }
             }
-        }
-
-        /**
-         * 构建环境信息
-         *
-         * @param config 用户Config
-         * @return 系统环境信息
-         */
-        private Environment build(Config config) {
-            ClusterConfig clusterConfig = config.getClusterConfig();
-            Environment environment = new Environment(config.getEnvironment());
-
-            Registry registry = environment.getSafe(REGISTRY, Registry.class);
-            if (registry == null) {
-                String registryClass = clusterConfig.getRegistry();
-                log.info("加载spi[{}]", registryClass);
-                registry = SpiLoader.loadSpi(registryClass, config.getEnvironment());
-                log.info("spi [{}] 加载完毕", registryClass);
-            } else {
-                log.info("从环境信息中获取到了registry [{}]", registry);
-            }
-
-            PublishCenter publishCenter = environment.getSafe(PUBLISH_CENTER, PublishCenter.class);
-            if (publishCenter == null) {
-                String publishCenterClass = clusterConfig.getPublishCenter();
-                log.info("加载spi[{}]", publishCenterClass);
-                publishCenter = SpiLoader.loadSpi(publishCenterClass, config.getEnvironment());
-                log.info("spi [{}] 加载完毕", publishCenterClass);
-            } else {
-                log.info("从环境信息中获取到了publishCenter [{}]", publishCenter);
-            }
-
-            List<Serializer> serializers;
-            List<String> serializerClassList = clusterConfig.getSerializers();
-
-            if (!CollectionUtil.safeIsEmpty(serializerClassList)) {
-                serializers = new ArrayList<>(serializerClassList.size());
-                serializerClassList.parallelStream().forEach(serializerClass -> {
-                    try {
-                        log.info("加载spi[{}]", serializerClass);
-                        Serializer serializer = SpiLoader.loadSpi(serializerClass, config.getEnvironment());
-                        log.info("spi [{}] 加载完毕", serializerClass);
-                        serializers.add(serializer);
-                    } catch (ConfigIllegalException e) {
-                        log.warn("序列化器[{}]加载失败，忽略序列化器[{}]", serializerClass, serializerClass, e);
-                    }
-                });
-            } else {
-                serializers = Collections.emptyList();
-            }
-
-            environment.put(Const.CONFIG, config);
-            environment.put(Const.CLUSTER_CONFIG, config.getClusterConfig());
-            environment.put(Const.REGISTRY, registry);
-            environment.put(Const.PUBLISH_CENTER, publishCenter);
-            environment.put(Const.SERIALIZER_LIST, serializers);
-            return environment;
         }
 
         /**

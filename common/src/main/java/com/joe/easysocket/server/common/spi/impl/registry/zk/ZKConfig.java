@@ -1,6 +1,6 @@
 package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
-import com.joe.easysocket.server.common.lambda.Serializer;
+import com.joe.easysocket.server.common.spi.Serializer;
 import lombok.Data;
 
 import java.util.List;

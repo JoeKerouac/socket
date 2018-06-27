@@ -1,10 +1,6 @@
-package com.joe.easysocket.server.common.lambda;
+package com.joe.easysocket.server.common.spi;
 
 import com.joe.easysocket.server.common.exception.SerializeException;
-import com.joe.easysocket.server.common.spi.Spi;
-import com.joe.utils.parse.json.JsonParser;
-
-import java.util.Properties;
 
 /**
  * 序列化器
@@ -48,42 +44,4 @@ public interface Serializer extends Spi {
      * @return 返回true表示可读
      */
     <T> boolean readable(Class<T> clazz);
-
-    /**
-     * 默认序列化器
-     */
-    Serializer DEFAULTSER = new Serializer() {
-        private final JsonParser parser = JsonParser.getInstance();
-
-        @Override
-        public byte[] write(Object obj) {
-            if (obj == null) {
-                return null;
-            }
-            return parser.toJson(obj).getBytes();
-        }
-
-        @Override
-        public <T> T read(byte[] data, Class<T> clazz) {
-            if (data == null || clazz == null) {
-                return null;
-            }
-            return parser.readAsObject(data, clazz);
-        }
-
-        @Override
-        public boolean writeable(Object obj) {
-            return true;
-        }
-
-        @Override
-        public <T> boolean readable(Class<T> clazz) {
-            return true;
-        }
-
-        @Override
-        public void setProperties(Properties environment) {
-
-        }
-    };
 }

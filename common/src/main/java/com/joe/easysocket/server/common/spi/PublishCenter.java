@@ -2,7 +2,6 @@ package com.joe.easysocket.server.common.spi;
 
 
 import com.joe.easysocket.server.common.lambda.Endpoint;
-import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 
 /**

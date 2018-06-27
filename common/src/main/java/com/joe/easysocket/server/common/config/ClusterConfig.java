@@ -19,12 +19,10 @@ public class ClusterConfig {
     /**
      * pub/sub中心类名，需要保证一个topic所有端都能收到（包括前端、后端），优先采用环境中的，如果环境中没有实现那么采用该配置
      */
-    @NonNull
     private String publishCenter;
     /**
      * 注册中心类名，优先采用环境中的，如果环境中没有实现那么采用该配置
      */
-    @NonNull
     private String registry;
     /**
      * 序列化器，可以为null，序列化消息使用，当用户没有传入时使用默认的JSON序列化器

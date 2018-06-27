@@ -5,8 +5,8 @@ import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BalanceInfo;
 import com.joe.easysocket.server.common.lambda.Endpoint;
-import com.joe.easysocket.server.common.lambda.Serializer;
 import com.joe.easysocket.server.common.spi.Registry;
+import com.joe.easysocket.server.common.spi.Serializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
@@ -139,7 +139,8 @@ public class BalanceManager implements Endpoint {
                     return serializer.read(data, BalanceInfo.class);
                 }
             }
-            return Serializer.DEFAULTSER.read(data, BalanceInfo.class);
+            log.warn("数据[{}]没有对应的序列化器", BalanceInfo.class);
+            return null;
         } catch (Exception e) {
             log.error("序列化数据{}出错", data, e);
             return null;

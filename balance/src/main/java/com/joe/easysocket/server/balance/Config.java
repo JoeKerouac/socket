@@ -4,6 +4,7 @@ import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
 import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.balance.strategy.LoadStrategy;
 import com.joe.easysocket.server.balance.strategy.PollLoadSrategy;
+import com.joe.easysocket.server.common.config.BaseConfig;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.Properties;
  */
 @Getter
 @Builder
-public class Config {
+public class Config implements BaseConfig {
     @NonNull
     private ClusterConfig clusterConfig;
     /**
@@ -60,7 +61,7 @@ public class Config {
     @Builder.Default
     private long ackTimeout = 1000;
     /**
-     *
+     * 用户环境信息
      */
     @Builder.Default
     private Properties environment;
