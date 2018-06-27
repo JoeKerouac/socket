@@ -19,6 +19,8 @@ import static com.joe.easysocket.server.common.config.Const.PUBLISH_CENTER;
 import static com.joe.easysocket.server.common.config.Const.REGISTRY;
 
 /**
+ * 系统环境信息
+ *
  * @author joe
  * @version 2018.06.27 13:33
  */
