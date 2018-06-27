@@ -12,7 +12,7 @@
 server端包含backserver和balance两个组件，其中balance负责管理客户端的socket连接和数据报的解析，解析后的数据报会交给backserver来处理。
 ### 构建自己的项目
 添加maven依赖如下：
-```
+```xml
 <dependencies>
     <dependency>
         <groupId>com.github.JoeKerouac</groupId>
@@ -40,7 +40,12 @@ import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.spi.impl.publish.local.LocalPublishCenter;
+import com.joe.easysocket.server.common.spi.impl.publish.redis.RedisPublishCenter;
 import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
+import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKConfig;
+import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKRegistry;
+import com.joe.utils.cluster.redis.RedisBaseConfig;
+import com.joe.utils.cluster.redis.RedisClusterManagerFactory;
 
 import java.util.Properties;
 
@@ -54,8 +59,27 @@ public class Starter {
     static String host = "192.168.2.119";
     static Properties enviroment;
     static ClusterConfig clusterConfig;
+    /**
+     * zookeeper连接，请替换为自己的链接
+     */
+    static String zkConn = "zookeeper.com:2181";
+    /**
+     * 替换为自己的redis地址
+     */
+    static String redisHost = "redis.com";
+    /**
+     * 替换为自己的redis密码，没有就是null
+     */
+    static String redisPassword = null;
+    /**
+     * 替换为自己的redis端口
+     */
+    static int redisPort = 6379;
 
-    static {
+    /**
+     * 使用本地注册中心和PUB/SUB实现，方便快速测试
+     */
+    static void useLocal() {
         enviroment = new Properties();
         LocalRegistry registry = new LocalRegistry();
         LocalPublishCenter publishCenter = new LocalPublishCenter();
@@ -63,6 +87,25 @@ public class Starter {
         enviroment.put(Const.PUBLISH_CENTER, publishCenter);
 
         clusterConfig = ClusterConfig.builder().build();
+    }
+
+    /**
+     * 使用redis作为PUB/SUB实现，使用zookeeper作为注册中心
+     */
+    static void useNet() {
+        enviroment = new Properties();
+
+        RedisBaseConfig redisBaseConfig = RedisClusterManagerFactory.buildRedisConfig(redisHost, redisPort, redisPassword);
+        enviroment.put(Const.REDIS_CONFIG, redisBaseConfig);
+        ZKConfig zkConfig = new ZKConfig();
+        zkConfig.setConnectStr(zkConn);
+        ZKRegistry registry = new ZKRegistry();
+        enviroment.put(Const.REGISTRY, registry);
+
+        clusterConfig = ClusterConfig.builder()
+                .registry(ZKRegistry.class.getName())
+                .publishCenter(RedisPublishCenter.class.getName())
+                .build();
     }
 
 
@@ -126,11 +169,14 @@ public class Starter {
 public class Test {
 
     public static void main(String[] args) throws Exception {
+        /*
+         * 如果要使用redis作为PUB/SUB中心，使用zookeeper作为注册中心的话使用Starter.useNet();代替下边的一行
+         */
+        Starter.useLocal();
         new Thread(Starter::startBackserver, "backserver").start();
         new Thread(Starter::startBalance, "balance").start();
     }
 }
-
 ```
 这样一个简单的服务器就启动成功了，但是该服务器不能提供服务，因为该服务器还没有实际处理逻辑，下面加一个简单的处理逻辑：
 ```java
