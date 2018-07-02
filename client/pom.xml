@@ -75,12 +75,6 @@
     </parent>
 
     <dependencies>
-        <!-- 生成get set方法 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <!-- 常用工具类 -->
         <dependency>
             <groupId>com.github.JoeKerouac</groupId>
