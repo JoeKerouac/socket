@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author joe
  * @version 2018.05.08 15:07
  */
-public class EventCenter implements EventListener{
-    private AtomicInteger counter;
+public class EventCenter implements EventListener {
+    private AtomicInteger               counter;
     private Map<Integer, EventListener> listeners;
 
     public EventCenter() {
@@ -51,6 +51,6 @@ public class EventCenter implements EventListener{
 
     @Override
     public void listen(SocketEvent event, Object... args) {
-        listeners.values().forEach(listener -> listener.listen(event , args));
+        listeners.values().forEach(listener -> listener.listen(event, args));
     }
 }

@@ -1,9 +1,9 @@
 package com.joe.easysocket.server.balance.protocol;
 
-import com.joe.easysocket.server.balance.spi.EventCenter;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.joe.easysocket.server.balance.spi.EventCenter;
 
 /**
  * 事件中心
@@ -22,7 +22,6 @@ public class DefaultEventCenter implements EventCenter {
         this.listeners.add(listener);
     }
 
-
     @Override
     public void discard(String channel, byte[] data) {
         listeners.forEach(listener -> listener.discard(channel, data));
@@ -32,7 +31,6 @@ public class DefaultEventCenter implements EventCenter {
     public void close(String channel, CloseCause closeCause) {
         listeners.forEach(listener -> listener.close(channel, closeCause));
     }
-
 
     @Override
     public void send(String channel, byte[] data) {

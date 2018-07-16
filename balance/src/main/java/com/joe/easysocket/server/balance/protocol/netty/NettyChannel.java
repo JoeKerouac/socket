@@ -1,12 +1,13 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
+import java.net.InetSocketAddress;
+
 import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import lombok.NonNull;
-
-import java.net.InetSocketAddress;
 
 /**
  * netty的channel
@@ -17,17 +18,17 @@ public abstract class NettyChannel implements PChannel {
     //实际netty的channel
     protected Channel channel;
     // 最后一次活动时间
-    protected long lastActive;
+    protected long    lastActive;
     //channel的ID
-    protected String id;
+    protected String  id;
     /**
      * port
      */
-    protected int port = -1;
+    protected int     port = -1;
     /**
      * host
      */
-    protected String host;
+    protected String  host;
 
     public NettyChannel(@NonNull Channel channel) {
         this.channel = channel;

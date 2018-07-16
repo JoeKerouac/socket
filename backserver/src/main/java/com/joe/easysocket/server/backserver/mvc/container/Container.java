@@ -1,10 +1,9 @@
 package com.joe.easysocket.server.backserver.mvc.container;
 
+import java.util.List;
 
 import com.joe.easysocket.server.backserver.mvc.Bean;
 import com.joe.easysocket.server.common.lambda.Endpoint;
-
-import java.util.List;
 
 /**
  * 容器

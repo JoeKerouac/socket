@@ -1,5 +1,8 @@
 package com.joe.easysocket.server.backserver.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.joe.easysocket.server.backserver.Config;
 import com.joe.easysocket.server.backserver.mvc.MvcController;
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
@@ -20,8 +23,6 @@ import com.joe.utils.common.ClassUtils;
 import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * MVC数据处理器
@@ -30,24 +31,24 @@ import org.slf4j.LoggerFactory;
  * @version 2018.03.06 11:44
  */
 public class MvcDataworker implements DataWorker {
-    private static final Logger logger = LoggerFactory.getLogger(MvcDataworker.class);
-    private static final JsonParser parser = JsonParser.getInstance();
+    private static final Logger     logger   = LoggerFactory.getLogger(MvcDataworker.class);
+    private static final JsonParser parser   = JsonParser.getInstance();
     /**
      * 发布中心
      */
-    private PublishCenter publishCenter;
+    private PublishCenter           publishCenter;
     /**
      * 服务器是否关闭标志，为true时表示关闭
      */
-    private volatile boolean shutdown = true;
+    private volatile boolean        shutdown = true;
     /**
      * MVC数据处理器内核
      */
-    private MvcController mvcController;
+    private MvcController           mvcController;
     /**
      * session管理器
      */
-    private SessionManager sessionManager;
+    private SessionManager          sessionManager;
 
     /**
      * 默认构造器
@@ -66,8 +67,8 @@ public class MvcDataworker implements DataWorker {
         int maxThread = config.getMaxThreadCount();
         int minThread = config.getMinThreadCount();
         long threadAliveTime = config.getThreadAliveTime();
-        this.mvcController = new MvcControllerImpl(sessionManager, beanContainer, maxThread, minThread,
-                threadAliveTime);
+        this.mvcController = new MvcControllerImpl(sessionManager, beanContainer, maxThread,
+            minThread, threadAliveTime);
     }
 
     @Override
@@ -109,7 +110,6 @@ public class MvcDataworker implements DataWorker {
                 return;
             }
 
-
             //获取信息
             ProtocolData protocolData = msg.getData();
             byte[] data = protocolData.getData();
@@ -123,19 +123,21 @@ public class MvcDataworker implements DataWorker {
             //构建session和HttpRequestContext
             Session session = sessionManager.get(channel, balanceId, port, host);
             HttpRequestContext requestContext = new HttpRequestContext(channel, msg.getTopic(),
-                    datagram, datagram.getCharset());
+                datagram, datagram.getCharset());
             requestContext.setSession(session);
             logger.debug("session和requestContext构建完成");
 
             logger.debug("将数据放入MVC处理器内核中处理");
             mvcController.deal(datagram, requestContext, result -> {
                 logger.debug("MVC处理器内核处理完毕，结果为：{}", result);
-                ProtocolData resultData = new ProtocolData(DatagramUtil.build(parser.toJson(result).getBytes(),
-                        (byte) 3, (byte) 1).getData(), port, host, protocolData
-                        .getChannel(), protocolData.getReqTime(), System.currentTimeMillis());
+                ProtocolData resultData = new ProtocolData(
+                    DatagramUtil.build(parser.toJson(result).getBytes(), (byte) 3, (byte) 1)
+                        .getData(),
+                    port, host, protocolData.getChannel(), protocolData.getReqTime(),
+                    System.currentTimeMillis());
 
-                logger.debug("MVC数据处理器处理{}的结果为：{}；将该结果发送至底层，对应的通道信息为：{}", datagram,
-                        result, protocolData.getChannel());
+                logger.debug("MVC数据处理器处理{}的结果为：{}；将该结果发送至底层，对应的通道信息为：{}", datagram, result,
+                    protocolData.getChannel());
                 msg.setData(resultData);
                 //响应数据
                 publishCenter.pub(msg.getRespTopic(), msg);

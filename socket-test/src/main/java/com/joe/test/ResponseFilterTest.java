@@ -14,7 +14,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.filter.NioResponseFilter;
 @Provider
 public class ResponseFilterTest extends NioResponseFilter {
     @Override
-    public void responseFilter(HttpRequestContext.RequestWrapper request, HttpResponseContext.Response response) {
+    public void responseFilter(HttpRequestContext.RequestWrapper request,
+                               HttpResponseContext.Response response) {
         System.out.println("响应数据为：" + response.getResult());
     }
 }

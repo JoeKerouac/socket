@@ -1,11 +1,11 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource.annotation;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 定义接收数据的处理方式
@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Documented
 @Retention(RUNTIME)
-@Target({METHOD})
+@Target({ METHOD })
 public @interface Consumes {
     /**
      * 接收数据的处理方式，默认json

@@ -1,8 +1,11 @@
 package com.joe.easysocket.server.balance.protocol.netty.udp;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.common.exception.SystemException;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -14,8 +17,6 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * @author joe
  * @version 2018.06.21 16:30
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class UDPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
     //当前服务器是否运行，只有调用start才会改变状态
-    private AtomicBoolean start = new AtomicBoolean(false);
+    private AtomicBoolean  start = new AtomicBoolean(false);
     // 处理请求的线程组，默认是机器核心的两倍
     private EventLoopGroup workerGroup;
 
@@ -78,14 +79,14 @@ public class UDPConnectorManager extends AbstractConnectorManager implements Con
                 bootstrap.channel(NioDatagramChannel.class);
             }
 
-
             // 带child**的方法例如childHandler（）都是对应的worker线程组，不带child的对应的boss线程组
             bootstrap.group(workerGroup).handler(new ChannelInitializer<DatagramChannel>() {
                 @Override
                 public void initChannel(DatagramChannel ch) throws Exception {
                     // UDP处理链，顺序不能变
-                    ch.pipeline().addLast(datagramDecoder, new UDPConnectorAdapter(UDPConnectorManager.this,
-                            eventCenter), datagramEncoder);
+                    ch.pipeline().addLast(datagramDecoder,
+                        new UDPConnectorAdapter(UDPConnectorManager.this, eventCenter),
+                        datagramEncoder);
                 }
             }).option(ChannelOption.SO_BACKLOG, backlog).option(ChannelOption.TCP_NODELAY, nodelay);
 

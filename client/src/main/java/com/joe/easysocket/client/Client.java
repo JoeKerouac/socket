@@ -1,5 +1,9 @@
 package com.joe.easysocket.client;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.SocketChannel;
+
 import com.joe.easysocket.client.core.*;
 import com.joe.easysocket.client.data.Datagram;
 import com.joe.easysocket.client.exception.NoRequireParamException;
@@ -7,11 +11,8 @@ import com.joe.easysocket.client.ext.EventListenerAdapter;
 import com.joe.easysocket.client.ext.InternalLogger;
 import com.joe.easysocket.client.ext.Logger;
 import com.joe.easysocket.client.ext.Serializer;
-import lombok.Builder;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.SocketChannel;
+import lombok.Builder;
 
 /**
  * 客户端
@@ -20,65 +21,65 @@ import java.nio.channels.SocketChannel;
  */
 public class Client {
     //默认空实现日志对象
-    private static final Logger DEFAULT = new Logger() {
-        @Override
-        public void debug(String msg) {
-            System.out.println(msg);
-        }
+    private static final Logger DEFAULT  = new Logger() {
+                                             @Override
+                                             public void debug(String msg) {
+                                                 System.out.println(msg);
+                                             }
 
-        @Override
-        public void info(String msg) {
-            System.out.println(msg);
-        }
+                                             @Override
+                                             public void info(String msg) {
+                                                 System.out.println(msg);
+                                             }
 
-        @Override
-        public void warn(String msg) {
-            System.out.println(msg);
-        }
+                                             @Override
+                                             public void warn(String msg) {
+                                                 System.out.println(msg);
+                                             }
 
-        @Override
-        public void error(String msg) {
-            System.out.println(msg);
-        }
+                                             @Override
+                                             public void error(String msg) {
+                                                 System.out.println(msg);
+                                             }
 
-        @Override
-        public void debug(String flag, String msg) {
-            System.out.println(flag + ":" + msg);
-        }
+                                             @Override
+                                             public void debug(String flag, String msg) {
+                                                 System.out.println(flag + ":" + msg);
+                                             }
 
-        @Override
-        public void info(String flag, String msg) {
-            System.out.println(flag + ":" + msg);
-        }
+                                             @Override
+                                             public void info(String flag, String msg) {
+                                                 System.out.println(flag + ":" + msg);
+                                             }
 
-        @Override
-        public void warn(String flag, String msg) {
-            System.out.println(flag + ":" + msg);
-        }
+                                             @Override
+                                             public void warn(String flag, String msg) {
+                                                 System.out.println(flag + ":" + msg);
+                                             }
 
-        @Override
-        public void error(String flag, String msg) {
-            System.out.println(flag + ":" + msg);
-        }
-    };
-    private Reader reader;
-    private Writer writer;
+                                             @Override
+                                             public void error(String flag, String msg) {
+                                                 System.out.println(flag + ":" + msg);
+                                             }
+                                         };
+    private Reader              reader;
+    private Writer              writer;
     //日志对象
-    private Logger logger;
-    private Logger proxy;
-    private String host;
-    private int port;
-    private volatile boolean shutdown = true;
+    private Logger              logger;
+    private Logger              proxy;
+    private String              host;
+    private int                 port;
+    private volatile boolean    shutdown = true;
     //心跳线程
-    private Thread heartbeatThread;
+    private Thread              heartbeatThread;
     //最后一次发送数据的时间的时间戳
-    private long lastActive;
+    private long                lastActive;
     //心跳周期，单位为秒
-    private long heartbeat;
+    private long                heartbeat;
     //序列化器
-    private Serializer serializer;
+    private Serializer          serializer;
     //事件中心
-    private EventCenter eventCenter;
+    private EventCenter         eventCenter;
 
     @Builder
     private Client(String host, int port, Logger logger, Serializer serializer, int heartbeat) {
@@ -95,7 +96,8 @@ public class Client {
         this.host = host;
         this.port = port;
         this.logger = logger == null ? DEFAULT : logger;
-        this.proxy = logger instanceof InternalLogger ? logger : InternalLogger.getLogger(logger, Client.class);
+        this.proxy = logger instanceof InternalLogger ? logger
+            : InternalLogger.getLogger(logger, Client.class);
         this.heartbeat = heartbeat > 30 ? heartbeat : 30;
         this.serializer = serializer;
         this.eventCenter = new EventCenter();
@@ -146,13 +148,15 @@ public class Client {
         try {
             channel = SocketChannel.open();
             if (!channel.connect(new InetSocketAddress(host, port))) {
-                logger.debug(Client.class.getName(),"启动失败");
+                logger.debug(Client.class.getName(), "启动失败");
                 return false;
             }
 
             this.lastActive = System.currentTimeMillis();
-            this.reader = new Reader(channel, logger, this::reconnect, serializer, this, this.eventCenter);
-            this.writer = new Writer(channel.socket().getOutputStream(), logger, serializer, this::reconnect);
+            this.reader = new Reader(channel, logger, this::reconnect, serializer, this,
+                this.eventCenter);
+            this.writer = new Writer(channel.socket().getOutputStream(), logger, serializer,
+                this::reconnect);
 
             logger.debug(Client.class.getName(), "注册自动ACK监听器");
             register(new EventListenerAdapter() {

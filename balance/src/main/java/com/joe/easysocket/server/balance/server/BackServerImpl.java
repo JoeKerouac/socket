@@ -8,6 +8,7 @@ import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.spi.PublishCenter;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -20,19 +21,19 @@ public class BackServerImpl implements BackServer {
     /**
      * 后端信息
      */
-    private BackServerInfo info;
+    private BackServerInfo                 info;
     /**
      * 发布中心
      */
-    private final PublishCenter publishCenter;
+    private final PublishCenter            publishCenter;
     /**
      * 后端消息响应监听
      */
-    private final ProtocolDataListener protocolDataListener;
+    private final ProtocolDataListener     protocolDataListener;
     /**
      * 真实后端的根topic
      */
-    private final String topic;
+    private final String                   topic;
     /**
      * 后端消息响应代理监听
      */
@@ -40,16 +41,15 @@ public class BackServerImpl implements BackServer {
     /**
      * 记录后端是否启动
      */
-    private boolean started = false;
+    private boolean                        started = false;
     /**
      * 消息回复的topic
      */
-    private String msgResp;
+    private String                         msgResp;
     /**
      * 前端ID
      */
-    private String id;
-
+    private String                         id;
 
     /**
      * 虚拟后端构造器
@@ -59,8 +59,8 @@ public class BackServerImpl implements BackServer {
      * @param protocolDataListener 消息回复监听（后端处理完毕后的回复）
      * @param id                   前端的ID
      */
-    public BackServerImpl(Environment environment, BackServerInfo info, ProtocolDataListener protocolDataListener,
-                          String id) {
+    public BackServerImpl(Environment environment, BackServerInfo info,
+                          ProtocolDataListener protocolDataListener, String id) {
         this.info = info;
         this.publishCenter = environment.get(Const.PUBLISH_CENTER);
         this.protocolDataListener = protocolDataListener;

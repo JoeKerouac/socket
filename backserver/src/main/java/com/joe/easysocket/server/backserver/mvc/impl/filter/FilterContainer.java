@@ -1,20 +1,19 @@
 package com.joe.easysocket.server.backserver.mvc.impl.filter;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.container.Selector;
+import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.FilterException;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ResponseFilterException;
 import com.joe.utils.scan.ScannerException;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * filter容器
@@ -28,7 +27,7 @@ public class FilterContainer extends AbstractContainer<NioFilter> {
 
     // 存放filter，其中key为优先级
     private TreeMap<Integer, NioFilter> filters;
-    private boolean init = false;
+    private boolean                     init = false;
 
     public void register(List<Class<NioFilter>> classes) {
         classes.forEach(clazz -> {
@@ -135,8 +134,8 @@ public class FilterContainer extends AbstractContainer<NioFilter> {
      * @param request  请求信息
      * @param response 响应信息
      */
-    public void responseFilter(HttpRequestContext.RequestWrapper request, HttpResponseContext.Response response) throws
-            FilterException {
+    public void responseFilter(HttpRequestContext.RequestWrapper request,
+                               HttpResponseContext.Response response) throws FilterException {
         try {
             logger.debug("开始响应filter");
             filters.forEach((key, value) -> value.responseFilter(request, response));

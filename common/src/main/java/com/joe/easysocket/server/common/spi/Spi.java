@@ -1,8 +1,8 @@
 package com.joe.easysocket.server.common.spi;
 
-import lombok.NonNull;
-
 import java.util.Properties;
+
+import lombok.NonNull;
 
 /**
  * SPI，所有的spi接口都应该继承该接口

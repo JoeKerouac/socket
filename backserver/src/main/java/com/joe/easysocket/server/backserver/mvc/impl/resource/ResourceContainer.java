@@ -1,15 +1,14 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
-
-import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
-import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
-import com.joe.easysocket.server.backserver.mvc.container.Selector;
-import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.container.Selector;
+import com.joe.easysocket.server.backserver.mvc.impl.container.AbstractContainer;
+import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 
 /**
  * 资源容器，该类的实例应该为全局唯一
@@ -22,7 +21,7 @@ public class ResourceContainer extends AbstractContainer<Resource> {
     }
 
     // 构建API
-    private ApiBuilder apiBuilder = ApiBuilder.getInstance();
+    private ApiBuilder            apiBuilder = ApiBuilder.getInstance();
     // 资源容器，key为资源路径，value为对应的资源
     private Map<String, Resource> container;
 

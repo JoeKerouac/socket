@@ -1,16 +1,17 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import com.joe.easysocket.server.backserver.mvc.coder.DataReader;
 import com.joe.easysocket.server.backserver.mvc.context.RequestContext;
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Resource;
 import com.joe.utils.protocol.Datagram;
-import lombok.Data;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import lombok.Data;
 
 /**
  * 请求上下文
@@ -18,31 +19,31 @@ import java.util.stream.Collectors;
  * @author joe
  */
 @Data
-public class HttpRequestContext implements RequestContext{
+public class HttpRequestContext implements RequestContext {
     // 请求来源
-    private final String source;
+    private final String         source;
     // 请求body
-    private final byte[] data;
+    private final byte[]         data;
     //请求数据包
-    private final Datagram datagram;
+    private final Datagram       datagram;
     // 请求开始时间
-    private final long beginTime;
+    private final long           beginTime;
     // 请求
     private final RequestWrapper request;
     // 解析后的参数
-    private Object[] params;
+    private Object[]             params;
     // 请求的资源
-    private Resource resource;
+    private Resource             resource;
     // 请求结束时间
-    private long endTime;
+    private long                 endTime;
     //本次请求对应的session
-    private Session session;
+    private Session              session;
     //本次请求编码
-    private final String charset;
+    private final String         charset;
     // 数据编码器
-    private DataReader reader;
+    private DataReader           reader;
     //前端接收数据的topic
-    private String topic;
+    private String               topic;
 
     /**
      * @param source   对应的通道ID
@@ -67,8 +68,8 @@ public class HttpRequestContext implements RequestContext{
      */
     public static class RequestWrapper {
         private final HttpRequestContext requestContext;
-        private InputStream inputStream;
-        private Object[] entity;
+        private InputStream              inputStream;
+        private Object[]                 entity;
 
         private RequestWrapper(HttpRequestContext requestContext) {
             this.requestContext = requestContext;
@@ -99,9 +100,11 @@ public class HttpRequestContext implements RequestContext{
          */
         public synchronized Object[] getEntity() {
             if (entity == null) {
-                entity = Arrays.stream(requestContext.getParams()).filter(param -> !(param instanceof HttpRequestContext
-                        || param instanceof Session || param instanceof HttpResponseContext)).collect(Collectors.toList()
-                ).toArray();
+                entity = Arrays.stream(requestContext.getParams())
+                    .filter(
+                        param -> !(param instanceof HttpRequestContext || param instanceof Session
+                                   || param instanceof HttpResponseContext))
+                    .collect(Collectors.toList()).toArray();
             }
             return entity;
         }

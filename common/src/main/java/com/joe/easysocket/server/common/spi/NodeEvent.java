@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.common.spi;
 
-
 import lombok.Data;
 
 /**
@@ -10,27 +9,27 @@ import lombok.Data;
  */
 @Data
 public class NodeEvent {
-    private final Type type;
+    private final Type      type;
     private final ChildData data;
 
     /**
      * Type of change
      */
     public enum Type {
-        /**
-         * A child was added to the path
-         */
-        NODE_ADDED,
+                      /**
+                       * A child was added to the path
+                       */
+                      NODE_ADDED,
 
-        /**
-         * A child's data was changed
-         */
-        NODE_UPDATED,
+                      /**
+                       * A child's data was changed
+                       */
+                      NODE_UPDATED,
 
-        /**
-         * A child was removed from the path
-         */
-        NODE_REMOVED,
+                      /**
+                       * A child was removed from the path
+                       */
+                      NODE_REMOVED,
     }
 
     /**

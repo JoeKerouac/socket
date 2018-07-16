@@ -21,7 +21,8 @@ public class TCPDatagramEncoder extends MessageToByteEncoder<byte[]> {
     }
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+    public void write(ChannelHandlerContext ctx, Object msg,
+                      ChannelPromise promise) throws Exception {
         log.debug("写出channel数据");
         super.write(ctx, msg, promise);
         // 写完后flush

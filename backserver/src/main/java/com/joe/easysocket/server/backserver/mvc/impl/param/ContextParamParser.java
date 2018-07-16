@@ -1,14 +1,15 @@
 package com.joe.easysocket.server.backserver.mvc.impl.param;
 
-import com.joe.easysocket.server.backserver.mvc.container.Provider;
-import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
-import com.joe.easysocket.server.backserver.mvc.context.Session;
-import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
-import com.joe.utils.type.BaseType;
+import java.lang.annotation.Annotation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.Annotation;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.context.Session;
+import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
+import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
+import com.joe.utils.type.BaseType;
 
 /**
  * Context参数解析器
@@ -25,8 +26,8 @@ public class ContextParamParser implements ParamInterceptor {
         for (Annotation annotation : annotations) {
             if (annotation instanceof Context) {
                 BaseType type = (BaseType) param.getType();
-                if (HttpRequestContext.RequestWrapper.class.isAssignableFrom(type.getType()) || Session.class
-                        .isAssignableFrom(type.getType())) {
+                if (HttpRequestContext.RequestWrapper.class.isAssignableFrom(type.getType())
+                    || Session.class.isAssignableFrom(type.getType())) {
                     return true;
                 } else {
                     logger.warn("参数含有@Context注解，但是参数类型是{}", type);

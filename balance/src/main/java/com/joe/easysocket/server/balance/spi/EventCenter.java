@@ -35,7 +35,6 @@ public interface EventCenter {
      */
     void close(String channel, CloseCause closeCause);
 
-
     /**
      * 当有消息从协议栈发送到底层准备发往客户端时会触发该方法
      *

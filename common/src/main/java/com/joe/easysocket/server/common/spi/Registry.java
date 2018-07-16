@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.common.spi;
 
-
 import java.io.Closeable;
 import java.util.List;
 

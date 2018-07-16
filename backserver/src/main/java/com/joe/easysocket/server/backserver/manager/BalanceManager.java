@@ -1,13 +1,6 @@
 package com.joe.easysocket.server.backserver.manager;
 
-import com.joe.easysocket.server.common.config.ClusterConfig;
-import com.joe.easysocket.server.common.config.Environment;
-import com.joe.easysocket.server.common.exception.SystemException;
-import com.joe.easysocket.server.common.info.BalanceInfo;
-import com.joe.easysocket.server.common.lambda.Endpoint;
-import com.joe.easysocket.server.common.spi.Registry;
-import com.joe.easysocket.server.common.spi.Serializer;
-import lombok.extern.slf4j.Slf4j;
+import static com.joe.easysocket.server.common.config.Const.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +8,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.joe.easysocket.server.common.config.Const.*;
+import com.joe.easysocket.server.common.config.ClusterConfig;
+import com.joe.easysocket.server.common.config.Environment;
+import com.joe.easysocket.server.common.exception.SystemException;
+import com.joe.easysocket.server.common.info.BalanceInfo;
+import com.joe.easysocket.server.common.lambda.Endpoint;
+import com.joe.easysocket.server.common.spi.Registry;
+import com.joe.easysocket.server.common.spi.Serializer;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author joe
@@ -25,20 +26,20 @@ public class BalanceManager implements Endpoint {
     /**
      * 是否启动
      */
-    private volatile boolean started = false;
-    private Map<String, BalanceInfo> balances;
+    private volatile boolean          started = false;
+    private Map<String, BalanceInfo>  balances;
     /**
      * 前端注册地址
      */
-    private String registryPath;
+    private String                    registryPath;
     /**
      * 注册中心
      */
-    private Registry registry;
+    private Registry                  registry;
     /**
      * 序列化器
      */
-    private List<Serializer> serializers;
+    private List<Serializer>          serializers;
     /**
      * 前端关闭监听
      */
@@ -122,7 +123,6 @@ public class BalanceManager implements Endpoint {
         started = true;
     }
 
-
     /**
      * 序列化数据，将byte数据反序列化为{@link com.joe.easysocket.server.common.info.BalanceInfo}
      *
@@ -146,7 +146,6 @@ public class BalanceManager implements Endpoint {
             return null;
         }
     }
-
 
     @Override
     public void shutdown() throws SystemException {

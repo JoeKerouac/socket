@@ -22,8 +22,7 @@ public class SystemException extends RuntimeException {
         super(cause);
     }
 
-    protected SystemException(String message, Throwable cause,
-                              boolean enableSuppression,
+    protected SystemException(String message, Throwable cause, boolean enableSuppression,
                               boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

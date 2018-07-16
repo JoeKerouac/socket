@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.common.lambda;
 
-
 import com.joe.easysocket.server.common.exception.SystemException;
 
 /**

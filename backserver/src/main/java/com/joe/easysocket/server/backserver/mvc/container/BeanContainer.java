@@ -1,10 +1,9 @@
 package com.joe.easysocket.server.backserver.mvc.container;
 
-
-import com.joe.easysocket.server.common.lambda.Endpoint;
-
 import java.lang.annotation.Annotation;
 import java.util.Map;
+
+import com.joe.easysocket.server.common.lambda.Endpoint;
 
 /**
  * bean容器，需要可以扫描生成带有{@link Provider @Provider}注解的bean

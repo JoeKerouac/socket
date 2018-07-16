@@ -11,17 +11,17 @@ import com.joe.easysocket.client.ext.Serializer;
  */
 public abstract class Worker {
     //序列化器
-    Serializer serializer;
+    Serializer       serializer;
     //日志对象
-    Logger logger;
+    Logger           logger;
     //当前服务器状态
     volatile boolean shutdown = true;
     //工作线程
-    Thread worker;
+    Thread           worker;
     //关闭回调，系统关闭时会调用
-    Callback callback;
+    Callback         callback;
     //数据报工具
-    DatagramUtil datagramUtil;
+    DatagramUtil     datagramUtil;
 
     public Worker(Logger logger, Callback callback, Serializer serializer) {
         this.logger = logger;

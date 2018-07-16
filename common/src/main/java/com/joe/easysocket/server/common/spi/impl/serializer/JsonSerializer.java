@@ -1,11 +1,11 @@
 package com.joe.easysocket.server.common.spi.impl.serializer;
 
-import com.joe.easysocket.server.common.spi.Serializer;
-import com.joe.utils.parse.json.JsonParser;
+import static com.joe.utils.parse.json.JsonParser.getInstance;
 
 import java.util.Properties;
 
-import static com.joe.utils.parse.json.JsonParser.getInstance;
+import com.joe.easysocket.server.common.spi.Serializer;
+import com.joe.utils.parse.json.JsonParser;
 
 /**
  * JSON序列化器

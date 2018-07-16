@@ -1,14 +1,15 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
+import java.lang.reflect.Method;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 import com.joe.utils.scan.ClassScanner;
 import com.joe.utils.scan.MethodScanner;
 import com.joe.utils.scan.ScannerException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * API构建工具
@@ -16,12 +17,13 @@ import java.util.*;
  * @author joe
  */
 class ApiBuilder {
-    private static final Logger logger = LoggerFactory.getLogger(ApiBuilder.class);
-    private static final Object lock = new Object();
-    private ClassScanner classScanner = ClassScanner.getInstance();
-    private MethodScanner methodScanner = MethodScanner.getInstance();
-    private ResourceClassFilter resourceClassFilter = new ResourceClassFilter();
-    private ResourceMethodFilter resourceMethodFilter = new ResourceMethodFilter();
+    private static final Logger        logger               = LoggerFactory
+        .getLogger(ApiBuilder.class);
+    private static final Object        lock                 = new Object();
+    private ClassScanner               classScanner         = ClassScanner.getInstance();
+    private MethodScanner              methodScanner        = MethodScanner.getInstance();
+    private ResourceClassFilter        resourceClassFilter  = new ResourceClassFilter();
+    private ResourceMethodFilter       resourceMethodFilter = new ResourceMethodFilter();
     private static volatile ApiBuilder apiBuilder;
 
     private ApiBuilder() {
@@ -51,13 +53,15 @@ class ApiBuilder {
             return Collections.emptyMap();
         }
         // 扫描API类中的API方法
-        List<Method> methodList = methodScanner.scan(Collections.singletonList(resourceMethodFilter), clazz);
+        List<Method> methodList = methodScanner
+            .scan(Collections.singletonList(resourceMethodFilter), clazz);
         if (methodList.isEmpty()) {
             return Collections.emptyMap();
         }
         Map<String, Resource> resources = new TreeMap<>();
         // 构建API说明并添加到apiList中去
-        resources.putAll(ApiUtil.buildResource(arg, clazz, methodList.toArray(new Method[methodList.size()])));
+        resources.putAll(
+            ApiUtil.buildResource(arg, clazz, methodList.toArray(new Method[methodList.size()])));
         return resources;
     }
 
@@ -89,7 +93,8 @@ class ApiBuilder {
     public Map<String, Resource> buildResource(String root) {
         logger.debug("开始扫描资源，扫描根路径为：{}", root);
         // 扫描所有API类
-        List<Class<?>> classList = classScanner.scan(Collections.singletonList(resourceClassFilter), root);
+        List<Class<?>> classList = classScanner.scan(Collections.singletonList(resourceClassFilter),
+            root);
         return buildResourceFromClass(classList);
     }
 

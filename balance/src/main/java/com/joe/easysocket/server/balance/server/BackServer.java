@@ -48,10 +48,10 @@ public interface BackServer extends Endpoint {
      */
     BackServerInfo getServerInfo();
 
-//    /**
-//     * 获取当前虚拟服务端队列中等待发送的数据队列的长度
-//     *
-//     * @return 当前虚拟服务端等待发送队列的长度
-//     */
-//    long getWait();
+    //    /**
+    //     * 获取当前虚拟服务端队列中等待发送的数据队列的长度
+    //     *
+    //     * @return 当前虚拟服务端等待发送队列的长度
+    //     */
+    //    long getWait();
 }

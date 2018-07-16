@@ -1,6 +1,7 @@
 package com.joe.easysocket.server.common.data;
 
 import com.joe.utils.protocol.DatagramUtil;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,27 +17,27 @@ public class ProtocolData {
     /**
      * 要发送的数据
      */
-    private byte[] data;
+    private byte[]              data;
     /**
      * 客户端的port
      */
-    private int port;
+    private int                 port;
     /**
      * 客户端的IP
      */
-    private String host;
+    private String              host;
     /**
      * 该消息对应的通道
      */
-    private String channel;
+    private String              channel;
     /**
      * 该消息创建时间
      */
-    private long reqTime;
+    private long                reqTime;
     /**
      * 该消息响应时间
      */
-    private long respTime;
+    private long                respTime;
 
     /**
      * 构造器
@@ -46,7 +47,8 @@ public class ProtocolData {
      * @param host    客户端IP
      * @param channel 客户端通道ID
      */
-    public ProtocolData(byte[] data, int port, String host, String channel, long reqTime, long respTime) {
+    public ProtocolData(byte[] data, int port, String host, String channel, long reqTime,
+                        long respTime) {
         this.data = data;
         this.port = port;
         this.host = host;
@@ -64,6 +66,7 @@ public class ProtocolData {
      * @return 心跳包
      */
     public static ProtocolData buildHeartbeat(int port, String host, String channel) {
-        return new ProtocolData(heartbeat, port, host, channel, System.currentTimeMillis(), System.currentTimeMillis());
+        return new ProtocolData(heartbeat, port, host, channel, System.currentTimeMillis(),
+            System.currentTimeMillis());
     }
 }

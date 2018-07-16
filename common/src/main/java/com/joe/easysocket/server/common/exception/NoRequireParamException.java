@@ -15,10 +15,10 @@ public class NoRequireParamException extends SystemException {
         super(convert(args));
     }
 
-    private static String convert(String... args){
+    private static String convert(String... args) {
         StringBuilder arg = new StringBuilder("缺少必要的参数：");
         for (String str : args) {
-            if(str == null){
+            if (str == null) {
                 continue;
             }
             arg.append(str).append("、");

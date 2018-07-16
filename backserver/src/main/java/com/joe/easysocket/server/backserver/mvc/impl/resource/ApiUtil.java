@@ -1,5 +1,10 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.*;
+
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamterNoNamingException;
 import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
 import com.joe.easysocket.server.backserver.mvc.impl.param.GeneralParam;
@@ -8,11 +13,6 @@ import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Produces;
 import com.joe.utils.type.JavaType;
 import com.joe.utils.type.ReflectUtil;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.*;
 
 /**
  * API构建工具
@@ -62,7 +62,8 @@ class ApiUtil {
      * @return resource 根据指定参数构建的资源
      */
     @SuppressWarnings("unchecked")
-    public static Resource buildResource(Object instance, Class<?> resourceClass, Method resourceMethod) {
+    public static Resource buildResource(Object instance, Class<?> resourceClass,
+                                         Method resourceMethod) {
         // 获取API参数
         Parameter[] parameters = resourceMethod.getParameters();
         List<Param> params = new ArrayList<>(parameters.length);
@@ -93,8 +94,9 @@ class ApiUtil {
             }
         }
 
-        Resource resource = new Resource(resourceClass, resourceMethod, getURI(resourceMethod, resourceClass),
-                params, instance, getProduce(resourceMethod), getConsume(resourceMethod));
+        Resource resource = new Resource(resourceClass, resourceMethod,
+            getURI(resourceMethod, resourceClass), params, instance, getProduce(resourceMethod),
+            getConsume(resourceMethod));
         return resource;
     }
 

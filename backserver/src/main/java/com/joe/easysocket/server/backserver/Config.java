@@ -1,14 +1,15 @@
 package com.joe.easysocket.server.backserver;
 
+import java.util.Properties;
+
 import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.backserver.spi.DataWorker;
 import com.joe.easysocket.server.common.config.BaseConfig;
 import com.joe.easysocket.server.common.config.ClusterConfig;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-
-import java.util.Properties;
 
 /**
  * @author joe
@@ -25,16 +26,16 @@ public class Config implements BaseConfig {
      * 本机IP（公网可以访问到的IP或者域名，客户端查询可用前端时将使用该host）
      */
     @NonNull
-    private String host;
+    private String        host;
     /**
      * 后端名，最好是全局唯一的
      */
     @NonNull
-    private String name;
+    private String        name;
     /**
      * 数据处理器，用于处理前端传来的数据，不传默认使用MVCDataWorker
      */
-    private DataWorker dataWorker;
+    private DataWorker    dataWorker;
     /**
      * bean容器，为空时采用默认的bean容器实现，生产环境建议使用spring实现该容器而不是使用默认的
      */
@@ -43,32 +44,32 @@ public class Config implements BaseConfig {
      * 处理数据的线程的最大数量
      */
     @Builder.Default
-    private int maxThreadCount = 100;
+    private int           maxThreadCount  = 100;
     /**
      * 处理数据的线程的最小数量
      */
     @Builder.Default
-    private int minThreadCount = 100;
+    private int           minThreadCount  = 100;
     /**
      * 空闲线程存活时间，单位为秒
      */
     @Builder.Default
-    private long threadAliveTime = 30;
+    private long          threadAliveTime = 30;
     /**
      * 环境配置
      */
     @Builder.Default
-    private Properties environment;
+    private Properties    environment;
     /**
      * 线程名字的格式，必须包含%d
      */
     @NonNull
     @Builder.Default
-    private String threadName = "数据处理线程%d";
+    private String        threadName      = "数据处理线程%d";
     /**
      * 接收数据的topic（实际使用时会加上后端的ID），前端会将数据pub到该topic
      */
     @NonNull
     @Builder.Default
-    private String dataSubTopic = "/dev/sub/data";
+    private String        dataSubTopic    = "/dev/sub/data";
 }

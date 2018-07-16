@@ -1,5 +1,10 @@
 package com.joe.easysocket.server.backserver.manager;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import com.joe.easysocket.server.backserver.mvc.data.InterfaceData;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.config.Const;
@@ -8,24 +13,20 @@ import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BalanceInfo;
 import com.joe.easysocket.server.common.lambda.Endpoint;
-import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.protocol.ChannelProxy;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
 import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.common.Tools;
 import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 虚拟channel管理器
@@ -34,27 +35,27 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Slf4j
 public class ChannelManager implements Endpoint {
-    private volatile boolean started = false;
+    private volatile boolean                 started = false;
     /**
      * 后端ID
      */
-    private String id;
+    private String                           id;
     /**
      * 所有通道
      */
-    private Map<ChannelId, InternalChannel> allChannels;
+    private Map<ChannelId, InternalChannel>  allChannels;
     /**
      * 发布中心
      */
-    private PublishCenter publishCenter;
+    private PublishCenter                    publishCenter;
     /**
      * channel注销消息ACKtopic
      */
-    private String channelChangeAckTopic;
+    private String                           channelChangeAckTopic;
     /**
      * channel注销消息topic
      */
-    private String channelChangeTopic;
+    private String                           channelChangeTopic;
     /**
      * 通道监听
      */
@@ -62,15 +63,15 @@ public class ChannelManager implements Endpoint {
     /**
      * 用户数据监听
      */
-    private DataListener listener;
+    private DataListener                     listener;
     /**
      * 前端管理
      */
-    private BalanceManager balanceManager;
+    private BalanceManager                   balanceManager;
     /**
      * 序列化器
      */
-    private List<Serializer> serializers;
+    private List<Serializer>                 serializers;
 
     /**
      * 默认构造器
@@ -97,8 +98,9 @@ public class ChannelManager implements Endpoint {
                 }
 
                 //ACK响应
-                publishCenter.pub(channelChangeAckTopic + "/" + message.getChannel() + "/" + message.getBalanceId() +
-                        "/" + id, message.getChannel());
+                publishCenter.pub(channelChangeAckTopic + "/" + message.getChannel() + "/"
+                                  + message.getBalanceId() + "/" + id,
+                    message.getChannel());
 
                 InternalChannel internalChannel = allChannels.remove(message);
                 if (internalChannel != null) {
@@ -174,8 +176,8 @@ public class ChannelManager implements Endpoint {
             return internalChannel;
         } else {
             log.debug("当前缓存中没有对应的channel，构建一个");
-            internalChannel = new InternalChannel(channel, balanceId, remoteAdd, port, listener, balanceManager
-                    .getBalance(balanceId).getTopic(), serializers);
+            internalChannel = new InternalChannel(channel, balanceId, remoteAdd, port, listener,
+                balanceManager.getBalance(balanceId).getTopic(), serializers);
             allChannels.put(id, internalChannel);
             return internalChannel;
         }
@@ -218,18 +220,18 @@ public class ChannelManager implements Endpoint {
      */
     @Slf4j
     private static class InternalChannel implements ChannelProxy {
-        private static final JsonParser parser = JsonParser.getInstance();
-        private ChannelId id;
-        private String remoteAdd;
-        private int port;
+        private static final JsonParser    parser = JsonParser.getInstance();
+        private ChannelId                  id;
+        private String                     remoteAdd;
+        private int                        port;
         private List<ChannelCloseCallback> callbacks;
-        private volatile boolean close = false;
+        private volatile boolean           close  = false;
         /**
          * 数据监听器，当用户调用write后实际会调用该方法
          */
-        private DataListener listener;
-        private String topic;
-        private List<Serializer> serializers;
+        private DataListener               listener;
+        private String                     topic;
+        private List<Serializer>           serializers;
 
         /**
          * 虚拟channel的构造器
@@ -241,8 +243,9 @@ public class ChannelManager implements Endpoint {
          * @param listener  数据监听（用于将用户的数据发送到前端）
          * @param topic     该channel对应的前端监听的topic
          */
-        private InternalChannel(@NonNull String channel, @NonNull String balanceId, @NonNull String remoteAdd, int
-                port, @NonNull DataListener listener, @NonNull String topic, @NonNull List<Serializer> serializers) {
+        private InternalChannel(@NonNull String channel, @NonNull String balanceId,
+                                @NonNull String remoteAdd, int port, @NonNull DataListener listener,
+                                @NonNull String topic, @NonNull List<Serializer> serializers) {
             this.id = new ChannelId(channel, balanceId);
             this.remoteAdd = remoteAdd;
             this.port = port;
@@ -271,7 +274,6 @@ public class ChannelManager implements Endpoint {
             }
         }
 
-
         @Override
         public String id() {
             return id.getChannel();
@@ -286,7 +288,6 @@ public class ChannelManager implements Endpoint {
         public int getPort() {
             return port;
         }
-
 
         @Override
         public boolean isClosed() {

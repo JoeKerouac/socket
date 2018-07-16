@@ -1,14 +1,15 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context.session;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.joe.easysocket.server.backserver.manager.ChannelManager;
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.context.SessionManager;
 import com.joe.easysocket.server.common.config.Environment;
 import com.joe.utils.concurrent.LockService;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Session管理器
@@ -17,13 +18,12 @@ import java.util.Map;
  */
 @Slf4j
 public class SessionManagerImpl implements SessionManager {
-    private volatile boolean started = false;
+    private volatile boolean          started = false;
     private Map<String, LocalSession> cache;
     /**
      * channel管理器
      */
-    private ChannelManager channelManager;
-
+    private ChannelManager            channelManager;
 
     /**
      * 默认构造器
@@ -61,8 +61,8 @@ public class SessionManagerImpl implements SessionManager {
     public Session get(String channel, String balanceId, int port, String host) {
         if (cache.get(channel) == null) {
             LockService.lock(channel);
-            cache.computeIfAbsent(channel, c -> new LocalSession(c, host, port, channelManager.getChannel(c,
-                    balanceId, host, port)));
+            cache.computeIfAbsent(channel, c -> new LocalSession(c, host, port,
+                channelManager.getChannel(c, balanceId, host, port)));
             LockService.unlock(channel);
         }
         return cache.get(channel);

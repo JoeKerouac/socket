@@ -1,15 +1,14 @@
 package com.joe.easysocket.client.common;
 
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.UUID;
+
 import com.joe.easysocket.client.data.Datagram;
 import com.joe.easysocket.client.exception.DataOutOfMemory;
 import com.joe.easysocket.client.exception.IllegalDataException;
 import com.joe.easysocket.client.exception.IllegalRequestException;
-import com.joe.easysocket.client.exception.SystemException;
 import com.joe.easysocket.client.ext.Logger;
-
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * 数据报工具
@@ -19,7 +18,7 @@ import java.util.UUID;
 public class DatagramUtil {
     // 数据报数据除去请求头的最大长度
     private static final int MAX_LENGTH = Datagram.MAX_LENGTH - Datagram.HEADER;
-    private final Logger logger;
+    private final Logger     logger;
 
     public DatagramUtil(Logger logger) {
         this.logger = logger;
@@ -93,7 +92,8 @@ public class DatagramUtil {
             // 填充数据
             buffer.append(body);
         }
-        Datagram datagram = new Datagram(buffer.getData(), dataLen, body, version, charset, type, id);
+        Datagram datagram = new Datagram(buffer.getData(), dataLen, body, version, charset, type,
+            id);
         logger.debug("转换后的数据报是：" + datagram);
         return datagram;
     }
@@ -131,13 +131,15 @@ public class DatagramUtil {
             System.arraycopy(data, 16, idBytes, 0, idBytes.length);
             final String id = new String(idBytes);
 
-            logger.debug("要解析的数据报的字符集为：" + charset + "，版本号为：" + version + "，数据报类型为：" + type + "；id是：" + id);
+            logger.debug(
+                "要解析的数据报的字符集为：" + charset + "，版本号为：" + version + "，数据报类型为：" + type + "；id是：" + id);
 
             byte[] buffer;
             if ((data.length - Datagram.HEADER) != len) {
-                logger.warn("数据报head中的长度字段为：" + len + "，数据报body的实际长度为：" + (data.length - Datagram.HEADER));
-                throw new IllegalDataException("数据报head中的长度字段为：" + len + "，数据报body的实际长度为：" + (data.length - Datagram
-                        .HEADER));
+                logger.warn(
+                    "数据报head中的长度字段为：" + len + "，数据报body的实际长度为：" + (data.length - Datagram.HEADER));
+                throw new IllegalDataException(
+                    "数据报head中的长度字段为：" + len + "，数据报body的实际长度为：" + (data.length - Datagram.HEADER));
             } else {
                 buffer = data;
             }
@@ -145,14 +147,16 @@ public class DatagramUtil {
             // 有可能是空报文的数据报
             if (len == 0) {
                 logger.debug("要解析的数据中head标志body长度为0，直接返回一个空body的datagram对象");
-                Datagram datagram = new Datagram(buffer, len, null, version, charset, type, idBytes);
+                Datagram datagram = new Datagram(buffer, len, null, version, charset, type,
+                    idBytes);
                 logger.debug("封装好的数据报body为：" + datagram);
                 return datagram;
             } else {
                 // 真实的业务数据
                 byte[] body = new byte[len];
                 System.arraycopy(buffer, Datagram.HEADER, body, 0, body.length);
-                Datagram datagram = new Datagram(buffer, len, body, version, charset, type, idBytes);
+                Datagram datagram = new Datagram(buffer, len, body, version, charset, type,
+                    idBytes);
                 logger.debug("封装好的数据报body为：" + datagram);
                 return datagram;
             }
@@ -197,7 +201,7 @@ public class DatagramUtil {
      */
     public static int convert(byte[] data, int start) {
         return (Byte.toUnsignedInt(data[start]) << 24) | (Byte.toUnsignedInt(data[start + 1]) << 16)
-                | (Byte.toUnsignedInt(data[start + 2]) << 8) | Byte.toUnsignedInt(data[start + 3]);
+               | (Byte.toUnsignedInt(data[start + 2]) << 8) | Byte.toUnsignedInt(data[start + 3]);
     }
 
     /**

@@ -1,16 +1,17 @@
 package com.joe.easysocket.server.balance.protocol.netty.udp;
 
+import java.net.InetSocketAddress;
+
 import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.protocol.netty.ByteBufRef;
 import com.joe.easysocket.server.balance.protocol.netty.ConnectorAdapter;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
 import com.joe.easysocket.server.common.exception.SystemException;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
 import lombok.extern.slf4j.Slf4j;
-
-import java.net.InetSocketAddress;
 
 /**
  * UDP连接注册、注销管理，数据编码后的最终处理

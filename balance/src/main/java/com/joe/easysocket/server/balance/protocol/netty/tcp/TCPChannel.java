@@ -2,6 +2,7 @@ package com.joe.easysocket.server.balance.protocol.netty.tcp;
 
 import com.joe.easysocket.server.balance.protocol.netty.NettyChannel;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
+
 import io.netty.channel.Channel;
 
 /**

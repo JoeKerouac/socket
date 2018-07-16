@@ -1,5 +1,7 @@
 package com.joe.easysocket.server.backserver;
 
+import static com.joe.easysocket.server.common.config.Const.PUBLISH_CENTER;
+import static com.joe.easysocket.server.common.config.Const.REGISTRY;
 
 import com.joe.easysocket.server.backserver.impl.MvcDataworker;
 import com.joe.easysocket.server.backserver.spi.DataWorker;
@@ -13,10 +15,8 @@ import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.utils.common.Tools;
-import lombok.extern.slf4j.Slf4j;
 
-import static com.joe.easysocket.server.common.config.Const.PUBLISH_CENTER;
-import static com.joe.easysocket.server.common.config.Const.REGISTRY;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author joe
@@ -44,41 +44,40 @@ public interface BackServer {
         return new BackServerImpl(config);
     }
 
-
     @Slf4j
     class BackServerImpl implements BackServer {
         /**
          * 是否启动
          */
-        private boolean started = false;
-        private String registryPath;
-        private Registry registry;
-        private String host;
-        private String name;
+        private boolean                        started = false;
+        private String                         registryPath;
+        private Registry                       registry;
+        private String                         host;
+        private String                         name;
         /**
          * 接收数据的topic
          */
-        private String topic;
-        private DataWorker dataWorker;
-        private Function callback;
-        private PublishCenter publishCenter;
+        private String                         topic;
+        private DataWorker                     dataWorker;
+        private Function                       callback;
+        private PublishCenter                  publishCenter;
         private CustomMessageListener<DataMsg> customMessageListener;
         /**
          * 后端的ID，需要全局唯一
          */
-        private String id;
+        private String                         id;
         /**
          * 通道注销通知监听topic
          */
-        private String channelChangeTopic;
+        private String                         channelChangeTopic;
         /**
          * 通道注销消息ack topic
          */
-        private String channelChangeAckTopic;
+        private String                         channelChangeAckTopic;
         /**
          * 环境信息
          */
-        private Environment environment;
+        private Environment                    environment;
 
         BackServerImpl(Config config) {
             ClusterConfig clusterConfig = config.getClusterConfig();
@@ -88,12 +87,14 @@ public interface BackServer {
             this.publishCenter = this.environment.get(PUBLISH_CENTER);
 
             this.id = Tools.createUUID();
-            this.registryPath = clusterConfig.getRegistryBase() + clusterConfig.getBackServerGroup() + "/";
+            this.registryPath = clusterConfig.getRegistryBase() + clusterConfig.getBackServerGroup()
+                                + "/";
             this.host = config.getHost();
             this.name = config.getName();
             this.topic = config.getDataSubTopic() + "/" + id;
-            this.dataWorker = config.getDataWorker() == null ? new MvcDataworker(this.environment, id) : config
-                    .getDataWorker();
+            this.dataWorker = config.getDataWorker() == null
+                ? new MvcDataworker(this.environment, id)
+                : config.getDataWorker();
 
             this.channelChangeAckTopic = clusterConfig.getChannelChangeAckTopic();
             this.channelChangeTopic = clusterConfig.getChannelChangeTopic();

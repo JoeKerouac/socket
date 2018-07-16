@@ -22,7 +22,7 @@ public class BalanceInfo {
     /**
      * 监听端口
      */
-    private int port;
+    private int    port;
     /**
      * 前端的ID
      */

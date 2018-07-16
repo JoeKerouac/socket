@@ -1,17 +1,17 @@
 package com.joe.easysocket.server.balance.strategy;
 
-import com.joe.easysocket.server.balance.server.BackServer;
-import com.joe.easysocket.server.common.exception.SystemException;
-import com.joe.easysocket.server.common.info.BackServerInfo;
-import com.joe.easysocket.server.common.msg.DataMsg;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.joe.easysocket.server.balance.server.BackServer;
+import com.joe.easysocket.server.common.exception.SystemException;
+import com.joe.easysocket.server.common.info.BackServerInfo;
+import com.joe.easysocket.server.common.msg.DataMsg;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 轮询策略
@@ -20,59 +20,60 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class PollLoadSrategy implements LoadStrategy {
-    private Deque<DataMsg> deque = new LinkedBlockingDeque<>();
-    private List<BackServer> backServers = new CopyOnWriteArrayList<>();
+    private Deque<DataMsg>      deque         = new LinkedBlockingDeque<>();
+    private List<BackServer>    backServers   = new CopyOnWriteArrayList<>();
     private final AtomicInteger atomicInteger = new AtomicInteger(0);
 
-    private BackServer DEFAULT = new BackServer() {
-        @Override
-        public void write(DataMsg msg) {
-            if (!backServers.isEmpty()) {
-                log.warn("当前负载器已经有实际的负载了，请使用调用next获取最新的后端");
-                next().write(msg);
-            }
-            if (deque.offer(msg)) {
-                log.debug("数据{}加入队列成功", msg);
-            } else {
-                log.warn("数据{}加入队列失败", msg);
-            }
-        }
+    private BackServer          DEFAULT       = new BackServer() {
+                                                  @Override
+                                                  public void write(DataMsg msg) {
+                                                      if (!backServers.isEmpty()) {
+                                                          log.warn(
+                                                              "当前负载器已经有实际的负载了，请使用调用next获取最新的后端");
+                                                          next().write(msg);
+                                                      }
+                                                      if (deque.offer(msg)) {
+                                                          log.debug("数据{}加入队列成功", msg);
+                                                      } else {
+                                                          log.warn("数据{}加入队列失败", msg);
+                                                      }
+                                                  }
 
-        @Override
-        public BackServer update(BackServerInfo serverInfo) {
-            return this;
-        }
+                                                  @Override
+                                                  public BackServer update(BackServerInfo serverInfo) {
+                                                      return this;
+                                                  }
 
-        @Override
-        public void start() throws SystemException {
+                                                  @Override
+                                                  public void start() throws SystemException {
 
-        }
+                                                  }
 
-        @Override
-        public void shutdown() throws SystemException {
+                                                  @Override
+                                                  public void shutdown() throws SystemException {
 
-        }
+                                                  }
 
-        @Override
-        public void read(DataMsg msg) {
+                                                  @Override
+                                                  public void read(DataMsg msg) {
 
-        }
+                                                  }
 
-        @Override
-        public String getName() {
-            return null;
-        }
+                                                  @Override
+                                                  public String getName() {
+                                                      return null;
+                                                  }
 
-        @Override
-        public String getId() {
-            return null;
-        }
+                                                  @Override
+                                                  public String getId() {
+                                                      return null;
+                                                  }
 
-        @Override
-        public BackServerInfo getServerInfo() {
-            return null;
-        }
-    };
+                                                  @Override
+                                                  public BackServerInfo getServerInfo() {
+                                                      return null;
+                                                  }
+                                              };
 
     @Override
     public BackServer next() {
@@ -88,7 +89,8 @@ public class PollLoadSrategy implements LoadStrategy {
             if (Integer.MAX_VALUE - cap < i || i < 0) {
                 synchronized (atomicInteger) {
                     log.debug("当前index过大，需要重置索引");
-                    if (atomicInteger.get() > Integer.MAX_VALUE - cap || atomicInteger.get() < 0) atomicInteger.set(0);
+                    if (atomicInteger.get() > Integer.MAX_VALUE - cap || atomicInteger.get() < 0)
+                        atomicInteger.set(0);
                 }
             }
 
@@ -127,8 +129,8 @@ public class PollLoadSrategy implements LoadStrategy {
 
     @Override
     public void update(String id, BackServerInfo info) {
-        backServers.stream().filter(backServer -> id.equals(backServer.getId())).forEach(backServer -> backServer
-                .update(info));
+        backServers.stream().filter(backServer -> id.equals(backServer.getId()))
+            .forEach(backServer -> backServer.update(info));
     }
 
     @Override

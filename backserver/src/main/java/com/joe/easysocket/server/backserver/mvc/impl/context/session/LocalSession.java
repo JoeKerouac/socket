@@ -1,11 +1,10 @@
 package com.joe.easysocket.server.backserver.mvc.impl.context.session;
 
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.common.protocol.ChannelProxy;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * 本地session，服务器关闭session内容就会丢失
@@ -15,10 +14,10 @@ import java.util.TreeMap;
 public class LocalSession implements Session {
     // 会话缓存
     private Map<String, Object> cache;
-    private int port;
-    private String host;
-    private String channel;
-    private ChannelProxy pChannel;
+    private int                 port;
+    private String              host;
+    private String              channel;
+    private ChannelProxy        pChannel;
 
     public LocalSession(String channel, String host, int port, ChannelProxy pChannel) {
         this.cache = new TreeMap<>();

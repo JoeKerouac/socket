@@ -7,7 +7,6 @@ import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.lambda.Endpoint;
 import com.joe.easysocket.server.common.protocol.PChannel;
 
-
 /**
  * 连接管理器，该类实现连接的管理（需要能够定期清理心跳超时的客户端）和数据的分发
  * <p>

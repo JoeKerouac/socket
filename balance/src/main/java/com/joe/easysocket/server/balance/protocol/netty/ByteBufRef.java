@@ -1,11 +1,11 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
 import com.joe.utils.protocol.exception.IllegalRequestException;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.socket.DatagramPacket;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-
 
 /**
  * 缓冲区引用
@@ -16,9 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class ByteBufRef {
     // 缓冲区中数据
-    private final byte[] data;
+    private final byte[]   data;
     // 缓冲区引用
-    private final ByteBuf byteBuf;
+    private final ByteBuf  byteBuf;
     /**
      * 该参数只有UDP有
      */

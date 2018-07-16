@@ -1,9 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.impl.exception;
 
+import java.lang.reflect.Parameter;
 
 import com.joe.easysocket.server.common.exception.SystemException;
-
-import java.lang.reflect.Parameter;
 
 /**
  * 资源方法参数未命名，当资源方法有超过一个参数时必须命名

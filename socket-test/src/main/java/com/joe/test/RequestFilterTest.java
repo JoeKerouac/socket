@@ -11,7 +11,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.filter.NioRequestFilter;
  * @version 2018.05.23 15:49
  */
 @Provider
-public class RequestFilterTest extends NioRequestFilter{
+public class RequestFilterTest extends NioRequestFilter {
     @Override
     public void requestFilter(HttpRequestContext.RequestWrapper request) {
         System.out.println("用户IP为：" + request.getSession().getRemoteHost());

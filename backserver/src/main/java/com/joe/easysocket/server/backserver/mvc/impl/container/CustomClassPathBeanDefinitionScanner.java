@@ -1,12 +1,12 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-
-import java.util.Set;
 
 /**
  * 如果使用{@link SpringBeanContainer SpringBeanContainer}，那么需要将该类注册到spring中
@@ -23,7 +23,8 @@ public class CustomClassPathBeanDefinitionScanner extends ClassPathBeanDefinitio
     @Override
     public void registerDefaultFilters() {
         // 添加自定义类型，将以下注解加入扫描
-        ScanConfig.SOCKET_COMPONENT.parallelStream().map(AnnotationTypeFilter::new).forEach(this::addIncludeFilter);
+        ScanConfig.SOCKET_COMPONENT.parallelStream().map(AnnotationTypeFilter::new)
+            .forEach(this::addIncludeFilter);
     }
 
     @Override

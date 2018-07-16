@@ -1,14 +1,13 @@
 package com.joe.easysocket.server.backserver.mvc.coder;
 
+import java.util.List;
 
-import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
-
-import java.util.List;
 
 /**
  * 数据解析器接口，必须实现该接口并且注解{@link Provider}才会生效
@@ -33,7 +32,8 @@ public interface DataReader extends Bean {
      * @return 读取的参数数组
      * @throws ParamParserException 数据读取成功但是校验失败
      */
-    Object[] read(List<Param> params, HttpRequestContext requestContext, String data) throws ParamParserException;
+    Object[] read(List<Param> params, HttpRequestContext requestContext,
+                  String data) throws ParamParserException;
 
     /**
      * 初始化

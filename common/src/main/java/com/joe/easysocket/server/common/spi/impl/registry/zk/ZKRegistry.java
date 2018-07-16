@@ -1,14 +1,13 @@
 package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
 import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.spi.ConnectionStateListener;
 import com.joe.easysocket.server.common.spi.NodeListener;
 import com.joe.easysocket.server.common.spi.Registry;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * 依托zookeeper实现的注册中心，需要zookeeper3.5及以上版本

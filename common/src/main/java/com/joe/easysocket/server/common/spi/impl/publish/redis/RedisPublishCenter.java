@@ -1,23 +1,24 @@
 package com.joe.easysocket.server.common.spi.impl.publish.redis;
 
-import com.joe.easysocket.server.common.config.Const;
-import com.joe.easysocket.server.common.exception.SystemException;
-import com.joe.easysocket.server.common.spi.Serializer;
-import com.joe.easysocket.server.common.msg.CustomMessageListener;
-import com.joe.easysocket.server.common.spi.PublishCenter;
-import com.joe.utils.cluster.ClusterManager;
-import com.joe.utils.cluster.redis.RedisBaseConfig;
-import com.joe.utils.cluster.redis.RedisClusterManagerFactory;
-import com.joe.utils.common.StringUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.joe.easysocket.server.common.config.Const;
+import com.joe.easysocket.server.common.exception.SystemException;
+import com.joe.easysocket.server.common.msg.CustomMessageListener;
+import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.Serializer;
+import com.joe.utils.cluster.ClusterManager;
+import com.joe.utils.cluster.redis.RedisBaseConfig;
+import com.joe.utils.cluster.redis.RedisClusterManagerFactory;
+import com.joe.utils.common.StringUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * redis pub/sub模型
@@ -26,7 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Slf4j
 public class RedisPublishCenter implements PublishCenter {
-    private ClusterManager clusterManager;
+    private ClusterManager                              clusterManager;
     /**
      * listener与topic的映射，用于根据listener查找topic
      */
@@ -34,16 +35,15 @@ public class RedisPublishCenter implements PublishCenter {
     /**
      * listener与ID的映射
      */
-    private Map<ID, Integer> listenerId;
+    private Map<ID, Integer>                            listenerId;
     /**
      * topic与listener的映射，用于根据topic查找listener
      */
     private Map<String, List<CustomMessageListener<?>>> listenerMap;
 
-
     @Override
     public <T> void pub(String channel, T message) {
-        clusterManager.<T>getTopic(channel).publish(message);
+        clusterManager.<T> getTopic(channel).publish(message);
     }
 
     @Override
@@ -67,7 +67,8 @@ public class RedisPublishCenter implements PublishCenter {
         }
         listenerMap.get(channel).add(listener);
 
-        clusterManager.<T>getTopic(channel).addListener((s, t) -> listener.onMessage(channel.getBytes(), t));
+        clusterManager.<T> getTopic(channel)
+            .addListener((s, t) -> listener.onMessage(channel.getBytes(), t));
     }
 
     @Override
@@ -103,7 +104,7 @@ public class RedisPublishCenter implements PublishCenter {
 
         Integer id = listenerId.remove(new ID(channel, listener));
         if (id != null) {
-            clusterManager.<T>getTopic(channel).removeListener(id);
+            clusterManager.<T> getTopic(channel).removeListener(id);
         }
     }
 
@@ -154,7 +155,7 @@ public class RedisPublishCenter implements PublishCenter {
     @Data
     @AllArgsConstructor
     public static class ID {
-        private String channel;
+        private String                   channel;
         private CustomMessageListener<?> listener;
     }
 }

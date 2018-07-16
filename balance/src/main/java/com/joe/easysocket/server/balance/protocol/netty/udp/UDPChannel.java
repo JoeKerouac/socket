@@ -1,13 +1,14 @@
 package com.joe.easysocket.server.balance.protocol.netty.udp;
 
+import java.net.InetSocketAddress;
+
 import com.joe.easysocket.server.balance.protocol.netty.NettyChannel;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.DatagramPacket;
-
-import java.net.InetSocketAddress;
 
 /**
  * UDP channel

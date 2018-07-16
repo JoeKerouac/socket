@@ -9,7 +9,7 @@ import com.joe.easysocket.server.common.lambda.Function;
  * @author joe
  * @version 2018.06.26 17:30
  */
-public interface Balance extends EventCenter{
+public interface Balance extends EventCenter {
     /**
      * 启动前端
      *

@@ -1,5 +1,11 @@
 package com.joe.easysocket.server.balance.protocol;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+
 import com.joe.easysocket.server.balance.Config;
 import com.joe.easysocket.server.balance.protocol.listener.ProtocolDataListener;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
@@ -12,13 +18,10 @@ import com.joe.utils.common.StringUtils;
 import com.joe.utils.concurrent.ThreadUtil;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 协议栈抽象实现（通用实现，同时该实现已经实现了EventCenter，子类只需要将EventCenter的实例传入即可）
@@ -26,17 +29,18 @@ import java.util.concurrent.ExecutorService;
  * @author joe
  */
 @Slf4j
-public abstract class AbstractConnectorManager extends EventCenterProxy implements ConnectorManager {
+public abstract class AbstractConnectorManager extends EventCenterProxy
+                                               implements ConnectorManager {
     // 是否是linux系统
-    protected static boolean LINUX;
+    protected static boolean               LINUX;
     /**
      * 当前所有通道，key为链接的ID，value为通道
      */
-    private Map<String, PChannel> pChannels;
+    private Map<String, PChannel>          pChannels;
     /**
      * 线程池，用于处理底层数据
      */
-    private ExecutorService service;
+    private ExecutorService                service;
     /**
      * 当前协议栈是否销毁，默认销毁
      */
@@ -44,33 +48,33 @@ public abstract class AbstractConnectorManager extends EventCenterProxy implemen
     /**
      * 心跳周期，单位：秒
      */
-    private int heartbeat;
+    private int                            heartbeat;
     /**
      * 心跳超时清理线程，守护线程
      */
-    private Thread cleanupThread;
+    private Thread                         cleanupThread;
     /**
      * 数据监听器
      */
-    private List<ProtocolDataListener> listeners;
+    private List<ProtocolDataListener>     listeners;
     /**
      * 待发送队列
      */
-    private Map<String, RetryData> queue;
+    private Map<String, RetryData>         queue;
     /**
      * 发送线程
      */
-    private Thread writer;
+    private Thread                         writer;
     /**
      * 协议栈事件中心
      */
-    protected EventCenter eventCenter;
+    protected EventCenter                  eventCenter;
     // 监听端口
-    protected int port;
+    protected int                          port;
     //队列的最大长度
-    protected int backlog;
+    protected int                          backlog;
     //是否延迟发送
-    protected boolean nodelay;
+    protected boolean                      nodelay;
 
     static {
         if (System.getProperty("os.name").contains("Linux")) {
@@ -86,7 +90,7 @@ public abstract class AbstractConnectorManager extends EventCenterProxy implemen
      * ConnectorManager状态
      */
     private enum ConnectorManagerState {
-        CREATE, INIT, RUNNING, STOP
+                                        CREATE, INIT, RUNNING, STOP
     }
 
     public AbstractConnectorManager() {
@@ -250,7 +254,7 @@ public abstract class AbstractConnectorManager extends EventCenterProxy implemen
         //无论是否需要ACK，都先直接发送
         PChannel channel = pChannels.get(data.getChannel());
         if (channel == null) {
-            log.warn("数据[{}]对应的客户端已经关闭，不能发送" , data);
+            log.warn("数据[{}]对应的客户端已经关闭，不能发送", data);
             return;
         }
         channel.write(data.getData());
@@ -352,10 +356,10 @@ public abstract class AbstractConnectorManager extends EventCenterProxy implemen
             ProtocolData protocolData;
 
             try {
-                protocolData = new ProtocolData(data, channel.getPort(), channel.getRemoteHost(), channel.id
-                        (), 0, 0);
+                protocolData = new ProtocolData(data, channel.getPort(), channel.getRemoteHost(),
+                    channel.id(), 0, 0);
             } catch (Throwable error) {
-                log.error("获取远程信息出错" , error);
+                log.error("获取远程信息出错", error);
                 throw new SystemException("获取远程信息出错", error);
             }
 
@@ -474,7 +478,7 @@ public abstract class AbstractConnectorManager extends EventCenterProxy implemen
         /**
          * 重试次数
          */
-        private int retry;
+        private int                retry;
 
         public RetryData(ProtocolData data) {
             this.data = data;

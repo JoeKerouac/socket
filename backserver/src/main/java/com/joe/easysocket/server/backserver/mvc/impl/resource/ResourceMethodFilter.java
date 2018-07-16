@@ -1,10 +1,9 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
-import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
-import com.joe.utils.scan.MethodFilter;
-
 import java.lang.reflect.Method;
 
+import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
+import com.joe.utils.scan.MethodFilter;
 
 /**
  * resource方法过滤器

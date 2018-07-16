@@ -1,9 +1,12 @@
 package com.joe.easysocket.server.balance.protocol.netty.tcp;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.protocol.netty.CustomFrameDecoder;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.common.exception.SystemException;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -15,8 +18,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * ConnectorManager的netty实现类
  *
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class TCPConnectorManager extends AbstractConnectorManager implements ConnectorManager {
     //当前服务器是否运行，只有调用start才会改变状态
-    private AtomicBoolean start = new AtomicBoolean(false);
+    private AtomicBoolean  start = new AtomicBoolean(false);
     // 接受请求的线程组，默认是机器核心的两倍
     private EventLoopGroup mainGroup;
     // 处理请求的线程组，默认是机器核心的两倍
@@ -88,15 +89,17 @@ public class TCPConnectorManager extends AbstractConnectorManager implements Con
             }
 
             // 带child**的方法例如childHandler（）都是对应的worker线程组，不带child的对应的boss线程组
-            bootstrap.group(mainGroup, workerGroup).childHandler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    // 下边的编码解码器顺序不能变，CustomFrameDecoder必须每次都new，其他几个对象不用每次都new但是需要在类上加上@Sharable注解
-                    ch.pipeline().addLast(new CustomFrameDecoder(), datagramDecoder, new TCPConnectorAdapter
-                            (TCPConnectorManager.this, eventCenter), datagramEncoder);
-                }
-            }).option(ChannelOption.SO_BACKLOG, backlog).childOption(ChannelOption
-                    .TCP_NODELAY, nodelay);
+            bootstrap.group(mainGroup, workerGroup)
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel ch) throws Exception {
+                        // 下边的编码解码器顺序不能变，CustomFrameDecoder必须每次都new，其他几个对象不用每次都new但是需要在类上加上@Sharable注解
+                        ch.pipeline().addLast(new CustomFrameDecoder(), datagramDecoder,
+                            new TCPConnectorAdapter(TCPConnectorManager.this, eventCenter),
+                            datagramEncoder);
+                    }
+                }).option(ChannelOption.SO_BACKLOG, backlog)
+                .childOption(ChannelOption.TCP_NODELAY, nodelay);
 
             bootstrap.bind(port).sync();
             log.info("监听端口是：{}", port);

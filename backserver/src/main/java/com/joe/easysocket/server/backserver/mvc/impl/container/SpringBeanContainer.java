@@ -1,11 +1,12 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
-import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
-import com.joe.easysocket.server.common.exception.SystemException;
-import org.springframework.context.ApplicationContext;
-
 import java.lang.annotation.Annotation;
 import java.util.Map;
+
+import org.springframework.context.ApplicationContext;
+
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.common.exception.SystemException;
 
 /**
  * 如果使用该BeanContainer使用组件{@link CustomClassPathBeanDefinitionScanner CustomClassPathBeanDefinitionScanner}

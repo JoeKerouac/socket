@@ -9,7 +9,6 @@ import com.joe.utils.concurrent.ThreadUtil;
 import com.joe.utils.parse.json.JsonObject;
 import com.joe.utils.parse.json.JsonParser;
 
-
 /**
  * @author joe
  */
@@ -90,8 +89,8 @@ public class ClientTest {
         };
 
         //构建client对象，其中logger和listener都是非必须的，但是没有listener就无法处理服务器消息，所以正式使用时该对象必须有
-        Client client = Client.builder().heartbeat(30).host("127.0.0.1").port(10051).serializer(serializer).logger
-                (logger).build();
+        Client client = Client.builder().heartbeat(30).host("127.0.0.1").port(10051)
+            .serializer(serializer).logger(logger).build();
         client.register(listener);
         client.start();
         JsonObject object = new JsonObject().data("account", 123).data("password", "345");

@@ -1,6 +1,7 @@
 package com.joe.easysocket.server.balance.protocol.netty;
 
 import com.joe.utils.protocol.Datagram;
+
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 /**
@@ -16,9 +17,10 @@ public class CustomFrameDecoder extends LengthFieldBasedFrameDecoder {
      * @param lengthFieldLength 数据报head中长度字段的长度
      * @param headLength        数据报head的长度
      */
-    public CustomFrameDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int headLength) {
-        super(maxFrameLength, lengthFieldOffset, lengthFieldLength, headLength - lengthFieldOffset - lengthFieldLength,
-                0);
+    public CustomFrameDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength,
+                              int headLength) {
+        super(maxFrameLength, lengthFieldOffset, lengthFieldLength,
+            headLength - lengthFieldOffset - lengthFieldLength, 0);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.joe.easysocket.server.balance.protocol.netty;
 import com.joe.easysocket.server.balance.protocol.CloseCause;
 import com.joe.easysocket.server.balance.spi.ConnectorManager;
 import com.joe.easysocket.server.balance.spi.EventCenter;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -17,9 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class ConnectorAdapter extends ChannelInboundHandlerAdapter {
     //当前连接的读取缓冲
-    protected ByteBuf byteBuf;
+    protected ByteBuf          byteBuf;
     protected ConnectorManager connectorManager;
-    protected EventCenter eventCenter;
+    protected EventCenter      eventCenter;
 
     public ConnectorAdapter(ConnectorManager connectorManager, EventCenter eventCenter) {
         this.connectorManager = connectorManager;

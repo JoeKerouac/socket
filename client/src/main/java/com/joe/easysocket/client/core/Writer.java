@@ -1,17 +1,18 @@
 package com.joe.easysocket.client.core;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+
 import com.joe.easysocket.client.data.Datagram;
 import com.joe.easysocket.client.data.InterfaceData;
 import com.joe.easysocket.client.ext.InternalLogger;
 import com.joe.easysocket.client.ext.Logger;
 import com.joe.easysocket.client.ext.Serializer;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * 数据发送器
@@ -21,12 +22,11 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class Writer extends Worker {
     //队列
     private BlockingDeque<Msg> queue;
-    private OutputStream out;
+    private OutputStream       out;
 
-    public Writer(OutputStream out, Logger logger, Serializer serializer, Callback
-            callback) {
-        super(logger instanceof InternalLogger ? logger : InternalLogger.getLogger(logger, Writer.class), callback,
-                serializer);
+    public Writer(OutputStream out, Logger logger, Serializer serializer, Callback callback) {
+        super(logger instanceof InternalLogger ? logger
+            : InternalLogger.getLogger(logger, Writer.class), callback, serializer);
         this.out = out;
         this.queue = new LinkedBlockingDeque<>();
     }
@@ -56,7 +56,6 @@ public class Writer extends Worker {
         }, "数据发送器");
         this.worker.start();
     }
-
 
     /**
      * 往服务器发送数据
@@ -115,9 +114,11 @@ public class Writer extends Worker {
                     }
                 } else {
                     //普通接口请求包
-                    InterfaceData interfaceData = new InterfaceData(String.valueOf(System.currentTimeMillis()), msg
-                            .getInvoke(), msg.getData() != null ? new String(serializer.write(msg.getData())) : null);
-                    datagram = datagramUtil.build(serializer.write(interfaceData), (byte) 1, (byte) 1);
+                    InterfaceData interfaceData = new InterfaceData(
+                        String.valueOf(System.currentTimeMillis()), msg.getInvoke(),
+                        msg.getData() != null ? new String(serializer.write(msg.getData())) : null);
+                    datagram = datagramUtil.build(serializer.write(interfaceData), (byte) 1,
+                        (byte) 1);
                 }
                 logger.debug("消息封装为数据报后是：" + datagram);
                 out.write(datagram.getData());
@@ -136,8 +137,8 @@ public class Writer extends Worker {
     @Data
     @AllArgsConstructor
     private static class Msg {
-        private String invoke;
-        private Object data;
+        private String  invoke;
+        private Object  data;
         /**
          * 是否是ACK，如果为true表示该消息是ack消息
          */
@@ -145,6 +146,6 @@ public class Writer extends Worker {
         /**
          * ack消息ID
          */
-        private byte[] id;
+        private byte[]  id;
     }
 }

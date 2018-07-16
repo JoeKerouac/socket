@@ -6,7 +6,7 @@ package com.joe.easysocket.server.balance.protocol;
  * @author joe
  */
 public enum CloseCause {
-    USER("用户主动关闭"), TIMEOUT("心跳超时"), SYSTEM("系统错误"), APPLICATION("应用层关闭");
+                        USER("用户主动关闭"), TIMEOUT("心跳超时"), SYSTEM("系统错误"), APPLICATION("应用层关闭");
     private String data;
 
     CloseCause(String data) {

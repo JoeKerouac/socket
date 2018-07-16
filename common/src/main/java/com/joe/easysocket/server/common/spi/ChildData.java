@@ -1,7 +1,8 @@
 package com.joe.easysocket.server.common.spi;
 
-import lombok.Data;
 import org.apache.curator.utils.PathUtils;
+
+import lombok.Data;
 
 /**
  * @author joe

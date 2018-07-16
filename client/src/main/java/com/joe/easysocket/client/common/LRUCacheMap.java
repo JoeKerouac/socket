@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class LRUCacheMap<K, V> extends LinkedHashMap<K, V> {
     private static final long serialVersionUID = -1576619020580779936L;
-    private int max;
+    private int               max;
 
     /**
      * 从其他map构建一个LRUmap

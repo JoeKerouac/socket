@@ -1,18 +1,12 @@
 package com.joe.easysocket.server.balance.protocol.netty.udp;
 
 import com.joe.easysocket.server.balance.protocol.netty.ByteBufRef;
-import com.joe.utils.protocol.exception.IllegalRequestException;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import lombok.extern.slf4j.Slf4j;
-
-import java.net.InetSocketAddress;
-
 
 /**
  * 数据读取器

@@ -1,5 +1,11 @@
 package com.joe.easysocket.server.balance;
 
+import static com.joe.easysocket.server.common.config.Const.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.joe.easysocket.server.balance.protocol.AbstractConnectorManager;
 import com.joe.easysocket.server.balance.server.BackServer;
@@ -17,15 +23,8 @@ import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.utils.common.ClassUtils;
 import com.joe.utils.common.Tools;
+
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static com.joe.easysocket.server.common.config.Const.*;
-
 
 /**
  * 前端模型
@@ -34,45 +33,44 @@ import static com.joe.easysocket.server.common.config.Const.*;
  */
 @Slf4j
 public abstract class AbstractBalance extends EventCenterProxy implements Balance {
-    protected Config config;
-    protected ClusterConfig clusterConfig;
+    protected Config                                config;
+    protected ClusterConfig                         clusterConfig;
     /**
      * 环境信息
      */
-    protected Environment environment;
+    protected Environment                           environment;
     /**
      * 该前端的ID，需要全局唯一
      */
-    protected final String id;
+    protected final String                          id;
     /**
      * 启动标志位，true表示已经启动
      */
-    private volatile boolean started = false;
+    private volatile boolean                        started   = false;
     /**
      * 待发通道注销消息，key为通道ID，value为待通知的后端
      */
-    private Map<String, List<BackServer>> pubs = new ConcurrentHashMap<>();
+    private Map<String, List<BackServer>>           pubs      = new ConcurrentHashMap<>();
     /**
      * 关闭回调
      */
-    private Function callback;
+    private Function                                callback;
     /**
      * 通道注销通知线程
      */
-    private Thread channelUnregister;
+    private Thread                                  channelUnregister;
     /**
      * 发布中心
      */
-    protected PublishCenter publishCenter;
+    protected PublishCenter                         publishCenter;
     /**
      * 注册中心
      */
-    protected Registry registry;
+    protected Registry                              registry;
     /**
      * 所有后端的集合
      */
     protected ConcurrentHashMap<String, BackServer> allServer = new ConcurrentHashMap<>();
-
 
     /**
      * 默认构造器
@@ -104,7 +102,8 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
                             BackServerInfo info = server.getServerInfo();
 
                             if (old == null) {
-                                String ackTopic = info.getChannelChangeAckTopic() + "/" + k + "/" + info.getId();
+                                String ackTopic = info.getChannelChangeAckTopic() + "/" + k + "/"
+                                                  + info.getId();
                                 log.debug("后端{}已经不存在不在往该后端发送通道注销消息", info.getId());
                                 v.remove(server);
                                 //取消监听
@@ -199,22 +198,22 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
             log.debug("注销消息添加完毕，添加ACK监听");
 
             BackServerInfo info = server.getServerInfo();
-            String ackTopic = info.getChannelChangeAckTopic() + "/" + channel + "/" + id + "/" + info.getId();
-            publishCenter.register(ackTopic, new
-                    CustomMessageListener<String>() {
-                        @Override
-                        public void onMessage(byte[] channel, String message) {
-                            log.debug("接收到服务端{}的响应{}", info.getId(), message);
-                            pubs.get(message).remove(server);
-                            //取消监听
-                            publishCenter.unregister(ackTopic);
-                        }
+            String ackTopic = info.getChannelChangeAckTopic() + "/" + channel + "/" + id + "/"
+                              + info.getId();
+            publishCenter.register(ackTopic, new CustomMessageListener<String>() {
+                @Override
+                public void onMessage(byte[] channel, String message) {
+                    log.debug("接收到服务端{}的响应{}", info.getId(), message);
+                    pubs.get(message).remove(server);
+                    //取消监听
+                    publishCenter.unregister(ackTopic);
+                }
 
-                        @Override
-                        public Class<String> resolveMessageType() {
-                            return String.class;
-                        }
-                    });
+                @Override
+                public Class<String> resolveMessageType() {
+                    return String.class;
+                }
+            });
         });
         log.debug("所有后端的channel注销消息已经加入队列，等待发送");
     }
@@ -237,7 +236,8 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
      */
     private void checkConfig(Config config) throws ConfigIllegalException {
         if (config.getConnectorManager() == null) {
-            log.info("ConnectorManager未设置，使用默认ConnectorManager[{}]", AbstractConnectorManager.class);
+            log.info("ConnectorManager未设置，使用默认ConnectorManager[{}]",
+                AbstractConnectorManager.class);
         }
         if (config.getPort() <= 0) {
             log.warn("监听端口号必须大于0");
@@ -271,20 +271,23 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
 
         String connectorManagerClass = config.getConnectorManager();
         try {
-            if (!ConnectorManager.class.isAssignableFrom(ClassUtils.loadClass(connectorManagerClass))) {
-                throw new ConfigIllegalException("指定的ConnectorManager[" + connectorManagerClass + "]不是" +
-                        ConnectorManager.class.getName() + "的子类");
+            if (!ConnectorManager.class
+                .isAssignableFrom(ClassUtils.loadClass(connectorManagerClass))) {
+                throw new ConfigIllegalException(
+                    "指定的ConnectorManager[" + connectorManagerClass + "]不是"
+                                                 + ConnectorManager.class.getName() + "的子类");
             }
         } catch (ClassNotFoundException e) {
             log.error("指定的ConnectorManager[{}]不存在");
-            throw new ConfigIllegalException("指定的ConnectorManager[" + connectorManagerClass + "]不存在", e);
+            throw new ConfigIllegalException(
+                "指定的ConnectorManager[" + connectorManagerClass + "]不存在", e);
         }
 
         String eventCenterClass = config.getEventCenter();
         try {
             if (!EventCenter.class.isAssignableFrom(ClassUtils.loadClass(eventCenterClass))) {
-                throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不是" +
-                        EventCenter.class.getName() + "的子类");
+                throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不是"
+                                                 + EventCenter.class.getName() + "的子类");
             }
         } catch (ClassNotFoundException e) {
             log.error("指定的EventCenter[{}]不存在");

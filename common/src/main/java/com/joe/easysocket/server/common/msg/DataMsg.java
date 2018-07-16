@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.common.msg;
 
-
 import com.joe.easysocket.server.common.data.ProtocolData;
 
 /**

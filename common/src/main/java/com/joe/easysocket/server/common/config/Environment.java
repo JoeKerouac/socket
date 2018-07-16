@@ -1,5 +1,12 @@
 package com.joe.easysocket.server.common.config;
 
+import static com.joe.easysocket.server.common.config.Const.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
@@ -7,15 +14,9 @@ import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.spi.SpiLoader;
 import com.joe.easysocket.server.common.spi.impl.serializer.JsonSerializer;
 import com.joe.utils.collection.CollectionUtil;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.joe.easysocket.server.common.config.Const.*;
 
 /**
  * 系统环境信息
@@ -123,7 +124,8 @@ public final class Environment {
             serializerClassList.parallelStream().forEach(serializerClass -> {
                 try {
                     log.info("加载spi[{}]", serializerClass);
-                    Serializer serializer = SpiLoader.loadSpi(serializerClass, config.getEnvironment());
+                    Serializer serializer = SpiLoader.loadSpi(serializerClass,
+                        config.getEnvironment());
                     log.info("spi [{}] 加载完毕", serializerClass);
                     serializers.add(serializer);
                 } catch (ConfigIllegalException e) {

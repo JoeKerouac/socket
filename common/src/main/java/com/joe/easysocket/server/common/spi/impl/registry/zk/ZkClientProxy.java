@@ -1,10 +1,10 @@
 package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
-import com.joe.easysocket.server.common.exception.ZKClientException;
-import com.joe.easysocket.server.common.spi.NodeEvent;
-import com.joe.easysocket.server.common.spi.Serializer;
-import com.joe.utils.concurrent.LockService;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.stream.Collectors;
+
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -14,10 +14,12 @@ import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.stream.Collectors;
+import com.joe.easysocket.server.common.exception.ZKClientException;
+import com.joe.easysocket.server.common.spi.NodeEvent;
+import com.joe.easysocket.server.common.spi.Serializer;
+import com.joe.utils.concurrent.LockService;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * proxy zkClient , thread safe.
@@ -26,15 +28,15 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 class ZkClientProxy implements ZKClient {
-    private List<Serializer> serializers;
+    private List<Serializer>           serializers;
     /**
      * real zk client
      */
-    private CuratorFramework client;
+    private CuratorFramework           client;
     /**
      * zk client config
      */
-    private ZKConfig config;
+    private ZKConfig                   config;
     /**
      * 节点变化监听器集合
      */
@@ -42,9 +44,9 @@ class ZkClientProxy implements ZKClient {
     /**
      * 递归节点变化监听器集合
      */
-    private Map<String, CacheAdapater> treeCaches = new HashMap<>();
-    private Lock listenerLock = LockService.getLock(ZKClient.class + "/listenerLock");
-
+    private Map<String, CacheAdapater> treeCaches         = new HashMap<>();
+    private Lock                       listenerLock       = LockService
+        .getLock(ZKClient.class + "/listenerLock");
 
     /**
      * default contrastor
@@ -57,23 +59,28 @@ class ZkClientProxy implements ZKClient {
             throw new IllegalArgumentException("config must non null");
         }
         this.config = config;
-        this.serializers = config.getSerializers() == null ? Collections.emptyList() : config.getSerializers();
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(config.getBaseSleepTimeMs(), config.getMaxRetry());
+        this.serializers = config.getSerializers() == null ? Collections.emptyList()
+            : config.getSerializers();
+        RetryPolicy retryPolicy = new ExponentialBackoffRetry(config.getBaseSleepTimeMs(),
+            config.getMaxRetry());
         CuratorFrameworkFactory.builder().authorization("", null).authorization("", null);
         this.client = CuratorFrameworkFactory.newClient(config.getConnectStr(), retryPolicy);
-        this.client.getConnectionStateListenable().addListener(new ConnectionStateListenerAdapter(this, ((client1,
-                                                                                                          newState) -> {
-            if (newState.equals(com.joe.easysocket.server.common.spi.ConnectionState.CONNECTED)) {
-                log.info("客户端连接成功，准备启动节点监听器");
-                listenerLock.lock();
-                try {
-                    treeCaches.entrySet().stream().map(Map.Entry::getValue).forEach(CacheAdapater::start);
-                    pathChildrenCaches.entrySet().stream().map(Map.Entry::getValue).forEach(CacheAdapater::start);
-                } finally {
-                    listenerLock.unlock();
+        this.client.getConnectionStateListenable()
+            .addListener(new ConnectionStateListenerAdapter(this, ((client1, newState) -> {
+                if (newState
+                    .equals(com.joe.easysocket.server.common.spi.ConnectionState.CONNECTED)) {
+                    log.info("客户端连接成功，准备启动节点监听器");
+                    listenerLock.lock();
+                    try {
+                        treeCaches.entrySet().stream().map(Map.Entry::getValue)
+                            .forEach(CacheAdapater::start);
+                        pathChildrenCaches.entrySet().stream().map(Map.Entry::getValue)
+                            .forEach(CacheAdapater::start);
+                    } finally {
+                        listenerLock.unlock();
+                    }
                 }
-            }
-        })));
+            })));
     }
 
     @Override
@@ -93,12 +100,13 @@ class ZkClientProxy implements ZKClient {
             log.warn("listener不能为null");
             return;
         }
-        client.getConnectionStateListenable().addListener(new ConnectionStateListenerAdapter(this, listener));
+        client.getConnectionStateListenable()
+            .addListener(new ConnectionStateListenerAdapter(this, listener));
     }
 
     @Override
-    public synchronized void addListener(String path, boolean recursion, ChildrenCacheListener listener) throws
-            Exception {
+    public synchronized void addListener(String path, boolean recursion,
+                                         ChildrenCacheListener listener) throws Exception {
         if (!isStarted()) {
             log.warn("当前客户端未启动");
         }
@@ -159,7 +167,8 @@ class ZkClientProxy implements ZKClient {
             client.createContainers(path);
             log.debug("zookeeper目录{}创建成功", path);
             log.debug("创建递增节点");
-            String nodePath = client.create().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(path, write(data));
+            String nodePath = client.create().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
+                .forPath(path, write(data));
             log.debug("递增节点为：{}", nodePath);
             return nodePath;
         } catch (Exception e) {
@@ -414,7 +423,8 @@ class ZkClientProxy implements ZKClient {
                 String newRoot = path.endsWith("/") ? path : path + "/";
 
                 if (!childs.isEmpty()) {
-                    all.addAll(childs.parallelStream().map(child -> newRoot + child).collect(Collectors.toList()));
+                    all.addAll(childs.parallelStream().map(child -> newRoot + child)
+                        .collect(Collectors.toList()));
 
                     all.addAll(getAll(newRoot, childs));
                 }
@@ -476,8 +486,8 @@ class ZkClientProxy implements ZKClient {
      */
     private static class CacheAdapater {
         private PathChildrenCache pathChildrenCache;
-        private TreeCache treeCache;
-        private boolean started = false;
+        private TreeCache         treeCache;
+        private boolean           started = false;
 
         /**
          * 节点缓存构造器
@@ -486,7 +496,8 @@ class ZkClientProxy implements ZKClient {
          * @param treeCache         TreeCache
          * @throws IllegalArgumentException 同时传入PathChildrenCache和TreeCache时抛出该异常
          */
-        CacheAdapater(PathChildrenCache pathChildrenCache, TreeCache treeCache) throws IllegalArgumentException {
+        CacheAdapater(PathChildrenCache pathChildrenCache,
+                      TreeCache treeCache) throws IllegalArgumentException {
             if (!(pathChildrenCache == null ^ treeCache == null)) {
                 throw new IllegalArgumentException("不能同时传入PathChildrenCache和TreeCache");
             }
@@ -540,14 +551,13 @@ class ZkClientProxy implements ZKClient {
         }
     }
 
-
     /**
      * {@link org.apache.curator.framework.state.ConnectionStateListener}的适配器
      */
-    private static class ConnectionStateListenerAdapter implements org.apache.curator.framework.state
-            .ConnectionStateListener {
+    private static class ConnectionStateListenerAdapter implements
+                                                        org.apache.curator.framework.state.ConnectionStateListener {
         private ZKConnectionStateListener listener;
-        private ZkClientProxy client;
+        private ZkClientProxy             client;
 
         ConnectionStateListenerAdapter(ZkClientProxy client, ZKConnectionStateListener listener) {
             this.client = client;
@@ -557,26 +567,29 @@ class ZkClientProxy implements ZKClient {
         @Override
         public void stateChanged(CuratorFramework client, ConnectionState newState) {
             log.debug("客户端{}状态发生变化，当前客户端状态为：{}", client, newState);
-            listener.stateChanged(this.client, com.joe.easysocket.server.common.spi.ConnectionState.valueOf
-                    (newState.name()));
+            listener.stateChanged(this.client,
+                com.joe.easysocket.server.common.spi.ConnectionState.valueOf(newState.name()));
         }
     }
 
     /**
      * {@link PathChildrenCacheListener}的适配器
      */
-    private static class ChildrenCacheListenerAdapter implements PathChildrenCacheListener, TreeCacheListener {
+    private static class ChildrenCacheListenerAdapter implements PathChildrenCacheListener,
+                                                      TreeCacheListener {
 
         private ChildrenCacheListener childrenCacheListener;
-        private ZkClientProxy client;
+        private ZkClientProxy         client;
 
-        ChildrenCacheListenerAdapter(ZkClientProxy client, ChildrenCacheListener childrenCacheListener) {
+        ChildrenCacheListenerAdapter(ZkClientProxy client,
+                                     ChildrenCacheListener childrenCacheListener) {
             this.client = client;
             this.childrenCacheListener = childrenCacheListener;
         }
 
         @Override
-        public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+        public void childEvent(CuratorFramework client,
+                               PathChildrenCacheEvent event) throws Exception {
             PathChildrenCacheEvent.Type type = event.getType();
 
             switch (type) {
@@ -585,10 +598,10 @@ class ZkClientProxy implements ZKClient {
                 case CHILD_REMOVED:
                     log.info("接收到节点变化事件{}", event);
                     ChildData d = event.getData();
-                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi
-                            .ChildData(d.getPath(), d.getData());
-                    NodeEvent internalEvent = new NodeEvent(NodeEvent.Type.valueOf(type
-                            .name().replace("CHILD", "NODE")), data);
+                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi.ChildData(
+                        d.getPath(), d.getData());
+                    NodeEvent internalEvent = new NodeEvent(
+                        NodeEvent.Type.valueOf(type.name().replace("CHILD", "NODE")), data);
                     childrenCacheListener.childEvent(this.client, internalEvent);
                     break;
                 default:
@@ -607,10 +620,10 @@ class ZkClientProxy implements ZKClient {
                 case NODE_REMOVED:
                     log.info("接收到节点变化事件{}", event);
                     ChildData d = event.getData();
-                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi
-                            .ChildData(d.getPath(), d.getData());
-                    NodeEvent internalEvent = new NodeEvent(NodeEvent.Type.valueOf(type
-                            .name()), data);
+                    com.joe.easysocket.server.common.spi.ChildData data = new com.joe.easysocket.server.common.spi.ChildData(
+                        d.getPath(), d.getData());
+                    NodeEvent internalEvent = new NodeEvent(NodeEvent.Type.valueOf(type.name()),
+                        data);
                     childrenCacheListener.childEvent(this.client, internalEvent);
                     break;
                 default:

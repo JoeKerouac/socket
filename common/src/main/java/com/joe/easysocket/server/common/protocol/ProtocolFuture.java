@@ -8,28 +8,29 @@ package com.joe.easysocket.server.common.protocol;
 public interface ProtocolFuture {
     //失败future
     ProtocolFuture ERRORFUTURE = new ProtocolFuture() {
-        @Override
-        public boolean isDone() {
-            return true;
-        }
+                                   @Override
+                                   public boolean isDone() {
+                                       return true;
+                                   }
 
-        @Override
-        public boolean isSuccess() {
-            return false;
-        }
-    };
+                                   @Override
+                                   public boolean isSuccess() {
+                                       return false;
+                                   }
+                               };
     //成功future
-    ProtocolFuture SUCCESS = new ProtocolFuture() {
-        @Override
-        public boolean isDone() {
-            return true;
-        }
+    ProtocolFuture SUCCESS     = new ProtocolFuture() {
+                                   @Override
+                                   public boolean isDone() {
+                                       return true;
+                                   }
 
-        @Override
-        public boolean isSuccess() {
-            return true;
-        }
-    };
+                                   @Override
+                                   public boolean isSuccess() {
+                                       return true;
+                                   }
+                               };
+
     /**
      * 是否完成（立即返回）
      *

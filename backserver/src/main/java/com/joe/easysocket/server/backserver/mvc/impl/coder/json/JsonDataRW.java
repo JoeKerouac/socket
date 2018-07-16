@@ -1,5 +1,12 @@
 package com.joe.easysocket.server.backserver.mvc.impl.coder.json;
 
+import static com.joe.utils.parse.json.JsonParser.getInstance;
+
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.joe.easysocket.server.backserver.mvc.coder.DataReader;
 import com.joe.easysocket.server.backserver.mvc.coder.DataWriter;
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
@@ -10,14 +17,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.type.JavaType;
+
 import lombok.extern.slf4j.Slf4j;
-
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.joe.utils.parse.json.JsonParser.getInstance;
 
 /**
  * json解析器
@@ -28,7 +29,7 @@ import static com.joe.utils.parse.json.JsonParser.getInstance;
 @Provider
 public class JsonDataRW implements DataReader, DataWriter {
     private static final JsonParser JSON_PARSER = getInstance();
-    private ParamParserContainer paramParserContainer;
+    private ParamParserContainer    paramParserContainer;
 
     @Override
     public boolean isWriteable(String contentType) {
@@ -50,8 +51,8 @@ public class JsonDataRW implements DataReader, DataWriter {
     }
 
     @Override
-    public Object[] read(List<Param> params, HttpRequestContext requestContext, String data) throws
-            ParamParserException {
+    public Object[] read(List<Param> params, HttpRequestContext requestContext,
+                         String data) throws ParamParserException {
         log.debug("要解析的参数格式为：{}", params);
         // 方法没有参数
         if (params.isEmpty()) {
@@ -94,7 +95,7 @@ public class JsonDataRW implements DataReader, DataWriter {
             JavaType type = params.get(0).getType();
             log.debug("参数{}的类型为{}", param.getName(), type);
             Object obj = paramParserContainer.parse(param, requestContext.getRequest(), data);
-            return new Object[]{obj};
+            return new Object[] { obj };
         } else if (params.size() == 2 && hasContext) {
             // 除了注入的context外只有一个参数
             log.debug("该资源除了context外只有一个参数");
@@ -102,13 +103,16 @@ public class JsonDataRW implements DataReader, DataWriter {
             JavaType type = params.get(1 - contextIndex).getType();
             log.debug("参数{}的类型为{}", param.getName(), type);
 
-            Object p1 = paramParserContainer.parse(params.get(0), requestContext.getRequest(), data);
-            Object p2 = paramParserContainer.parse(params.get(1), requestContext.getRequest(), data);
-            return new Object[]{p1, p2};
+            Object p1 = paramParserContainer.parse(params.get(0), requestContext.getRequest(),
+                data);
+            Object p2 = paramParserContainer.parse(params.get(1), requestContext.getRequest(),
+                data);
+            return new Object[] { p1, p2 };
         } else {
             // 多个参数
             log.debug("该资源有多个参数");
-            Map<String, String> paramMap = JSON_PARSER.readAsMap(data, HashMap.class, String.class, String.class);
+            Map<String, String> paramMap = JSON_PARSER.readAsMap(data, HashMap.class, String.class,
+                String.class);
             log.debug("初次解析的参数集合为：{}", paramMap);
             Object[] objParams = new Object[params.size()];
             // 分别解析多个参数
@@ -120,7 +124,8 @@ public class JsonDataRW implements DataReader, DataWriter {
                 String paramData = paramMap.get(paramName);
                 log.debug("参数对应的数据为：{}", paramData);
 
-                objParams[i] = this.paramParserContainer.parse(param, requestContext.getRequest(), paramData);
+                objParams[i] = this.paramParserContainer.parse(param, requestContext.getRequest(),
+                    paramData);
             }
             return objParams;
         }

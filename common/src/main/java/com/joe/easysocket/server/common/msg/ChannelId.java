@@ -1,6 +1,9 @@
 package com.joe.easysocket.server.common.msg;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 /**
  * @author joe

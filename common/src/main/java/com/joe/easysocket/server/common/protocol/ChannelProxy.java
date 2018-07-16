@@ -34,14 +34,12 @@ public interface ChannelProxy {
      */
     int getPort();
 
-
     /**
      * 当前连接是否关闭
      *
      * @return 返回true表示当前连接已关闭
      */
     boolean isClosed();
-
 
     /**
      * 添加关闭回调

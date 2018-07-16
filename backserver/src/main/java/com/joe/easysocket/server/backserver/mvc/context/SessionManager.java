@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.context;
 
-
 import com.joe.easysocket.server.common.lambda.Endpoint;
 
 /**

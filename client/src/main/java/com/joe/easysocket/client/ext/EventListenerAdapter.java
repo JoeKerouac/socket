@@ -1,11 +1,9 @@
 package com.joe.easysocket.client.ext;
 
-
 import com.joe.easysocket.client.Client;
 import com.joe.easysocket.client.core.EventListener;
 import com.joe.easysocket.client.core.SocketEvent;
 import com.joe.easysocket.client.data.Datagram;
-import com.joe.easysocket.client.data.InterfaceData;
 
 /**
  * 事件适配器
@@ -40,31 +38,36 @@ public interface EventListenerAdapter extends EventListener {
      *
      * @param cause 失败原因
      */
-    default void faild(Throwable cause){}
+    default void faild(Throwable cause) {
+    }
 
     /**
      * 连接注册成功
      *
      * @param client 注册成功后的client
      */
-    default void register(Client client){}
+    default void register(Client client) {
+    }
 
     /**
      * 自动重连成功（由于底层只是自动建立连接，并没有重新登录等逻辑，所以需要用户自己实现重连后的逻辑，例如重新登录）
      *
      * @param client 重连后的client
      */
-    default void reconnect(Client client){}
+    default void reconnect(Client client) {
+    }
 
     /**
      * 通道关闭（用户主动调用shutdown）
      */
-    default void unregister(){}
+    default void unregister() {
+    }
 
     /**
      * 收到数据报回调
      *
      * @param data 收到的数据
      */
-    default void receive(Datagram data){}
+    default void receive(Datagram data) {
+    }
 }

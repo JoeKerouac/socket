@@ -23,8 +23,8 @@ public class UnsupportedException extends SystemException {
         super(cause);
     }
 
-    protected UnsupportedException(String message, Throwable cause, boolean enableSuppression, boolean
-            writableStackTrace) {
+    protected UnsupportedException(String message, Throwable cause, boolean enableSuppression,
+                                   boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

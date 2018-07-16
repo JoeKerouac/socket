@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
-
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 import com.joe.utils.scan.ClassFilter;
 
@@ -11,7 +10,7 @@ import com.joe.utils.scan.ClassFilter;
  */
 public class ResourceClassFilter implements ClassFilter {
 
-	public boolean filter(Class<?> clazz) {
-		return clazz.isAnnotationPresent(Path.class);
-	}
+    public boolean filter(Class<?> clazz) {
+        return clazz.isAnnotationPresent(Path.class);
+    }
 }

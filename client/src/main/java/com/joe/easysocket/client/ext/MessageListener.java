@@ -1,19 +1,19 @@
 package com.joe.easysocket.client.ext;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.joe.easysocket.client.common.LRUCacheMap;
 import com.joe.easysocket.client.data.Datagram;
 import com.joe.easysocket.client.data.InterfaceData;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author joe
  * @version 2018.05.08 14:51
  */
 public abstract class MessageListener implements EventListenerAdapter {
-    private static final int CACHE_SIZE = 500;
-    private static final int CACHE_MAX_SIZE = 5000;
-    private LRUCacheMap<String, String> cache;
+    private static final int                        CACHE_SIZE     = 500;
+    private static final int                        CACHE_MAX_SIZE = 5000;
+    private LRUCacheMap<String, String>             cache;
     /**
      * 用来辅助cache做并发控制
      */

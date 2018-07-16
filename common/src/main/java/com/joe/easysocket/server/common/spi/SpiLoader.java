@@ -1,10 +1,11 @@
 package com.joe.easysocket.server.common.spi;
 
+import java.util.Properties;
+
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
 import com.joe.utils.common.ClassUtils;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.Properties;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 加载SPI
@@ -31,7 +32,8 @@ public class SpiLoader {
             return t;
         } catch (Throwable e) {
             log.error("构造实例[{}]失败，可能是没有无参数构造器，请为类[{}]增加无参数构造器", spiClass, spiClass, e);
-            throw new ConfigIllegalException("构造实例[" + spiClass + "]失败，可能是没有无参数构造器，请为类[" + spiClass + "]增加无参数构造器", e);
+            throw new ConfigIllegalException(
+                "构造实例[" + spiClass + "]失败，可能是没有无参数构造器，请为类[" + spiClass + "]增加无参数构造器", e);
         }
     }
 }

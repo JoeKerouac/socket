@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.impl.exception;
 
-
 import com.joe.easysocket.server.common.exception.SystemException;
 
 /**

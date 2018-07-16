@@ -1,12 +1,12 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
-import com.joe.easysocket.server.backserver.mvc.container.Provider;
-import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 
 /**
  * spring扫描配置
@@ -20,6 +20,6 @@ class ScanConfig {
         List<Class<? extends Annotation>> temp = new ArrayList<>();
         temp.add(Provider.class);
         temp.add(Path.class);
-        SOCKET_COMPONENT =Collections.unmodifiableList(temp);
+        SOCKET_COMPONENT = Collections.unmodifiableList(temp);
     }
 }

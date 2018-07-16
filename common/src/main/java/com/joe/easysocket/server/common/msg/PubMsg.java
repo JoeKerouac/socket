@@ -25,11 +25,11 @@ public class PubMsg<T> {
     /**
      * 消息生成时间戳
      */
-    private long createTime;
+    private long   createTime;
     /**
      * 实际数据
      */
-    private T data;
+    private T      data;
     /**
      * 该消息ack的topic
      */

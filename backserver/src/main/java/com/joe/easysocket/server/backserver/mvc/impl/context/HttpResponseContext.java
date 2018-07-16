@@ -3,12 +3,13 @@ package com.joe.easysocket.server.backserver.mvc.impl.context;
 import com.joe.easysocket.server.backserver.mvc.coder.DataWriter;
 import com.joe.easysocket.server.backserver.mvc.context.ResponseContext;
 import com.joe.utils.data.BaseDTO;
+
 import lombok.Data;
 
 @Data
 public class HttpResponseContext implements ResponseContext {
     // 响应对象
-    private Response response;
+    private Response   response;
     // 响应数据编码器
     private DataWriter writer;
 

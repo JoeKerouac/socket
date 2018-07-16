@@ -1,16 +1,18 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
-import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
-import com.joe.utils.concurrent.LockService;
-import com.joe.utils.scan.ClassScanner;
-import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.utils.concurrent.LockService;
+import com.joe.utils.scan.ClassScanner;
+
+import lombok.NonNull;
 
 /**
  * 提供最基础的实现，如果bean的类不包含无参数构造器那么该bean将不会被扫描到
@@ -18,12 +20,13 @@ import java.util.stream.Collectors;
  * @author joe
  */
 public class BaseBeanContainer implements BeanContainer {
-    private static final Logger logger = LoggerFactory.getLogger(BaseBeanContainer.class);
+    private static final Logger                                   logger = LoggerFactory
+        .getLogger(BaseBeanContainer.class);
     private Map<Class<? extends Annotation>, Map<String, Object>> beanCache;
-    private List<Class<?>> allBeanClass;
-    private String[] args;
-    private boolean init = false;
-    private ClassLoader loader;
+    private List<Class<?>>                                        allBeanClass;
+    private String[]                                              args;
+    private boolean                                               init   = false;
+    private ClassLoader                                           loader;
 
     /**
      * 默认构造器，参数传需要扫描的包（可以只传入跟目录，然后会自动递归）
@@ -56,20 +59,20 @@ public class BaseBeanContainer implements BeanContainer {
             }
             logger.debug("缓存中不存在指定注解的bean集合，开始生成");
 
-            List<Object> allObj = allBeanClass.stream().filter(clazz -> clazz.getDeclaredAnnotation(annotationType)
-                    != null).map(clazz -> {
-                try {
-                    //调用默认无参数构造
-                    Class<?>[] empty = {};
-                    //获取构造器，然后将构造器的accessible设置为true，防止因为构造器私有而造成反射调用失败
-                    Constructor constructor = clazz.getDeclaredConstructor(empty);
-                    constructor.setAccessible(true);
-                    return constructor.newInstance();
-                } catch (Exception e) {
-                    logger.debug("生成{}的实例时失败，忽略该类，该类的注解为：{}", clazz, annotationType, e);
-                    return null;
-                }
-            }).filter(Objects::nonNull).collect(Collectors.toList());
+            List<Object> allObj = allBeanClass.stream()
+                .filter(clazz -> clazz.getDeclaredAnnotation(annotationType) != null).map(clazz -> {
+                    try {
+                        //调用默认无参数构造
+                        Class<?>[] empty = {};
+                        //获取构造器，然后将构造器的accessible设置为true，防止因为构造器私有而造成反射调用失败
+                        Constructor constructor = clazz.getDeclaredConstructor(empty);
+                        constructor.setAccessible(true);
+                        return constructor.newInstance();
+                    } catch (Exception e) {
+                        logger.debug("生成{}的实例时失败，忽略该类，该类的注解为：{}", clazz, annotationType, e);
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toList());
             logger.debug("当前所有带有注解{}的类的实例为：{}", annotationType, allObj);
 
             if (allObj.isEmpty()) {

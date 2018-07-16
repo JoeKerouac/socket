@@ -1,19 +1,20 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
-import com.joe.easysocket.server.backserver.mvc.container.Container;
-import com.joe.easysocket.server.backserver.mvc.container.Provider;
-import com.joe.easysocket.server.backserver.mvc.container.Selector;
-import com.joe.easysocket.server.backserver.mvc.Bean;
-import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
-import com.joe.utils.common.ClassUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
+import com.joe.easysocket.server.backserver.mvc.container.Container;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
+import com.joe.easysocket.server.backserver.mvc.container.Selector;
+import com.joe.utils.common.ClassUtils;
 
 /**
  * 抽象容器，类必须加上注解{@link Provider}才能被该容器发现
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author joe
  */
 public abstract class AbstractContainer<T extends Bean> implements Container<T> {
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger  logger = LoggerFactory.getLogger(this.getClass());
     /**
      * bean容器
      */
@@ -30,19 +31,19 @@ public abstract class AbstractContainer<T extends Bean> implements Container<T> 
     /**
      * 容器ClassLoader
      */
-    protected ClassLoader loader;
+    protected ClassLoader   loader;
     /**
      * 当前container容器存放的实体类型
      */
-    protected Class<T> clazz;
+    protected Class<T>      clazz;
     /**
      * container
      */
-    protected List<T> container;
+    protected List<T>       container;
     /**
      * 是否初始化，true表示已经初始化
      */
-    private boolean init;
+    private boolean         init;
 
     @SuppressWarnings("unchecked")
     public AbstractContainer(BeanContainer beanContainer) {
@@ -85,7 +86,6 @@ public abstract class AbstractContainer<T extends Bean> implements Container<T> 
         });
         return list;
     }
-
 
     @Override
     @SuppressWarnings("unchecked")

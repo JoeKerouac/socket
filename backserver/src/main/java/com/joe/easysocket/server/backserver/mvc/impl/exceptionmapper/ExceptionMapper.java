@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.impl.exceptionmapper;
 
-
 import com.joe.easysocket.server.backserver.mvc.Bean;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 

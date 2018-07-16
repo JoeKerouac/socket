@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.backserver.spi;
 
-
 import com.joe.easysocket.server.common.lambda.Endpoint;
 import com.joe.easysocket.server.common.msg.DataMsg;
 

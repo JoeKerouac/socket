@@ -26,8 +26,8 @@ public interface ZKClient extends Closeable {
      * @param recursion 是否递归监听，true表示递归监听，false表示只监听指定根节点，不监听子节点
      * @param listener  监听器
      */
-    void addListener(String path, boolean recursion, ChildrenCacheListener listener) throws
-            Exception;
+    void addListener(String path, boolean recursion,
+                     ChildrenCacheListener listener) throws Exception;
 
     /**
      * 当前客户端是否启动

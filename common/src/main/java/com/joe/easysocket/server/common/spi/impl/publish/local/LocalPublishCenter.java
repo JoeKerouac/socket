@@ -1,13 +1,13 @@
 package com.joe.easysocket.server.common.spi.impl.publish.local;
 
-import com.joe.easysocket.server.common.exception.SystemException;
-import com.joe.easysocket.server.common.spi.Serializer;
-import com.joe.easysocket.server.common.msg.CustomMessageListener;
-import com.joe.easysocket.server.common.spi.PublishCenter;
-
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.joe.easysocket.server.common.exception.SystemException;
+import com.joe.easysocket.server.common.msg.CustomMessageListener;
+import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.Serializer;
 
 /**
  * 本地发布中心，不能用于分布式项目，测试使用
@@ -17,12 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LocalPublishCenter implements PublishCenter {
     private Map<String, CustomMessageListener> listeners = new ConcurrentHashMap<>();
-    private Map<CustomMessageListener, String> map = new ConcurrentHashMap<>();
+    private Map<CustomMessageListener, String> map       = new ConcurrentHashMap<>();
 
     @Override
     public <T> void pub(String channel, T message) {
-        listeners.forEach((k , v) -> {
-            if(k.equals(channel)){
+        listeners.forEach((k, v) -> {
+            if (k.equals(channel)) {
                 v.onMessage(channel.getBytes(), message);
             }
         });

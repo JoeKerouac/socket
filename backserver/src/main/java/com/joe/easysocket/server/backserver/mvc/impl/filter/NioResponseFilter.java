@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.impl.filter;
 
-
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpResponseContext;
 
@@ -17,5 +16,6 @@ public abstract class NioResponseFilter implements NioFilter {
     }
 
     @Override
-    public abstract void responseFilter(HttpRequestContext.RequestWrapper request, HttpResponseContext.Response response);
+    public abstract void responseFilter(HttpRequestContext.RequestWrapper request,
+                                        HttpResponseContext.Response response);
 }

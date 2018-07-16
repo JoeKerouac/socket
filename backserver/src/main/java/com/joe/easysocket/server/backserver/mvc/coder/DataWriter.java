@@ -1,8 +1,7 @@
 package com.joe.easysocket.server.backserver.mvc.coder;
 
-
-import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.Bean;
+import com.joe.easysocket.server.backserver.mvc.container.Provider;
 
 /**
  * 响应数据解析器接口，必须实现该接口并且注解{@link Provider}才会生效

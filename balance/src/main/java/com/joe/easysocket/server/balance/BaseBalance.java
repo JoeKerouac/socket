@@ -1,5 +1,8 @@
 package com.joe.easysocket.server.balance;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.joe.easysocket.server.balance.protocol.CloseCause;
 import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
 import com.joe.easysocket.server.balance.protocol.ProtocolEventListener;
@@ -17,15 +20,13 @@ import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.info.BalanceInfo;
 import com.joe.easysocket.server.common.lambda.Function;
-import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
+import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.common.ClassUtils;
 import com.joe.utils.common.Tools;
-import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 前端实现
@@ -37,23 +38,23 @@ public class BaseBalance extends AbstractBalance {
     /**
      * 当前是否开启
      */
-    private boolean started = false;
+    private boolean                        started = false;
     /**
      * 后端服务注册的根节点
      */
-    private final String registryBackServerUrl;
+    private final String                   registryBackServerUrl;
     /**
      * 该前端的注册地址
      */
-    private String registryUrl;
+    private String                         registryUrl;
     /**
      * 序列化器
      */
-    private List<Serializer> serializers;
+    private List<Serializer>               serializers;
     /**
      * 真实后端消息监听
      */
-    private ProtocolDataListener protocolDataListener;
+    private ProtocolDataListener           protocolDataListener;
     /**
      * 后端主动发送的消息的监听
      */
@@ -61,31 +62,31 @@ public class BaseBalance extends AbstractBalance {
     /**
      * 负载策略
      */
-    private LoadStrategy strategy;
+    private LoadStrategy                   strategy;
     /**
      * 处理底层连接的server
      */
-    private ConnectorManager connectorManager;
+    private ConnectorManager               connectorManager;
     /**
      * 前端接受后端主动发的消息的通道
      */
-    private String msgRecTopic;
+    private String                         msgRecTopic;
     /**
      * 前端的注册组名
      */
-    private String balanceGroup;
+    private String                         balanceGroup;
     /**
      * 注册的根目录
      */
-    private String registryBase;
+    private String                         registryBase;
     /**
      * 前端IP
      */
-    private String host;
+    private String                         host;
     /**
      * 前端监听端口
      */
-    private int port;
+    private int                            port;
 
     /**
      * 默认构造器
@@ -96,7 +97,8 @@ public class BaseBalance extends AbstractBalance {
     public BaseBalance(Config config) throws ConfigIllegalException {
         super(config);
         ClusterConfig clusterConfig = config.getClusterConfig();
-        this.registryBackServerUrl = clusterConfig.getRegistryBase() + clusterConfig.getBackServerGroup();
+        this.registryBackServerUrl = clusterConfig.getRegistryBase()
+                                     + clusterConfig.getBackServerGroup();
         this.serializers = super.environment.get(Const.SERIALIZER_LIST);
         this.protocolDataListener = this::receiveData;
         //接受后端主动发来的消息
@@ -117,12 +119,15 @@ public class BaseBalance extends AbstractBalance {
         String connectorManagerClass = config.getConnectorManager();
         log.debug("初始化ConnectorManager子类[{}]的实例", connectorManagerClass);
         try {
-            this.connectorManager = (ConnectorManager) ClassUtils.loadClass(connectorManagerClass).newInstance();
+            this.connectorManager = (ConnectorManager) ClassUtils.loadClass(connectorManagerClass)
+                .newInstance();
         } catch (Exception e) {
             log.error("构造ConnectorManager实例[{}]失败，可能是没有无参数构造器，请为ConnectorManager实现类[{}]增加无参数构造器",
-                    connectorManagerClass, connectorManagerClass, e);
-            throw new ConfigIllegalException("构造ConnectorManager实例[" + connectorManagerClass +
-                    "]失败，可能是没有无参数构造器，请为ConnectorManager实现类[" + connectorManagerClass + "]增加无参数构造器", e);
+                connectorManagerClass, connectorManagerClass, e);
+            throw new ConfigIllegalException("构造ConnectorManager实例[" + connectorManagerClass
+                                             + "]失败，可能是没有无参数构造器，请为ConnectorManager实现类["
+                                             + connectorManagerClass + "]增加无参数构造器",
+                e);
         }
 
         String eventCenterClass = config.getEventCenter();
@@ -132,7 +137,7 @@ public class BaseBalance extends AbstractBalance {
             eventCenter = (EventCenter) ClassUtils.loadClass(eventCenterClass).newInstance();
         } catch (Exception e) {
             log.warn("构造EventCenter实例[{}]失败，可能是没有无参数构造器，将采用默认EventCenter[{}]",
-                    connectorManagerClass, DefaultEventCenter.class, e);
+                connectorManagerClass, DefaultEventCenter.class, e);
             eventCenter = new DefaultEventCenter();
         }
         log.debug("设置Balance的EventCenter代理为：[{}]", eventCenter);
@@ -180,7 +185,6 @@ public class BaseBalance extends AbstractBalance {
         });
     }
 
-
     @Override
     public synchronized void start(Function callback) throws SystemException {
         log.debug("启动前端...");
@@ -188,7 +192,6 @@ public class BaseBalance extends AbstractBalance {
             log.warn("前端已经启动，请不要重复启动");
             return;
         }
-
 
         log.debug("启动注册中心");
         registry.start();
@@ -291,7 +294,6 @@ public class BaseBalance extends AbstractBalance {
         }
         log.debug("注册中心关闭成功");
 
-
         log.debug("关闭所有虚拟后端");
         strategy.clear();
         log.debug("虚拟后端关闭完成");
@@ -367,7 +369,8 @@ public class BaseBalance extends AbstractBalance {
      */
     private BackServer buildServer(BackServerInfo serverInfo) {
         log.debug("根据真实后端信息{}构建虚拟后端", serverInfo);
-        BackServerImpl server = new BackServerImpl(environment, serverInfo, protocolDataListener, id);
+        BackServerImpl server = new BackServerImpl(environment, serverInfo, protocolDataListener,
+            id);
         log.debug("启动虚拟后端{}", serverInfo);
         server.start();
         return server;

@@ -1,15 +1,15 @@
 package com.joe.easysocket.server.common.spi.impl.registry.local;
 
-import com.joe.easysocket.server.common.spi.*;
-import com.joe.utils.collection.Tree;
-import com.joe.utils.common.StringUtils;
-import com.joe.utils.parse.json.JsonParser;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.joe.easysocket.server.common.spi.*;
+import com.joe.utils.collection.Tree;
+import com.joe.utils.common.StringUtils;
+import com.joe.utils.parse.json.JsonParser;
 
 /**
  * 本地注册中心，不能用于分布式项目
@@ -21,17 +21,16 @@ import java.util.concurrent.atomic.AtomicLong;
  * @version 2018.04.11 18:13
  */
 public class LocalRegistry implements Registry {
-    private static final JsonParser PARSER = JsonParser.getInstance();
-    private Tree registry;
+    private static final JsonParser  PARSER = JsonParser.getInstance();
+    private Tree                     registry;
     private Tree<List<NodeListener>> listeners;
-    private AtomicLong counter;
+    private AtomicLong               counter;
 
     public LocalRegistry() {
         this.registry = new Tree();
         this.listeners = new Tree<>();
         this.counter = new AtomicLong(0);
     }
-
 
     @Override
     public void start() {
@@ -52,7 +51,8 @@ public class LocalRegistry implements Registry {
 
         List<NodeListener> listenerList = listeners.getData(pathPre);
         if (listenerList != null && !listenerList.isEmpty()) {
-            listenerList.stream().forEach(listener -> listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED,
+            listenerList.stream()
+                .forEach(listener -> listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED,
                     new ChildData("/" + pathPre, dataStr.getBytes()))));
         }
         return path;
@@ -106,8 +106,8 @@ public class LocalRegistry implements Registry {
         list.add(listener);
         List<String> datas = registry.getAllChildData(path);
         if (!datas.isEmpty()) {
-            datas.forEach(data -> listener.listen(this, new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path,
-                    data.getBytes()))));
+            datas.forEach(data -> listener.listen(this,
+                new NodeEvent(NodeEvent.Type.NODE_ADDED, new ChildData(path, data.getBytes()))));
         }
     }
 

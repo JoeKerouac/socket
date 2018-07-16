@@ -1,9 +1,8 @@
 package com.joe.easysocket.server.backserver.mvc.container;
 
+import java.util.Map;
 
 import com.joe.easysocket.server.backserver.mvc.Bean;
-
-import java.util.Map;
 
 /**
  * 注册器

@@ -1,5 +1,16 @@
 package com.joe.easysocket.server.backserver.mvc.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
+import javax.validation.ValidationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.joe.easysocket.server.backserver.impl.MvcDataworker;
 import com.joe.easysocket.server.backserver.mvc.MvcController;
 import com.joe.easysocket.server.backserver.mvc.coder.DataReader;
@@ -23,15 +34,6 @@ import com.joe.utils.common.StringUtils;
 import com.joe.utils.data.BaseDTO;
 import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.protocol.Datagram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.validation.ValidationException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * MVC控制器
@@ -40,36 +42,36 @@ import java.util.function.Consumer;
  * @version 2018.03.06 10:34
  */
 public class MvcControllerImpl implements MvcController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MvcDataworker.class);
-    private static final JsonParser JSON_PARSER = JsonParser.getInstance();
-    private ResourceContainer resourceContainer;
-    private FilterContainer filterContainer;
-    private DataWriterContainer dataWriterContainer;
-    private DataReaderContainer dataReaderContainer;
+    private static final Logger      LOGGER      = LoggerFactory.getLogger(MvcDataworker.class);
+    private static final JsonParser  JSON_PARSER = JsonParser.getInstance();
+    private ResourceContainer        resourceContainer;
+    private FilterContainer          filterContainer;
+    private DataWriterContainer      dataWriterContainer;
+    private DataReaderContainer      dataReaderContainer;
     private ExceptionMapperContainer exceptionMapperContainer;
-    private SessionManager sessionManager;
-    private BeanContainer beanContainer;
-    private ParamParserContainer paramParserContainer;
+    private SessionManager           sessionManager;
+    private BeanContainer            beanContainer;
+    private ParamParserContainer     paramParserContainer;
     //执行任务的线程池
-    private ExecutorService service;
+    private ExecutorService          service;
     //关闭标志，为true时表示关闭
-    private volatile boolean shutdown = true;
+    private volatile boolean         shutdown    = true;
     /**
      * 数据处理线程名的格式
      */
-    private String threadName;
+    private String                   threadName;
     /**
      * 最大线程数
      */
-    private int maxThread;
+    private int                      maxThread;
     /**
      * 最小线程数
      */
-    private int minThread;
+    private int                      minThread;
     /**
      * 空闲线程存活时间，单位为秒
      */
-    private long threadAliveTime;
+    private long                     threadAliveTime;
 
     /**
      * MVC控制器
@@ -80,15 +82,17 @@ public class MvcControllerImpl implements MvcController {
      * @param minThread       MVC处理器线程池的最小线程数
      * @param threadAliveTime MVC处理器线程池空闲线程存活时间，单位为秒
      */
-    public MvcControllerImpl(SessionManager sessionManager, BeanContainer beanContainer, int maxThread, int minThread,
-                             long threadAliveTime) {
+    public MvcControllerImpl(SessionManager sessionManager, BeanContainer beanContainer,
+                             int maxThread, int minThread, long threadAliveTime) {
         if (sessionManager == null || beanContainer == null) {
             throw new NullPointerException("sessionManager or beanContainer must not be null");
         }
         this.sessionManager = sessionManager;
         this.beanContainer = beanContainer;
-        this.maxThread = maxThread <= 0 ? Runtime.getRuntime().availableProcessors() * 150 : maxThread;
-        this.minThread = minThread <= 0 ? Runtime.getRuntime().availableProcessors() * 50 : minThread;
+        this.maxThread = maxThread <= 0 ? Runtime.getRuntime().availableProcessors() * 150
+            : maxThread;
+        this.minThread = minThread <= 0 ? Runtime.getRuntime().availableProcessors() * 50
+            : minThread;
         this.threadAliveTime = threadAliveTime <= 0 ? 30 : threadAliveTime;
         this.threadName = "mvc处理线程%d";
     }
@@ -130,8 +134,8 @@ public class MvcControllerImpl implements MvcController {
     }
 
     @Override
-    public <R extends RequestContext> void deal(Datagram datagram, R requestContext, Consumer<InterfaceData>
-            consumer) throws NullPointerException {
+    public <R extends RequestContext> void deal(Datagram datagram, R requestContext,
+                                                Consumer<InterfaceData> consumer) throws NullPointerException {
         LOGGER.debug("读取到数据为：{}", datagram);
         if (datagram == null) {
             LOGGER.warn("接收到的数据为空，不处理");
@@ -175,10 +179,9 @@ public class MvcControllerImpl implements MvcController {
 
         //构建线程池
         LOGGER.debug("构建线程池，参数为{}:{}:{}:{}", minThread, maxThread, threadAliveTime, threadName);
-        service = new ThreadPoolExecutor(minThread, maxThread, threadAliveTime, TimeUnit.SECONDS, new
-                LinkedBlockingQueue<>(), factory);
+        service = new ThreadPoolExecutor(minThread, maxThread, threadAliveTime, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(), factory);
         LOGGER.debug("线程池构建完成");
-
 
         //不加该行service中没有提交过任务时当程序运行完毕会自动关闭，只有这样该线程组才不会自动关闭，后端项目才不
         // 会启动后就立即自动关闭
@@ -216,7 +219,8 @@ public class MvcControllerImpl implements MvcController {
      *                              出{@link NullPointerException NullPointerException}，主要是由于构建异常消息时需要从message中获取ID，而此时
      *                              message是null，所以会抛出@link NullPointerException NullPointerException}
      */
-    private <R extends RequestContext> InterfaceData accept(byte[] body, R r) throws NullPointerException {
+    private <R extends RequestContext> InterfaceData accept(byte[] body,
+                                                            R r) throws NullPointerException {
         LOGGER.debug("接收到数据，开始处理。[{}]", body);
         HttpResponseContext responseContext;
         InterfaceData resultData;
@@ -257,7 +261,8 @@ public class MvcControllerImpl implements MvcController {
 
             LOGGER.debug("开始解码参数");
             // 开始解码数据
-            Object[] param = dataReader.read(resource.getParams(), requestContext, message.getData());
+            Object[] param = dataReader.read(resource.getParams(), requestContext,
+                message.getData());
             requestContext.setParams(param);
             LOGGER.debug("参数解码完毕，参数为：{}", param);
 
@@ -282,45 +287,49 @@ public class MvcControllerImpl implements MvcController {
         } catch (ResourceNotFoundException e) {
             LOGGER.error("用户请求的资源不存在", e);
             resultData = buildResult(new BaseDTO<>("404"), message.getId(), message.getInvoke(),
-                    findWriterInterceptor(null));
+                findWriterInterceptor(null));
         } catch (MediaTypeNoSupportException e) {
             LOGGER.error("找不到对应的参数解析器", e);
             resultData = buildResult(new BaseDTO<>("504"), message.getId(), message.getInvoke(),
-                    resolveDataInterceptor(requestContext, responseContext));
+                resolveDataInterceptor(requestContext, responseContext));
         } catch (ParamParserException e) {
             LOGGER.error("参数解析失败", e);
             resultData = buildResult(new BaseDTO<>("505"), message.getId(), message.getInvoke(),
-                    resolveDataInterceptor(requestContext, responseContext));
+                resolveDataInterceptor(requestContext, responseContext));
         } catch (ValidationException e) {
             LOGGER.error("参数验证失败", e);
             resultData = buildResult(new BaseDTO<>("506"), message.getId(), message.getInvoke(),
-                    resolveDataInterceptor(requestContext, responseContext));
+                resolveDataInterceptor(requestContext, responseContext));
         } catch (FilterException e) {
             LOGGER.error("filter异常");
             resultData = buildResult(new BaseDTO<>("507"), message.getId(), message.getInvoke(),
-                    resolveDataInterceptor(requestContext, responseContext));
+                resolveDataInterceptor(requestContext, responseContext));
         } catch (Throwable e) {
             // 请求过程中发生了异常
             LOGGER.error("请求过程中发生了异常，开始查找相应的异常处理器处理异常", e);
 
             // 查找异常处理器
-            List<ExceptionMapper> exceptionMappers = exceptionMapperContainer.select(mapper -> mapper.mapper(e));
+            List<ExceptionMapper> exceptionMappers = exceptionMapperContainer
+                .select(mapper -> mapper.mapper(e));
 
             LOGGER.info("异常处理器查找完毕");
             if (exceptionMappers.isEmpty()) {
                 LOGGER.error("异常没有找到相应的处理器", e);
                 resultData = buildResult(new BaseDTO<>("508"), message.getId(), message.getInvoke(),
-                        resolveDataInterceptor(requestContext, responseContext));
+                    resolveDataInterceptor(requestContext, responseContext));
             } else {
                 LOGGER.info("找到异常处理器，由相应的异常处理器处理");
                 try {
                     HttpResponseContext.Response response = exceptionMappers.get(0).toResponse(e);
-                    resultData = new InterfaceData(message.getId(), message.getInvoke(), resolveDataInterceptor
-                            (requestContext, responseContext).write(response.getResult()));
+                    resultData = new InterfaceData(message.getId(), message.getInvoke(),
+                        resolveDataInterceptor(requestContext, responseContext)
+                            .write(response.getResult()));
                 } catch (Throwable throwable) {
-                    LOGGER.error("用户异常处理器[{}]处理异常[{}]的过程中又发生了异常", exceptionMappers.get(0), e, throwable);
-                    resultData = buildResult(new BaseDTO<>("509"), message.getId(), message.getInvoke(),
-                            resolveDataInterceptor(requestContext, responseContext));
+                    LOGGER.error("用户异常处理器[{}]处理异常[{}]的过程中又发生了异常", exceptionMappers.get(0), e,
+                        throwable);
+                    resultData = buildResult(new BaseDTO<>("509"), message.getId(),
+                        message.getInvoke(),
+                        resolveDataInterceptor(requestContext, responseContext));
                 }
             }
         }
@@ -337,8 +346,10 @@ public class MvcControllerImpl implements MvcController {
      * @throws MediaTypeNoSupportException 找不到相应数据的编码器
      * @throws FilterException             filter异常
      */
-    private InterfaceData response(HttpRequestContext requestContext, HttpResponseContext responseContext, InterfaceData
-            userData) throws MediaTypeNoSupportException, FilterException {
+    private InterfaceData response(HttpRequestContext requestContext,
+                                   HttpResponseContext responseContext,
+                                   InterfaceData userData) throws MediaTypeNoSupportException,
+                                                           FilterException {
         LOGGER.debug("开始构建响应");
         HttpRequestContext.RequestWrapper request = requestContext.getRequest();
         Resource resource = requestContext.getResource();
@@ -361,7 +372,7 @@ public class MvcControllerImpl implements MvcController {
             LOGGER.debug("请求的接口{}没有响应消息，返回一个BaseDTO", userData.getInvoke());
             // 如果该接口没有响应消息，那么返回一个基本的请求成功
             return buildResult(BaseDTO.buildSuccess(), userData.getId(), userData.getInvoke(),
-                    dataWriter);
+                dataWriter);
         } else if (result instanceof InterfaceData) {
             LOGGER.debug("用户响应的信息是InterfaceData对象");
             return (InterfaceData) result;
@@ -381,8 +392,8 @@ public class MvcControllerImpl implements MvcController {
      * @param dataWriter 对应的数据处理器
      * @return 响应结果
      */
-    private InterfaceData buildResult(Object result, String id, String invoke, DataWriter
-            dataWriter) {
+    private InterfaceData buildResult(Object result, String id, String invoke,
+                                      DataWriter dataWriter) {
         invoke = invoke.startsWith("/") ? "/back" + invoke : "/back/" + invoke;
         if (dataWriter == null) {
             return null;
@@ -400,8 +411,8 @@ public class MvcControllerImpl implements MvcController {
     private DataReader findReaderInterceptor(String consume) throws MediaTypeNoSupportException {
         LOGGER.debug("要查找的数据解码器类型为：{}", consume);
         final String realConsume = StringUtils.isEmpty(consume) ? "json" : consume;
-        List<DataReader> dataReaders = dataReaderContainer.select(reader -> reader.isReadable
-                (realConsume));
+        List<DataReader> dataReaders = dataReaderContainer
+            .select(reader -> reader.isReadable(realConsume));
 
         LOGGER.debug("数据编码器为：{}", dataReaders);
         if (dataReaders.isEmpty()) {
@@ -446,8 +457,8 @@ public class MvcControllerImpl implements MvcController {
         LOGGER.debug("查找{}格式的数据编码器", produce);
         final String dataProduce = StringUtils.isEmpty(produce) ? "json" : produce;
 
-        List<DataWriter> dataWriters = dataWriterContainer.select(dataInterceptor -> dataInterceptor
-                .isWriteable(dataProduce));
+        List<DataWriter> dataWriters = dataWriterContainer
+            .select(dataInterceptor -> dataInterceptor.isWriteable(dataProduce));
 
         if (dataWriters.isEmpty()) {
             // 找不到支持
@@ -463,8 +474,8 @@ public class MvcControllerImpl implements MvcController {
      * @param responseContext 响应上下文
      * @return 响应数据处理器，该方法肯定会返回一个响应数据处理器
      */
-    private DataWriter resolveDataInterceptor(HttpRequestContext requestContext, HttpResponseContext
-            responseContext) {
+    private DataWriter resolveDataInterceptor(HttpRequestContext requestContext,
+                                              HttpResponseContext responseContext) {
         LOGGER.debug("根据上下文确定一个响应数据处理器");
 
         DataWriter writer = responseContext.getWriter();

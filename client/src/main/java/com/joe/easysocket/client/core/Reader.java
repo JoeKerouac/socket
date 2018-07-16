@@ -1,5 +1,10 @@
 package com.joe.easysocket.client.core;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.joe.easysocket.client.Client;
 import com.joe.easysocket.client.common.DatagramUtil;
@@ -9,12 +14,6 @@ import com.joe.easysocket.client.ext.Logger;
 import com.joe.easysocket.client.ext.Serializer;
 import com.joe.utils.collection.CollectionUtil;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
  * socket数据读取器
  *
@@ -22,31 +21,30 @@ import java.util.concurrent.Executors;
  */
 public class Reader extends Worker {
     // 数据报head中长度字段的起始位置（从0开始）
-    private final int lengthFieldOffset = 1;
+    private final int             lengthFieldOffset = 1;
     // 数据报head的长度
-    private final int headLength = Datagram.HEADER;
+    private final int             headLength        = Datagram.HEADER;
     //socket输入流
-    private final SocketChannel channel;
+    private final SocketChannel   channel;
     //缓冲区大小
-    private int bufferSize;
+    private int                   bufferSize;
     //线程池
     private final ExecutorService service;
     //客户端
-    private Client client;
+    private Client                client;
     //事件中心
-    private final EventCenter eventCenter;
+    private final EventCenter     eventCenter;
     //缓冲区
-    private ByteBuffer buffer;
+    private ByteBuffer            buffer;
 
     /**
      * 缓冲区读指针
      */
-    private int readPoint = 0;
+    private int                   readPoint         = 0;
     /**
      * 缓冲区写指针，相对于缓冲区，往缓冲区中写
      */
-    private int writePoint = 0;
-
+    private int                   writePoint        = 0;
 
     /**
      * 读取器构造器
@@ -58,10 +56,10 @@ public class Reader extends Worker {
      * @param client      client
      * @param eventCenter 事件中心
      */
-    public Reader(SocketChannel channel, Logger logger, Callback callback, Serializer serializer, Client client,
-                  EventCenter eventCenter) {
-        super(logger instanceof InternalLogger ? logger : InternalLogger.getLogger(logger, Reader.class), callback,
-                serializer);
+    public Reader(SocketChannel channel, Logger logger, Callback callback, Serializer serializer,
+                  Client client, EventCenter eventCenter) {
+        super(logger instanceof InternalLogger ? logger
+            : InternalLogger.getLogger(logger, Reader.class), callback, serializer);
         this.channel = channel;
         this.bufferSize = 1024;
         this.service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
@@ -92,7 +90,6 @@ public class Reader extends Worker {
         }, "数据读取器");
         this.worker.start();
     }
-
 
     /**
      * 从socket输入流中读取
