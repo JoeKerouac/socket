@@ -41,7 +41,7 @@ elif [ "$1" = "install" ]
         checkAndExit "安装完成" "安装失败"
 elif [ "$1" = "deploy" ]
         then
-        mvn clean deploy -P javadoc -P release -Dmaven.test.skip=true -Dgpg.passphrase=$gpg_passphrase
+        mvn clean deploy -P javadoc -P release -Dmaven.test.skip=true -Dgpg.passphrase=$gpg_passphrase -Dgpg.keyname=$gpg_keyname
         checkAndExit "发布完成" "发布失败"
 else
         echo "传入参数错误，请查看帮助(help)"
