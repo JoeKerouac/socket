@@ -19,6 +19,8 @@ check(){
 }
 
 echo "拉取代码"
+git reset --hard origin/master
+git fetch --all
 git pull
 check "代码拉取成功" "代码拉取失败"
 
