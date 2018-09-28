@@ -1,5 +1,5 @@
 # 配置
-Balance可以通过[Config](balance/src/main/java/com/joe/easysocket/server/balance/Config.java)来配置，而BackServer则是可以通过[Config](backserver/src/main/java/com/joe/easysocket/server/backserver/Config.java)来配置
+Balance可以通过[Config](../balance/src/main/java/com/joe/easysocket/server/balance/Config.java)来配置，而BackServer则是可以通过[Config](../backserver/src/main/java/com/joe/easysocket/server/backserver/Config.java)来配置
 # 默认MvcDataworker使用：
 ## 数据
 MvcDataworker数据报的类型（type）为1，body的序列化方式为JSON，详情如下：
@@ -113,7 +113,7 @@ public class UserController {
 如果想要扩展参数处理器，则只需要像JsonDataRW那样实现DataReader和DataWriter接口，然后在该类上添加@Provider注解即可（需要可以被BeanContainer发现），如果只需要对请求参数解析或者只需要对响应数据处理那么只需要实现其中的一个接口即可。对于使用自定义的解析器，需要在resource上添加@Consumes和@Produces注解，然后指定value值，该值将会传入自定义解析器用于过滤出可用的解析器。
 
 ## filter使用
-后台[backserver](backserver)内置的[MvcDataworker](backserver/src/main/java/com/joe/easysocket/server/backserver/impl/MvcDataworker)支持filter操作（就像SpringMVC中一样，不过支持没有SpringMVC的强大），使用时只需要继承NioRequestFilter或者NioResponseFilter或者NioFilter，然后在类上添加Provider注解即可。
+后台[backserver](../backserver)内置的[MvcDataworker](backserver/src/main/java/com/joe/easysocket/server/backserver/impl/MvcDataworker)支持filter操作（就像SpringMVC中一样，不过支持没有SpringMVC的强大），使用时只需要继承NioRequestFilter或者NioResponseFilter或者NioFilter，然后在类上添加Provider注解即可。
 
 RequestFilter示例：
 ```java

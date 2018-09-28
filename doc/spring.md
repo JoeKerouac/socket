@@ -24,7 +24,7 @@ public class SpringTest {
     }
 }
 ```
-可以看到上边有用到CustomClassPathBeanDefinitionScanner，该类的作用主要是用于让spring发现自定义注解的bean，如果不想使用这种方法，可以将下面几行注释，然后在添加自定义注解的bean上额外添加spring的注解例如@Component等，或者使用xml的可以自己在xml中定义本框架需要的bean（使用@Provider和@Path注解的bean，详情参照[README](README.md)），但是这样做会侵入代码，造成一定的改造成本（如果原来没有集成spring现在需要集成或者现在集成了spring但是后续可能需要去掉spring），所以建议使用上述示例的方法。
+可以看到上边有用到CustomClassPathBeanDefinitionScanner，该类的作用主要是用于让spring发现自定义注解的bean，如果不想使用这种方法，可以将下面几行注释，然后在添加自定义注解的bean上额外添加spring的注解例如@Component等，或者使用xml的可以自己在xml中定义本框架需要的bean（使用@Provider和@Path注解的bean，详情参照[README](../README.md)），但是这样做会侵入代码，造成一定的改造成本（如果原来没有集成spring现在需要集成或者现在集成了spring但是后续可能需要去掉spring），所以建议使用上述示例的方法。
 ```
 //扫描添加自定义注解的bean
 CustomClassPathBeanDefinitionScanner scanner = new CustomClassPathBeanDefinitionScanner(context);

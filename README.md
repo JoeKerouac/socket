@@ -224,7 +224,7 @@ public class UserController {
 
 有了服务端后还需要有客户端来请求，客户端编写参照[客户端](client/README.md)
 
-[下一步](catalog.md)，让我们来完整的开始学习吧！
+[下一步](doc/catalog.md)，让我们来完整的开始学习吧！
 
 PS：（本示例代码在[test](socket-test)项目中）
 
