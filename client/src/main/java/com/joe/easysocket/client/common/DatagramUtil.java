@@ -1,5 +1,6 @@
 package com.joe.easysocket.client.common;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.UUID;
@@ -16,9 +17,37 @@ import com.joe.easysocket.client.ext.Logger;
  * @author joe
  */
 public class DatagramUtil {
-    // 数据报数据除去请求头的最大长度
-    private static final int MAX_LENGTH = Datagram.MAX_LENGTH - Datagram.HEADER;
-    private final Logger     logger;
+    /**
+     * 数据报数据除去请求头的最大长度
+     */
+    private static final int    MAX_LENGTH = Datagram.MAX_LENGTH - Datagram.HEADER;
+    /**
+     * 当前系统默认字符集
+     */
+    private static final String CHARSET    = Charset.defaultCharset().name();
+    /**
+     * 系统字符集的byte数据（长度10byte，不足的后边补零）
+     */
+    private static final byte[] CHARSET_DATA;
+    /**
+     * 日志
+     */
+    private final Logger        logger;
+
+    static {
+        byte[] charsetBytes = CHARSET.getBytes();
+        int charsetLen = charsetBytes.length;
+        if (charsetLen > 10) {
+            throw new DataOutOfMemory("数据报字符集长度最大为10byte，当前系统默认字符集超过该长度");
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(10);
+        stream.write(charsetBytes, 0, charsetLen);
+        while (charsetLen < 10) {
+            charsetLen++;
+            stream.write(0);
+        }
+        CHARSET_DATA = stream.toByteArray();
+    }
 
     public DatagramUtil(Logger logger) {
         this.logger = logger;
@@ -48,12 +77,17 @@ public class DatagramUtil {
      * @throws DataOutOfMemory 当数据长度过长时会抛出该异常
      */
     public Datagram build(byte[] body, byte type, byte version, byte[] id) throws DataOutOfMemory {
-        int dataLen = 0;
+        if (id != null && id.length != 40) {
+            throw new IllegalArgumentException("数据报的ID数组长度必须等于40");
+        }
+
+        final int dataLen;
         if (body != null && body.length != 0) {
             // 获取要发送的数据的长度
             dataLen = body.length;
             logger.debug("要构建的数据报的body长度为：" + dataLen);
         } else {
+            dataLen = 0;
             logger.debug("要构建一个空的数据报");
         }
 
@@ -63,37 +97,28 @@ public class DatagramUtil {
             logger.error("数据报数据长度超过最大值：" + MAX_LENGTH);
             throw new DataOutOfMemory(String.format("数据长度超过最大值%d", MAX_LENGTH));
         }
-        // 缓存
-        ByteArray buffer = new ByteArray(Datagram.HEADER + dataLen);
-        // 一个字节的版本号
-        buffer.append(version);
-        // 四个字节的body长度
-        buffer.append(convert(dataLen));
-        // 一个字节的数据类型
-        buffer.append(type);
-        // 十个字节的字符集，字符集为当前系统默认字符集不可更改，不足十个字节的用0填充
-        String charset = Charset.defaultCharset().name();
-        ByteArray charsetBuffer = new ByteArray(10);
-        charsetBuffer.append(charset.getBytes());
-        if (charsetBuffer.size() > 10) {
-            throw new DataOutOfMemory("数据报字符集长度最大为10byte，当前系统默认字符集超过该长度");
-        }
 
-        // 字符集不足10位的补0
-        while (charsetBuffer.size() < 10) {
-            charsetBuffer.append((byte) 0);
-        }
-        buffer.append(charsetBuffer.getData());
+        byte[] lenBytes = convert(dataLen);
+        // 缓存
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(Datagram.HEADER + dataLen);
+        // 一个字节的版本号
+        stream.write(version);
+        // 四个字节的body长度
+        stream.write(lenBytes, 0, lenBytes.length);
+        // 一个字节的数据类型
+        stream.write(type);
+        // 十个字节的字符集，字符集为当前系统默认字符集不可更改，不足十个字节的用0填充
+        stream.write(CHARSET_DATA, 0, CHARSET_DATA.length);
 
         id = id == null ? createId() : id;
-        buffer.append(id);
+        stream.write(id, 0, id.length);
 
         if (dataLen != 0) {
-            // 填充数据
-            buffer.append(body);
+            stream.write(body, 0, dataLen);
         }
-        Datagram datagram = new Datagram(buffer.getData(), dataLen, body, version, charset, type,
-            id);
+
+        Datagram datagram = new Datagram(stream.toByteArray(), dataLen, body, version, CHARSET,
+            type, id);
         logger.debug("转换后的数据报是：" + datagram);
         return datagram;
     }
