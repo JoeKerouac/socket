@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.joe.easysocket.server.common.spi.*;
 import com.joe.utils.collection.Tree;
 import com.joe.utils.common.StringUtils;
-import com.joe.utils.parse.json.JsonParser;
+import com.joe.utils.serialize.json.JsonParser;
 
 /**
  * 本地注册中心，不能用于分布式项目
@@ -21,7 +21,7 @@ import com.joe.utils.parse.json.JsonParser;
  * @version 2018.04.11 18:13
  */
 public class LocalRegistry implements Registry {
-    private static final JsonParser  PARSER = JsonParser.getInstance();
+    private static final JsonParser PARSER = JsonParser.getInstance();
     private Tree                     registry;
     private Tree<List<NodeListener>> listeners;
     private AtomicLong               counter;

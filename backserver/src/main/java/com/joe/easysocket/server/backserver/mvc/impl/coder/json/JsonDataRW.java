@@ -1,7 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.impl.coder.json;
 
-import static com.joe.utils.parse.json.JsonParser.getInstance;
-
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +13,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserExcept
 import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
 import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
-import com.joe.utils.parse.json.JsonParser;
-import com.joe.utils.type.JavaType;
+import com.joe.utils.reflect.JavaType;
+import com.joe.utils.serialize.json.JsonParser;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Provider
 public class JsonDataRW implements DataReader, DataWriter {
-    private static final JsonParser JSON_PARSER = getInstance();
+    private static final JsonParser JSON_PARSER = JsonParser.getInstance();
     private ParamParserContainer    paramParserContainer;
 
     @Override

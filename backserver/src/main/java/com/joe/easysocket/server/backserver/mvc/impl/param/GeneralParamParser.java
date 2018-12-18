@@ -1,7 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.impl.param;
 
-import static com.joe.utils.parse.json.JsonParser.getInstance;
-
 import java.lang.annotation.Annotation;
 
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
@@ -9,9 +7,9 @@ import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Consumes;
-import com.joe.utils.parse.json.JsonParser;
-import com.joe.utils.type.JavaType;
-import com.joe.utils.type.ReflectUtil;
+import com.joe.utils.reflect.JavaType;
+import com.joe.utils.reflect.ReflectUtil;
+import com.joe.utils.serialize.json.JsonParser;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Provider
 public class GeneralParamParser implements ParamInterceptor {
-    private static final JsonParser JSON_PARSER = getInstance();
+    private static final JsonParser JSON_PARSER = JsonParser.getInstance();
 
     @Override
     public boolean isReadable(Param param, String data) {

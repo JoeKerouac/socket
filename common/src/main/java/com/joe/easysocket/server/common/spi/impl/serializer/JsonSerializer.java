@@ -1,11 +1,10 @@
 package com.joe.easysocket.server.common.spi.impl.serializer;
 
-import static com.joe.utils.parse.json.JsonParser.getInstance;
 
 import java.util.Properties;
 
 import com.joe.easysocket.server.common.spi.Serializer;
-import com.joe.utils.parse.json.JsonParser;
+import com.joe.utils.serialize.json.JsonParser;
 
 /**
  * JSON序列化器
@@ -14,14 +13,14 @@ import com.joe.utils.parse.json.JsonParser;
  * @version 2018.06.27 15:19
  */
 public class JsonSerializer implements Serializer {
-    private static final JsonParser JSON_PARSER = getInstance();
+    private static final JsonParser JSON_PARSER = JsonParser.getInstance();
 
     @Override
     public byte[] write(Object obj) {
         if (obj == null) {
             return null;
         }
-        return JSON_PARSER.toJson(obj).getBytes();
+        return JSON_PARSER.write(obj);
     }
 
     @Override
@@ -29,7 +28,7 @@ public class JsonSerializer implements Serializer {
         if (data == null || clazz == null) {
             return null;
         }
-        return JSON_PARSER.readAsObject(data, clazz);
+        return JSON_PARSER.read(data, clazz);
     }
 
     @Override

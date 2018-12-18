@@ -23,8 +23,8 @@ import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.spi.Serializer;
-import com.joe.utils.common.ClassUtils;
 import com.joe.utils.common.Tools;
+import com.joe.utils.reflect.ClassUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

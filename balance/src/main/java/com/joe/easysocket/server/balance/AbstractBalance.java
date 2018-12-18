@@ -21,8 +21,9 @@ import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
-import com.joe.utils.common.ClassUtils;
 import com.joe.utils.common.Tools;
+import com.joe.utils.reflect.ClassUtils;
+import com.joe.utils.reflect.ReflectException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -277,7 +278,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
                     "指定的ConnectorManager[" + connectorManagerClass + "]不是"
                                                  + ConnectorManager.class.getName() + "的子类");
             }
-        } catch (ClassNotFoundException e) {
+        } catch (ReflectException e) {
             log.error("指定的ConnectorManager[{}]不存在");
             throw new ConfigIllegalException(
                 "指定的ConnectorManager[" + connectorManagerClass + "]不存在", e);
@@ -289,7 +290,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
                 throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不是"
                                                  + EventCenter.class.getName() + "的子类");
             }
-        } catch (ClassNotFoundException e) {
+        } catch (ReflectException e) {
             log.error("指定的EventCenter[{}]不存在");
             throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不存在", e);
         }

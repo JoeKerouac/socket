@@ -14,7 +14,7 @@ import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.backserver.mvc.container.Container;
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.container.Selector;
-import com.joe.utils.common.ClassUtils;
+import com.joe.utils.reflect.ClassUtils;
 
 /**
  * 抽象容器，类必须加上注解{@link Provider}才能被该容器发现

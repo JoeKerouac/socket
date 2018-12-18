@@ -6,8 +6,8 @@ import com.joe.easysocket.client.ext.Logger;
 import com.joe.easysocket.client.ext.MessageListener;
 import com.joe.easysocket.client.ext.Serializer;
 import com.joe.utils.concurrent.ThreadUtil;
-import com.joe.utils.parse.json.JsonObject;
-import com.joe.utils.parse.json.JsonParser;
+import com.joe.utils.serialize.json.JsonObject;
+import com.joe.utils.serialize.json.JsonParser;
 
 /**
  * @author joe

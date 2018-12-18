@@ -8,6 +8,7 @@ import javax.validation.ValidationException;
 import com.joe.easysocket.server.backserver.mvc.Bean;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ResourceInvokeException;
+import com.joe.utils.reflect.ReflectUtil;
 import com.joe.utils.validator.ValidatorUtil;
 
 import lombok.Data;
@@ -42,19 +43,19 @@ public class Resource<T> implements Bean {
         this.instance = instance;
         this.produce = produce;
         this.consume = consume;
-        this.resourceMethod.setAccessible(true);
+        ReflectUtil.allowAccess(this.resourceMethod);
     }
 
     /**
      * 调用资源
      *
-     * @param requestContext 请求上线文
+     * @param requestContext 请求上下文
      * @return 调用结果
      * @throws ResourceInvokeException 资源调用异常
      */
     public Object invoke(HttpRequestContext requestContext) throws ResourceInvokeException {
         try {
-            return resourceMethod.invoke(instance, requestContext.getParams());
+            return ReflectUtil.invoke(instance, resourceMethod, requestContext.getParams());
         } catch (Throwable e) {
             throw new ResourceInvokeException(e);
         }

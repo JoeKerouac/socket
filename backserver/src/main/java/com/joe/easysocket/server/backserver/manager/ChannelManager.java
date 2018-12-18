@@ -21,9 +21,9 @@ import com.joe.easysocket.server.common.protocol.ProtocolFuture;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.common.Tools;
-import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
+import com.joe.utils.serialize.json.JsonParser;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -220,7 +220,7 @@ public class ChannelManager implements Endpoint {
      */
     @Slf4j
     private static class InternalChannel implements ChannelProxy {
-        private static final JsonParser    parser = JsonParser.getInstance();
+        private static final JsonParser parser = JsonParser.getInstance();
         private ChannelId                  id;
         private String                     remoteAdd;
         private int                        port;

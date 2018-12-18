@@ -8,6 +8,8 @@ import java.util.function.Consumer;
 
 import javax.validation.ValidationException;
 
+import com.joe.utils.serialize.Serializer;
+import com.joe.utils.serialize.json.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,6 @@ import com.joe.easysocket.server.backserver.mvc.impl.resource.Resource;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.ResourceContainer;
 import com.joe.utils.common.StringUtils;
 import com.joe.utils.data.BaseDTO;
-import com.joe.utils.parse.json.JsonParser;
 import com.joe.utils.protocol.Datagram;
 
 /**
@@ -43,7 +44,8 @@ import com.joe.utils.protocol.Datagram;
  */
 public class MvcControllerImpl implements MvcController {
     private static final Logger      LOGGER      = LoggerFactory.getLogger(MvcDataworker.class);
-    private static final JsonParser  JSON_PARSER = JsonParser.getInstance();
+    private static final Serializer  JSON_PARSER = JsonParser.getInstance();
+
     private ResourceContainer        resourceContainer;
     private FilterContainer          filterContainer;
     private DataWriterContainer      dataWriterContainer;
@@ -238,7 +240,7 @@ public class MvcControllerImpl implements MvcController {
         LOGGER.debug("开始解析请求数据");
 
         try {
-            message = JSON_PARSER.readAsObject(body, InterfaceData.class);
+            message = JSON_PARSER.read(body, InterfaceData.class);
             if (message == null) {
                 String msg = Arrays.toString(body);
                 LOGGER.debug("数据解析异常，用户数据为：[{}]，要解析的类型为：[{}]", msg, InterfaceData.class);
@@ -286,24 +288,24 @@ public class MvcControllerImpl implements MvcController {
             LOGGER.debug("响应处理完毕");
         } catch (ResourceNotFoundException e) {
             LOGGER.error("用户请求的资源不存在", e);
-            resultData = buildResult(new BaseDTO<>("404"), message.getId(), message.getInvoke(),
-                findWriterInterceptor(null));
+            resultData = buildResult(BaseDTO.buildError("404", "请求资源不存在"), message.getId(),
+                message.getInvoke(), findWriterInterceptor(null));
         } catch (MediaTypeNoSupportException e) {
             LOGGER.error("找不到对应的参数解析器", e);
-            resultData = buildResult(new BaseDTO<>("504"), message.getId(), message.getInvoke(),
-                resolveDataInterceptor(requestContext, responseContext));
+            resultData = buildResult(BaseDTO.buildError("504", "参数解析异常"), message.getId(),
+                message.getInvoke(), resolveDataInterceptor(requestContext, responseContext));
         } catch (ParamParserException e) {
             LOGGER.error("参数解析失败", e);
-            resultData = buildResult(new BaseDTO<>("505"), message.getId(), message.getInvoke(),
-                resolveDataInterceptor(requestContext, responseContext));
+            resultData = buildResult(BaseDTO.buildError("505", "参数解析异常"), message.getId(),
+                message.getInvoke(), resolveDataInterceptor(requestContext, responseContext));
         } catch (ValidationException e) {
             LOGGER.error("参数验证失败", e);
-            resultData = buildResult(new BaseDTO<>("506"), message.getId(), message.getInvoke(),
-                resolveDataInterceptor(requestContext, responseContext));
+            resultData = buildResult(BaseDTO.buildError("506", "参数数据非法"), message.getId(),
+                message.getInvoke(), resolveDataInterceptor(requestContext, responseContext));
         } catch (FilterException e) {
             LOGGER.error("filter异常");
-            resultData = buildResult(new BaseDTO<>("507"), message.getId(), message.getInvoke(),
-                resolveDataInterceptor(requestContext, responseContext));
+            resultData = buildResult(BaseDTO.buildError("507", "服务器异常"), message.getId(),
+                message.getInvoke(), resolveDataInterceptor(requestContext, responseContext));
         } catch (Throwable e) {
             // 请求过程中发生了异常
             LOGGER.error("请求过程中发生了异常，开始查找相应的异常处理器处理异常", e);
@@ -315,7 +317,7 @@ public class MvcControllerImpl implements MvcController {
             LOGGER.info("异常处理器查找完毕");
             if (exceptionMappers.isEmpty()) {
                 LOGGER.error("异常没有找到相应的处理器", e);
-                resultData = buildResult(new BaseDTO<>("508"), message.getId(), message.getInvoke(),
+                resultData = buildResult(BaseDTO.buildError("508", "服务器异常"), message.getId(), message.getInvoke(),
                     resolveDataInterceptor(requestContext, responseContext));
             } else {
                 LOGGER.info("找到异常处理器，由相应的异常处理器处理");
@@ -327,7 +329,7 @@ public class MvcControllerImpl implements MvcController {
                 } catch (Throwable throwable) {
                     LOGGER.error("用户异常处理器[{}]处理异常[{}]的过程中又发生了异常", exceptionMappers.get(0), e,
                         throwable);
-                    resultData = buildResult(new BaseDTO<>("509"), message.getId(),
+                    resultData = buildResult(BaseDTO.buildError("509", "服务器异常"), message.getId(),
                         message.getInvoke(),
                         resolveDataInterceptor(requestContext, responseContext));
                 }

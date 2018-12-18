@@ -3,8 +3,8 @@ package com.joe.easysocket.server.common.spi;
 import java.util.Properties;
 
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
-import com.joe.utils.common.ClassUtils;
 
+import com.joe.utils.reflect.ClassUtils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,7 +26,7 @@ public class SpiLoader {
     public static <T extends Spi> T loadSpi(String spiClass, Properties environment) {
         log.debug("初始化SPI[{}]", spiClass);
         try {
-            T t = (T) ClassUtils.loadClass(spiClass).newInstance();
+            T t = ClassUtils.getInstance(spiClass);
             t.setProperties(environment);
             log.debug("[{}]初始化完毕", spiClass);
             return t;
