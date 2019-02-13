@@ -11,7 +11,7 @@ public class EnvironmentKey {
     /**
      * 配置信息
      */
-    public static final String CONFIG = "config";
+    public static final String CONFIG   = "config";
 
     /**
      * 协议栈

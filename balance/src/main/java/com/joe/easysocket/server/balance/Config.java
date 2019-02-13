@@ -2,6 +2,11 @@ package com.joe.easysocket.server.balance;
 
 import java.util.Properties;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
 import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.balance.strategy.LoadStrategy;
@@ -12,10 +17,6 @@ import com.joe.easysocket.server.common.config.ClusterConfig;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 
 /**
  * 前端配置，其中发布中心、注册中心、本机IP为必填项，其他都为选填项

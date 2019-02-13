@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.common.spi.impl.serializer;
 
-
 import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.serialize.json.JsonParser;

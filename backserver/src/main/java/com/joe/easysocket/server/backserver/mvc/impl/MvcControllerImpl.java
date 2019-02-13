@@ -8,8 +8,6 @@ import java.util.function.Consumer;
 
 import javax.validation.ValidationException;
 
-import com.joe.utils.serialize.Serializer;
-import com.joe.utils.serialize.json.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +33,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.resource.ResourceContainer;
 import com.joe.utils.common.StringUtils;
 import com.joe.utils.data.BaseDTO;
 import com.joe.utils.protocol.Datagram;
+import com.joe.utils.serialize.Serializer;
+import com.joe.utils.serialize.json.JsonParser;
 
 /**
  * MVC控制器
@@ -317,8 +317,8 @@ public class MvcControllerImpl implements MvcController {
             LOGGER.info("异常处理器查找完毕");
             if (exceptionMappers.isEmpty()) {
                 LOGGER.error("异常没有找到相应的处理器", e);
-                resultData = buildResult(BaseDTO.buildError("508", "服务器异常"), message.getId(), message.getInvoke(),
-                    resolveDataInterceptor(requestContext, responseContext));
+                resultData = buildResult(BaseDTO.buildError("508", "服务器异常"), message.getId(),
+                    message.getInvoke(), resolveDataInterceptor(requestContext, responseContext));
             } else {
                 LOGGER.info("找到异常处理器，由相应的异常处理器处理");
                 try {

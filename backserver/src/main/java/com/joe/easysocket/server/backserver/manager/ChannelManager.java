@@ -220,7 +220,7 @@ public class ChannelManager implements Endpoint {
      */
     @Slf4j
     private static class InternalChannel implements ChannelProxy {
-        private static final JsonParser parser = JsonParser.getInstance();
+        private static final JsonParser    parser = JsonParser.getInstance();
         private ChannelId                  id;
         private String                     remoteAdd;
         private int                        port;

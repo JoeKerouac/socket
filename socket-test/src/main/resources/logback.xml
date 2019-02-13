@@ -8,9 +8,9 @@
         </encoder>
         <!--&lt;!&ndash; 只接收ERROR级别的日志，注：如果填成INFO将只接收INFO级别的日志，其他任何级别的都不接收 &ndash;&gt;-->
         <!--<filter class="ch.qos.logback.classic.filter.LevelFilter">-->
-            <!--<level>ERROR</level>-->
-            <!--<onMatch>ACCEPT</onMatch>-->
-            <!--<onMismatch>DENY</onMismatch>-->
+        <!--<level>ERROR</level>-->
+        <!--<onMatch>ACCEPT</onMatch>-->
+        <!--<onMismatch>DENY</onMismatch>-->
         <!--</filter>-->
     </appender>
 
@@ -49,16 +49,16 @@
 
     <!-- 控制台输出，所有错误信息都在此输出 -->
     <root level="DEBUG">
-        <appender-ref ref="Console" />
+        <appender-ref ref="Console"/>
     </root>
 
     <!-- 框架输出 -->
     <logger name="com.joe.utils" level="ERROR">
-        <appender-ref ref="Framework" />
+        <appender-ref ref="Framework"/>
     </logger>
 
     <!--&lt;!&ndash; JVM监控输出 &ndash;&gt;-->
     <!--<logger name="JVMStatus" level="WARN">-->
-        <!--<appender-ref ref="JVMStatus" />-->
+    <!--<appender-ref ref="JVMStatus" />-->
     <!--</logger>-->
 </configuration>

@@ -23,7 +23,8 @@ public class ConfigIllegalException extends SystemException {
         super(cause);
     }
 
-    protected ConfigIllegalException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected ConfigIllegalException(String message, Throwable cause, boolean enableSuppression,
+                                     boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }
