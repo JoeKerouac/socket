@@ -21,9 +21,10 @@ import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.easysocket.server.common.spi.Registry;
+import com.joe.easysocket.server.common.spi.SpiLoader;
 import com.joe.utils.common.Tools;
-import com.joe.utils.reflect.ClassUtils;
-import com.joe.utils.reflect.ReflectException;
+import com.joe.utils.exception.ExceptionWraper;
+import com.joe.utils.validator.ValidatorUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -240,59 +241,15 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
             log.info("ConnectorManager未设置，使用默认ConnectorManager[{}]",
                 AbstractConnectorManager.class);
         }
-        if (config.getPort() <= 0) {
-            log.warn("监听端口号必须大于0");
-            throw new ConfigIllegalException("监听端口号必须大于0，请重新设置port");
-        } else if (config.getPort() < 1000) {
-            log.warn("当前监听端口小于1000，有可能会与系统端口号冲突，建议设置大于1000的值");
-        }
 
-        if (config.getTcpBacklog() <= 0) {
-            log.warn("tcpBacklog必须大于0");
-            throw new ConfigIllegalException("tcpBacklog必须大于0，请设置一个大于0的tcpBacklog");
-        }
-        if (config.getHeatbeat() <= 30) {
-            log.warn("心跳周期不能小于30秒");
-            throw new ConfigIllegalException("心跳周期不能小于30秒，请设置一个大于0的heatbeat");
-        } else if (config.getHeatbeat() > 500) {
-            log.warn("当前心跳周期较长，建议设置300秒左右的心跳周期");
-        }
-        if (config.getRespTimeout() <= 0) {
-            log.warn("响应超时时间必须大于0");
-            throw new ConfigIllegalException("响应超时必须大于0，请设置一个大于0的respTimeout");
-        } else if (config.getRespTimeout() <= 50) {
-            log.warn("当前设置响应超时时间较短，建议加大响应超时时间");
-        }
-        if (config.getAckTimeout() <= 0) {
-            log.warn("ack超时时间必须大于0");
-            throw new ConfigIllegalException("ack超时时间必须大于0，请设置一个大于0的ackTimeout");
-        } else if (config.getAckTimeout() <= 50) {
-            log.warn("当前设置ack超时时间较短，建议加大ack超时时间");
-        }
+        ExceptionWraper.convert(() -> ValidatorUtil.validate(config), ConfigIllegalException::new);
+        ExceptionWraper.convert(() -> ValidatorUtil.validate(config.getClusterConfig()),
+            ConfigIllegalException::new);
 
         String connectorManagerClass = config.getConnectorManager();
-        try {
-            if (!ConnectorManager.class
-                .isAssignableFrom(ClassUtils.loadClass(connectorManagerClass))) {
-                throw new ConfigIllegalException(
-                    "指定的ConnectorManager[" + connectorManagerClass + "]不是"
-                                                 + ConnectorManager.class.getName() + "的子类");
-            }
-        } catch (ReflectException e) {
-            log.error("指定的ConnectorManager[{}]不存在");
-            throw new ConfigIllegalException(
-                "指定的ConnectorManager[" + connectorManagerClass + "]不存在", e);
-        }
+        SpiLoader.loadSpiClass(connectorManagerClass, ConnectorManager.class);
 
         String eventCenterClass = config.getEventCenter();
-        try {
-            if (!EventCenter.class.isAssignableFrom(ClassUtils.loadClass(eventCenterClass))) {
-                throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不是"
-                                                 + EventCenter.class.getName() + "的子类");
-            }
-        } catch (ReflectException e) {
-            log.error("指定的EventCenter[{}]不存在");
-            throw new ConfigIllegalException("指定的EventCenter[" + eventCenterClass + "]不存在", e);
-        }
+        SpiLoader.loadSpiClass(eventCenterClass, EventCenter.class);
     }
 }

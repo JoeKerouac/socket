@@ -1,6 +1,6 @@
 package com.joe.easysocket.server.common.spi;
 
-import java.util.Properties;
+import com.joe.easysocket.server.common.config.Environment;
 
 import lombok.NonNull;
 
@@ -16,5 +16,5 @@ public interface Spi {
      *
      * @param environment 环境
      */
-    void setProperties(@NonNull Properties environment);
+    void setProperties(@NonNull Environment environment);
 }

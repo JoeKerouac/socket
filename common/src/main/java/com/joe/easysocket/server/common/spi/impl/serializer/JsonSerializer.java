@@ -1,8 +1,7 @@
 package com.joe.easysocket.server.common.spi.impl.serializer;
 
 
-import java.util.Properties;
-
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.serialize.json.JsonParser;
 
@@ -42,7 +41,7 @@ public class JsonSerializer implements Serializer {
     }
 
     @Override
-    public void setProperties(Properties environment) {
+    public void setProperties(Environment environment) {
 
     }
 }

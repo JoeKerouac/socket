@@ -2,9 +2,9 @@ package com.joe.easysocket.server.common.spi.impl.registry.zk;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 import com.joe.easysocket.server.common.config.Const;
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.spi.ConnectionStateListener;
 import com.joe.easysocket.server.common.spi.NodeListener;
 import com.joe.easysocket.server.common.spi.Registry;
@@ -73,8 +73,8 @@ public class ZKRegistry implements Registry {
     }
 
     @Override
-    public void setProperties(Properties properties) {
-        ZKConfig config = (ZKConfig) properties.get(Const.ZK_CONFIG);
+    public void setProperties(Environment environment) {
+        ZKConfig config = environment.get(Const.ZK_CONFIG);
         if (config == null) {
             throw new NullPointerException("环境中没有zkConfig信息，使用ZKRegistry需要提供一个zkConfig配置");
         }

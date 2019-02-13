@@ -1,9 +1,9 @@
 package com.joe.easysocket.server.common.spi.impl.publish.local;
 
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
@@ -70,7 +70,7 @@ public class LocalPublishCenter implements PublishCenter {
     }
 
     @Override
-    public void setProperties(Properties properties) {
+    public void setProperties(Environment properties) {
 
     }
 }

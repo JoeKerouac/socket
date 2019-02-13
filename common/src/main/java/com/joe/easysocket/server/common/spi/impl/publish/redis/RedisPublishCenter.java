@@ -2,11 +2,11 @@ package com.joe.easysocket.server.common.spi.impl.publish.redis;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.joe.easysocket.server.common.config.Const;
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.spi.PublishCenter;
@@ -141,8 +141,8 @@ public class RedisPublishCenter implements PublishCenter {
     }
 
     @Override
-    public void setProperties(Properties properties) {
-        RedisBaseConfig config = (RedisBaseConfig) properties.get(Const.REDIS_CONFIG);
+    public void setProperties(Environment environment) {
+        RedisBaseConfig config = environment.get(Const.REDIS_CONFIG);
         if (config == null) {
             throw new NullPointerException("redisConfig为null，使用redis发布中心请在环境中添加redisConfig");
         }

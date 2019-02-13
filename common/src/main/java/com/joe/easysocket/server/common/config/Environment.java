@@ -100,7 +100,7 @@ public final class Environment {
         if (registry == null) {
             String registryClass = clusterConfig.getRegistry();
             log.info("加载spi[{}]", registryClass);
-            registry = SpiLoader.loadSpi(registryClass, config.getEnvironment());
+            registry = SpiLoader.loadSpi(registryClass, Registry.class, environment);
             log.info("spi [{}] 加载完毕", registryClass);
         } else {
             log.info("从环境信息中获取到了registry [{}]", registry);
@@ -110,7 +110,7 @@ public final class Environment {
         if (publishCenter == null) {
             String publishCenterClass = clusterConfig.getPublishCenter();
             log.info("加载spi[{}]", publishCenterClass);
-            publishCenter = SpiLoader.loadSpi(publishCenterClass, config.getEnvironment());
+            publishCenter = SpiLoader.loadSpi(publishCenterClass, PublishCenter.class, environment);
             log.info("spi [{}] 加载完毕", publishCenterClass);
         } else {
             log.info("从环境信息中获取到了publishCenter [{}]", publishCenter);
@@ -124,8 +124,8 @@ public final class Environment {
             serializerClassList.parallelStream().forEach(serializerClass -> {
                 try {
                     log.info("加载spi[{}]", serializerClass);
-                    Serializer serializer = SpiLoader.loadSpi(serializerClass,
-                        config.getEnvironment());
+                    Serializer serializer = SpiLoader.loadSpi(serializerClass, Serializer.class,
+                        environment);
                     log.info("spi [{}] 加载完毕", serializerClass);
                     serializers.add(serializer);
                 } catch (ConfigIllegalException e) {
@@ -136,7 +136,8 @@ public final class Environment {
             serializers = new ArrayList<>(1);
         }
         log.info("添加JSON序列化器");
-        serializers.add(SpiLoader.loadSpi(JsonSerializer.class.getName(), config.getEnvironment()));
+        serializers.add(
+            SpiLoader.loadSpi(JsonSerializer.class.getName(), JsonSerializer.class, environment));
         log.info("JSON序列化器添加完毕");
 
         environment.put(CONFIG, config);

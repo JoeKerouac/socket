@@ -3,9 +3,9 @@ package com.joe.easysocket.server.common.spi.impl.registry.local;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.spi.*;
 import com.joe.utils.collection.Tree;
 import com.joe.utils.common.StringUtils;
@@ -21,7 +21,7 @@ import com.joe.utils.serialize.json.JsonParser;
  * @version 2018.04.11 18:13
  */
 public class LocalRegistry implements Registry {
-    private static final JsonParser PARSER = JsonParser.getInstance();
+    private static final JsonParser  PARSER = JsonParser.getInstance();
     private Tree                     registry;
     private Tree<List<NodeListener>> listeners;
     private AtomicLong               counter;
@@ -117,7 +117,7 @@ public class LocalRegistry implements Registry {
     }
 
     @Override
-    public void setProperties(Properties properties) {
+    public void setProperties(Environment properties) {
 
     }
 }
