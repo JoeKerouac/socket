@@ -31,11 +31,11 @@ public class SpiLoader {
             clazz = ClassUtils.loadClass(className);
         } catch (ReflectException e) {
             log.error("指定的Spi[{}]不存在");
-            throw new ConfigIllegalException(StringUtils.format("指定的Spi[{}]不存在", className), e);
+            throw new ConfigIllegalException(StringUtils.format("指定的Spi[{0}]不存在", className), e);
         }
         if (!parent.isAssignableFrom(clazz)) {
             throw new ConfigIllegalException(
-                StringUtils.format("指定的Spi[{}]不是[{}]的子类", className, parent.getName()));
+                StringUtils.format("指定的Spi[{0}]不是[{1}]的子类", className, parent.getName()));
         }
         return (Class<T>) clazz;
     }
@@ -54,13 +54,13 @@ public class SpiLoader {
         Class<T> clazz = loadSpiClass(spiClass, parent);
         try {
             T t = ClassUtils.getInstance(clazz);
-            t.setProperties(environment);
+            t.init(environment);
             log.debug("[{}]初始化完毕", spiClass);
             return t;
         } catch (Throwable e) {
             log.error("构造实例[{}]失败，可能是没有无参数构造器，请为类[{}]增加无参数构造器", spiClass, spiClass, e);
             throw new ConfigIllegalException(
-                StringUtils.format("构造实例[{}]失败，可能是没有无参数构造器，请为类[{}]增加无参数构造器", spiClass, spiClass),
+                StringUtils.format("构造实例[{0}]失败，可能是没有无参数构造器，请为类[{1}]增加无参数构造器", spiClass, spiClass),
                 e);
         }
     }
