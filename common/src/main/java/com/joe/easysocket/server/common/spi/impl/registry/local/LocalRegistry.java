@@ -117,7 +117,7 @@ public class LocalRegistry implements Registry {
     }
 
     @Override
-    public void setProperties(Environment properties) {
+    public void init(Environment properties) {
 
     }
 }

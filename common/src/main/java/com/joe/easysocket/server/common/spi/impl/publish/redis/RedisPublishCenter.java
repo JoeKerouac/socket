@@ -141,7 +141,7 @@ public class RedisPublishCenter implements PublishCenter {
     }
 
     @Override
-    public void setProperties(Environment environment) {
+    public void init(Environment environment) {
         RedisBaseConfig config = environment.get(Const.REDIS_CONFIG);
         if (config == null) {
             throw new NullPointerException("redisConfig为null，使用redis发布中心请在环境中添加redisConfig");

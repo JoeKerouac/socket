@@ -14,10 +14,30 @@ public final class Const {
     public static String       CONFIG          = "config";
 
     public static String       CLUSTER_CONFIG  = "clusterConfig";
+
+    /**
+     * 注册中心
+     */
     public static String       REGISTRY        = "registry";
+
+    /**
+     * PUB/SUB消息中心
+     */
     public static String       PUBLISH_CENTER  = "publishCenter";
+
+    /**
+     * Redis配置
+     */
     public static String       REDIS_CONFIG    = "redisConfig";
+
+    /**
+     * zookeeper配置
+     */
     public static String       ZK_CONFIG       = "zkConfig";
+
+    /**
+     * 序列化器LIST
+     */
     public static String       SERIALIZER_LIST = "serializers";
 
     /**

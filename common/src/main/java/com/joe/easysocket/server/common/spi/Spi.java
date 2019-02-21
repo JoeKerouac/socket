@@ -12,9 +12,9 @@ import lombok.NonNull;
  */
 public interface Spi {
     /**
-     * 配置SPI，使用SPI实现类前会先调用该方法
+     * 初始化配置SPI，使用SPI实现类前会先调用该方法
      *
      * @param environment 环境
      */
-    void setProperties(@NonNull Environment environment);
+    void init(@NonNull Environment environment);
 }

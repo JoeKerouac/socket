@@ -70,7 +70,7 @@ public class LocalPublishCenter implements PublishCenter {
     }
 
     @Override
-    public void setProperties(Environment properties) {
+    public void init(Environment properties) {
 
     }
 }

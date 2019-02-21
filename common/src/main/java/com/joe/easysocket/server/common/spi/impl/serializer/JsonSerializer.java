@@ -40,7 +40,7 @@ public class JsonSerializer implements Serializer {
     }
 
     @Override
-    public void setProperties(Environment environment) {
+    public void init(Environment environment) {
 
     }
 }

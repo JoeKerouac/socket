@@ -180,7 +180,7 @@ public class BaseBalance extends AbstractBalance {
             }
 
             private void unregister(String channel) {
-                pub(channel);
+                channelCloseBroadcast(channel);
             }
         });
     }

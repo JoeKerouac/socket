@@ -35,44 +35,61 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class AbstractBalance extends EventCenterProxy implements Balance {
+
+    /**
+     * 前端配置
+     */
     protected Config                                config;
+
+    /**
+     * 分布式节点配置
+     */
     protected ClusterConfig                         clusterConfig;
+
     /**
      * 环境信息
      */
     protected Environment                           environment;
+
     /**
      * 该前端的ID，需要全局唯一
      */
     protected final String                          id;
+
     /**
      * 启动标志位，true表示已经启动
      */
-    private volatile boolean                        started   = false;
+    private volatile boolean                        started       = false;
+
     /**
      * 待发通道注销消息，key为通道ID，value为待通知的后端
      */
-    private Map<String, List<BackServer>>           pubs      = new ConcurrentHashMap<>();
+    private Map<String, List<BackServer>>           waitBroadcast = new ConcurrentHashMap<>();
+
     /**
      * 关闭回调
      */
     private Function                                callback;
+
     /**
      * 通道注销通知线程
      */
     private Thread                                  channelUnregister;
+
     /**
      * 发布中心
      */
     protected PublishCenter                         publishCenter;
+
     /**
      * 注册中心
      */
     protected Registry                              registry;
+
     /**
      * 所有后端的集合
      */
-    protected ConcurrentHashMap<String, BackServer> allServer = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, BackServer> allServer     = new ConcurrentHashMap<>();
 
     /**
      * 默认构造器
@@ -93,10 +110,10 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
 
         this.channelUnregister = new Thread(() -> {
             while (started) {
-                pubs.forEach((k, v) -> {
+                waitBroadcast.forEach((k, v) -> {
                     if (v.isEmpty()) {
                         log.debug("当前通道{}已经通道注销消息已经通知到了所有后端", k);
-                        pubs.remove(k);
+                        waitBroadcast.remove(k);
                     } else {
                         log.debug("将通道[{}]注销的消息通知到通道列表[{}]", k, v);
                         v.parallelStream().forEach(server -> {
@@ -178,20 +195,20 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
      *
      * @param channel 关闭的通道
      */
-    protected void pub(String channel) {
+    protected void channelCloseBroadcast(String channel) {
         log.debug("通道{}关闭，发送广播", channel);
 
         //注册监听，加入待发送列表
         allServer.values().parallelStream().forEach(server -> {
             log.debug("为后端{}添加channel注销消息", server);
-            List<BackServer> list = pubs.get(channel);
+            List<BackServer> list = waitBroadcast.get(channel);
             if (list == null) {
                 list = new CopyOnWriteArrayList<>();
                 //必须在此处加入，防止父类判断channel对应的list为空时删除该list
                 list.add(server);
-                list = pubs.putIfAbsent(channel, list);
+                list = waitBroadcast.putIfAbsent(channel, list);
                 if (list != null) {
-                    pubs.get(channel).addAll(list);
+                    waitBroadcast.get(channel).addAll(list);
                 }
             } else {
                 list.add(server);
@@ -206,7 +223,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
                 @Override
                 public void onMessage(byte[] channel, String message) {
                     log.debug("接收到服务端{}的响应{}", info.getId(), message);
-                    pubs.get(message).remove(server);
+                    waitBroadcast.get(message).remove(server);
                     //取消监听
                     publishCenter.unregister(ackTopic);
                 }

@@ -73,7 +73,7 @@ public class ZKRegistry implements Registry {
     }
 
     @Override
-    public void setProperties(Environment environment) {
+    public void init(Environment environment) {
         ZKConfig config = environment.get(Const.ZK_CONFIG);
         if (config == null) {
             throw new NullPointerException("环境中没有zkConfig信息，使用ZKRegistry需要提供一个zkConfig配置");
