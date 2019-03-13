@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
-import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.easysocket.server.common.spi.SpiLoader;
@@ -33,18 +33,10 @@ public final class Environment {
     }
 
     public Environment(Properties environment) {
-        this.environment = new ConcurrentHashMap<>();
-        put(environment);
-    }
-
-    /**
-     * 将properties放入环境
-     *
-     * @param properties properties
-     */
-    public void put(Properties properties) {
-        if (properties != null) {
-            environment.putAll(properties);
+        if (environment == null) {
+            this.environment = new ConcurrentHashMap<>();
+        }else {
+            this.environment = new ConcurrentHashMap<>(environment);
         }
     }
 
@@ -59,12 +51,13 @@ public final class Environment {
     }
 
     /**
-     * 从环境取出指定key对应的value
+     * 从环境取出指定key对应的value，当泛型错误并且value不为null时将会抛出异常
      *
      * @param key key，不能为null
      * @param <T> value类型
      * @return value
      */
+    @SuppressWarnings("unchecked")
     public <T> T get(@NonNull Object key) {
         return (T) environment.get(key);
     }
@@ -77,6 +70,7 @@ public final class Environment {
      * @param <T>   value类型
      * @return value，如果指定key对应的值为null或者不是指定类型则返回null
      */
+    @SuppressWarnings("unchecked")
     public <T> T getSafe(@NonNull Object key, @NonNull Class<T> clazz) {
         Object obj = environment.get(key);
         if (obj != null && clazz.isAssignableFrom(obj.getClass())) {
@@ -106,14 +100,14 @@ public final class Environment {
             log.info("从环境信息中获取到了registry [{}]", registry);
         }
 
-        PublishCenter publishCenter = environment.getSafe(PUBLISH_CENTER, PublishCenter.class);
-        if (publishCenter == null) {
+        MessageCenter messageCenter = environment.getSafe(MSG_CENTER, MessageCenter.class);
+        if (messageCenter == null) {
             String publishCenterClass = clusterConfig.getPublishCenter();
             log.info("加载spi[{}]", publishCenterClass);
-            publishCenter = SpiLoader.loadSpi(publishCenterClass, PublishCenter.class, environment);
+            messageCenter = SpiLoader.loadSpi(publishCenterClass, MessageCenter.class, environment);
             log.info("spi [{}] 加载完毕", publishCenterClass);
         } else {
-            log.info("从环境信息中获取到了publishCenter [{}]", publishCenter);
+            log.info("从环境信息中获取到了publishCenter [{}]", messageCenter);
         }
 
         List<Serializer> serializers;
@@ -143,7 +137,7 @@ public final class Environment {
         environment.put(CONFIG, config);
         environment.put(CLUSTER_CONFIG, config.getClusterConfig());
         environment.put(REGISTRY, registry);
-        environment.put(PUBLISH_CENTER, publishCenter);
+        environment.put(MSG_CENTER, messageCenter);
         environment.put(SERIALIZER_LIST, serializers);
         return environment;
     }

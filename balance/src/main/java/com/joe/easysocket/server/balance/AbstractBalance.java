@@ -19,7 +19,7 @@ import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.msg.ChannelId;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
-import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.easysocket.server.common.spi.SpiLoader;
 import com.joe.utils.common.Tools;
@@ -79,7 +79,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
     /**
      * 发布中心
      */
-    protected PublishCenter                         publishCenter;
+    protected MessageCenter messageCenter;
 
     /**
      * 注册中心
@@ -104,7 +104,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
         this.config = this.environment.get(CONFIG);
         this.clusterConfig = this.environment.get(CLUSTER_CONFIG);
         this.registry = this.environment.get(REGISTRY);
-        this.publishCenter = this.environment.get(PUBLISH_CENTER);
+        this.messageCenter = this.environment.get(MSG_CENTER);
 
         this.id = Tools.createUUID();
 
@@ -126,12 +126,12 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
                                 log.debug("后端{}已经不存在不在往该后端发送通道注销消息", info.getId());
                                 v.remove(server);
                                 //取消监听
-                                publishCenter.unregister(ackTopic);
+                                messageCenter.unregister(ackTopic);
                             } else {
                                 String topic = info.getChannelChangeTopic() + "/" + info.getId();
                                 ChannelId id = new ChannelId(k, this.id);
                                 log.debug("通知后端{}通道{}注销", topic, id);
-                                publishCenter.pub(topic, id);
+                                messageCenter.pub(topic, id);
                             }
                         });
                     }
@@ -219,13 +219,13 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
             BackServerInfo info = server.getServerInfo();
             String ackTopic = info.getChannelChangeAckTopic() + "/" + channel + "/" + id + "/"
                               + info.getId();
-            publishCenter.register(ackTopic, new CustomMessageListener<String>() {
+            messageCenter.register(ackTopic, new CustomMessageListener<String>() {
                 @Override
                 public void onMessage(byte[] channel, String message) {
                     log.debug("接收到服务端{}的响应{}", info.getId(), message);
                     waitBroadcast.get(message).remove(server);
                     //取消监听
-                    publishCenter.unregister(ackTopic);
+                    messageCenter.unregister(ackTopic);
                 }
 
                 @Override

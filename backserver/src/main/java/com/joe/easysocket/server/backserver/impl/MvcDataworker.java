@@ -1,5 +1,6 @@
 package com.joe.easysocket.server.backserver.impl;
 
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,6 @@ import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.NoRequireParamException;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.spi.PublishCenter;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
 import com.joe.utils.reflect.ClassUtils;
@@ -36,7 +36,7 @@ public class MvcDataworker implements DataWorker {
     /**
      * 发布中心
      */
-    private PublishCenter           publishCenter;
+    private MessageCenter messageCenter;
     /**
      * 服务器是否关闭标志，为true时表示关闭
      */
@@ -59,7 +59,7 @@ public class MvcDataworker implements DataWorker {
     public MvcDataworker(Environment environment, String id) {
         Config config = environment.get(Const.CONFIG);
         this.sessionManager = new SessionManagerImpl(id, environment);
-        this.publishCenter = environment.get(Const.PUBLISH_CENTER);
+        this.messageCenter = environment.get(Const.MSG_CENTER);
         BeanContainer beanContainer = config.getBeanContainer();
         if (beanContainer == null) {
             beanContainer = new BaseBeanContainer(ClassUtils.getDefaultClassLoader(), "com");
@@ -78,9 +78,9 @@ public class MvcDataworker implements DataWorker {
             return;
         }
         //检查是否有队列和发布中心
-        if (this.publishCenter == null) {
+        if (this.messageCenter == null) {
             logger.error("协议栈缺少队列或者发布中心，请先注册队列或者发布中心");
-            throw new NoRequireParamException(this.publishCenter == null ? "PublishCenter" : null);
+            throw new NoRequireParamException(this.messageCenter == null ? "MessageCenter" : null);
         }
 
         sessionManager.start();
@@ -140,7 +140,7 @@ public class MvcDataworker implements DataWorker {
                     protocolData.getChannel());
                 msg.setData(resultData);
                 //响应数据
-                publishCenter.pub(msg.getRespTopic(), msg);
+                messageCenter.pub(msg.getRespTopic(), msg);
             });
         } catch (Throwable e) {
             logger.error("数据处理中发生异常，数据为：{}", msg, e);

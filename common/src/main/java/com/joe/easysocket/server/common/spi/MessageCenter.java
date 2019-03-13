@@ -4,11 +4,11 @@ import com.joe.easysocket.server.common.lambda.Endpoint;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 
 /**
- * 发布中心，用于发布消息和注册消息监听者，序列化器默认是json，需要其他的可以自行注册
+ * 消息中心，用于发布消息和注册消息监听者，序列化器默认是json，需要其他的可以自行注册
  *
  * @author joe
  */
-public interface PublishCenter extends Endpoint, Spi {
+public interface MessageCenter extends Endpoint, Spi {
     /**
      * 发布消息
      *

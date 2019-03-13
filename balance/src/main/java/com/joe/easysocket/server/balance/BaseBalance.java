@@ -249,7 +249,7 @@ public class BaseBalance extends AbstractBalance {
         }
 
         log.debug("注册对后端主动消息的监听");
-        publishCenter.register(msgRecTopic, customMessageListener);
+        messageCenter.register(msgRecTopic, customMessageListener);
         log.debug("对后端主动消息的监听注册完毕");
 
         super.start(callback);
@@ -298,7 +298,7 @@ public class BaseBalance extends AbstractBalance {
         strategy.clear();
         log.debug("虚拟后端关闭完成");
 
-        publishCenter.unregister(msgRecTopic, customMessageListener);
+        messageCenter.unregister(msgRecTopic, customMessageListener);
 
         super.shutdown();
         started = false;

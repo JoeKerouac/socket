@@ -31,40 +31,46 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractConnectorManager extends EventCenterProxy
                                                implements ConnectorManager {
-    // 是否是linux系统
-    protected static boolean               LINUX;
     /**
      * 当前所有通道，key为链接的ID，value为通道
      */
     private Map<String, PChannel>          pChannels;
+
     /**
      * 线程池，用于处理底层数据
      */
     private ExecutorService                service;
+
     /**
      * 当前协议栈是否销毁，默认销毁
      */
     private volatile ConnectorManagerState state;
+
     /**
      * 心跳周期，单位：秒
      */
     private int                            heartbeat;
+
     /**
      * 心跳超时清理线程，守护线程
      */
     private Thread                         cleanupThread;
+
     /**
      * 数据监听器
      */
     private List<ProtocolDataListener>     listeners;
+
     /**
      * 待发送队列
      */
     private Map<String, RetryData>         queue;
+
     /**
      * 发送线程
      */
     private Thread                         writer;
+
     /**
      * 协议栈事件中心
      */
@@ -75,16 +81,6 @@ public abstract class AbstractConnectorManager extends EventCenterProxy
     protected int                          backlog;
     //是否延迟发送
     protected boolean                      nodelay;
-
-    static {
-        if (System.getProperty("os.name").contains("Linux")) {
-            log.debug("当前系统是linux");
-            LINUX = true;
-        } else {
-            log.debug("当前系统是windows");
-            LINUX = false;
-        }
-    }
 
     /**
      * ConnectorManager状态

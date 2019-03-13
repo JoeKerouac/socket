@@ -7,7 +7,7 @@ import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ public class BackServerImpl implements BackServer {
     /**
      * 发布中心
      */
-    private final PublishCenter            publishCenter;
+    private final MessageCenter messageCenter;
     /**
      * 后端消息响应监听
      */
@@ -62,7 +62,7 @@ public class BackServerImpl implements BackServer {
     public BackServerImpl(Environment environment, BackServerInfo info,
                           ProtocolDataListener protocolDataListener, String id) {
         this.info = info;
-        this.publishCenter = environment.get(Const.PUBLISH_CENTER);
+        this.messageCenter = environment.get(Const.MSG_CENTER);
         this.protocolDataListener = protocolDataListener;
         this.topic = info.getTopic();
         this.id = id;
@@ -72,7 +72,7 @@ public class BackServerImpl implements BackServer {
     @Override
     public void write(DataMsg msg) {
         log.debug("将消息{}发布到{}", msg, topic);
-        publishCenter.pub(topic, msg);
+        messageCenter.pub(topic, msg);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class BackServerImpl implements BackServer {
         };
         String msgResp = this.msgResp + "/" + id;
         log.debug("注册后端服务响应监听，监听topic：{}", msgResp);
-        publishCenter.register(msgResp, listener);
+        messageCenter.register(msgResp, listener);
         started = true;
         log.debug("虚拟后端{}的消息回复监听添加成功", info);
         log.debug("虚拟后端{}启动成功", info);
@@ -118,7 +118,7 @@ public class BackServerImpl implements BackServer {
             return;
         }
         log.debug("删除虚拟服务器{}对后端的消息响应监听", info);
-        publishCenter.unregister(topic + msgResp, listener);
+        messageCenter.unregister(topic + msgResp, listener);
         log.debug("虚拟服务器{}对后端的消息响应监听删除成功", info);
         started = false;
         log.debug("虚拟后端{}关闭成功", info);

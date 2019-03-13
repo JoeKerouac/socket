@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
-import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import com.joe.easysocket.server.common.spi.Serializer;
 
 /**
@@ -15,7 +15,7 @@ import com.joe.easysocket.server.common.spi.Serializer;
  * @author joe
  * @version 2018.04.11 18:37
  */
-public class LocalPublishCenter implements PublishCenter {
+public class LocalMessageCenter implements MessageCenter {
     private Map<String, CustomMessageListener> listeners = new ConcurrentHashMap<>();
     private Map<CustomMessageListener, String> map       = new ConcurrentHashMap<>();
 

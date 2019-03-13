@@ -18,7 +18,7 @@ import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.easysocket.server.common.protocol.ChannelProxy;
 import com.joe.easysocket.server.common.protocol.ProtocolFuture;
-import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.common.Tools;
 import com.joe.utils.protocol.Datagram;
@@ -47,7 +47,7 @@ public class ChannelManager implements Endpoint {
     /**
      * 发布中心
      */
-    private PublishCenter                    publishCenter;
+    private MessageCenter messageCenter;
     /**
      * channel注销消息ACKtopic
      */
@@ -83,7 +83,7 @@ public class ChannelManager implements Endpoint {
         ClusterConfig clusterConfig = environment.get(Const.CLUSTER_CONFIG);
         this.id = id;
         this.balanceManager = new BalanceManager(environment);
-        this.publishCenter = environment.get(Const.PUBLISH_CENTER);
+        this.messageCenter = environment.get(Const.MSG_CENTER);
         this.channelChangeAckTopic = clusterConfig.getChannelChangeAckTopic();
         this.channelChangeTopic = clusterConfig.getChannelChangeTopic();
         this.allChannels = new ConcurrentHashMap<>();
@@ -98,7 +98,7 @@ public class ChannelManager implements Endpoint {
                 }
 
                 //ACK响应
-                publishCenter.pub(channelChangeAckTopic + "/" + message.getChannel() + "/"
+                messageCenter.pub(channelChangeAckTopic + "/" + message.getChannel() + "/"
                                   + message.getBalanceId() + "/" + id,
                     message.getChannel());
 
@@ -141,7 +141,7 @@ public class ChannelManager implements Endpoint {
             log.debug("当前channel管理器已经启动，不能重复启动");
             return;
         }
-        publishCenter.register(channelChangeTopic + "/" + id, channelChangeListener);
+        messageCenter.register(channelChangeTopic + "/" + id, channelChangeListener);
         balanceManager.start();
         balanceManager.addCloseListener(this::clearChannel);
         started = true;
@@ -153,7 +153,7 @@ public class ChannelManager implements Endpoint {
             log.debug("当前channel管理器已经关闭，不能重复启动");
             return;
         }
-        publishCenter.unregister(channelChangeTopic, channelChangeListener);
+        messageCenter.unregister(channelChangeTopic, channelChangeListener);
         balanceManager.shutdown();
         started = false;
     }
@@ -208,7 +208,7 @@ public class ChannelManager implements Endpoint {
         dataMsg.setData(protocolData);
         dataMsg.setSrc(id);
         log.debug("生成的待发送数据为：{}，将数据发送到：{}", dataMsg, topic);
-        publishCenter.pub(topic, dataMsg);
+        messageCenter.pub(topic, dataMsg);
         return ProtocolFuture.SUCCESS;
     }
 

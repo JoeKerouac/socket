@@ -39,8 +39,8 @@ import com.joe.easysocket.server.balance.BaseBalance;
 import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
 import com.joe.easysocket.server.common.config.ClusterConfig;
 import com.joe.easysocket.server.common.config.Const;
-import com.joe.easysocket.server.common.spi.impl.publish.local.LocalPublishCenter;
-import com.joe.easysocket.server.common.spi.impl.publish.redis.RedisPublishCenter;
+import com.joe.easysocket.server.common.spi.impl.publish.local.LocalMessageCenter;
+import com.joe.easysocket.server.common.spi.impl.publish.redis.RedisMessageCenter;
 import com.joe.easysocket.server.common.spi.impl.registry.local.LocalRegistry;
 import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKConfig;
 import com.joe.easysocket.server.common.spi.impl.registry.zk.ZKRegistry;
@@ -82,9 +82,9 @@ public class Starter {
     static void useLocal() {
         enviroment = new Properties();
         LocalRegistry registry = new LocalRegistry();
-        LocalPublishCenter publishCenter = new LocalPublishCenter();
+        LocalPublishCenter messageCenter = new LocalPublishCenter();
         enviroment.put(Const.REGISTRY, registry);
-        enviroment.put(Const.PUBLISH_CENTER, publishCenter);
+        enviroment.put(Const.PUBLISH_CENTER, messageCenter);
 
         clusterConfig = ClusterConfig.builder().build();
     }
@@ -104,7 +104,7 @@ public class Starter {
 
         clusterConfig = ClusterConfig.builder()
                 .registry(ZKRegistry.class.getName())
-                .publishCenter(RedisPublishCenter.class.getName())
+                .messageCenter(RedisPublishCenter.class.getName())
                 .build();
     }
 

@@ -9,7 +9,7 @@ import com.joe.easysocket.server.common.config.Const;
 import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
-import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.cluster.ClusterManager;
 import com.joe.utils.cluster.redis.RedisBaseConfig;
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author joe
  */
 @Slf4j
-public class RedisPublishCenter implements PublishCenter {
+public class RedisMessageCenter implements MessageCenter {
     private ClusterManager                              clusterManager;
     /**
      * listener与topic的映射，用于根据listener查找topic
@@ -50,11 +50,11 @@ public class RedisPublishCenter implements PublishCenter {
     public <T> void register(String channel, CustomMessageListener<T> listener) {
         if (StringUtils.isEmpty(channel)) {
             log.warn("channel不能为空");
-            throw new IllegalArgumentException("[RedisPublishCenter.register]channel不能为空");
+            throw new IllegalArgumentException("[RedisMessageCenter.register]channel不能为空");
         }
         if (listener == null) {
             log.warn("listener不能为空");
-            throw new IllegalArgumentException("[RedisPublishCenter.register]listener不能为空");
+            throw new IllegalArgumentException("[RedisMessageCenter.register]listener不能为空");
         }
 
         if (!listenerStringMap.containsKey(listener)) {
@@ -75,7 +75,7 @@ public class RedisPublishCenter implements PublishCenter {
     public <T> void unregister(CustomMessageListener<T> listener) {
         if (listener == null) {
             log.warn("listener不能为空");
-            throw new IllegalArgumentException("[RedisPublishCenter.unregister]listener不能为空");
+            throw new IllegalArgumentException("[RedisMessageCenter.unregister]listener不能为空");
         }
 
         List<String> channels = listenerStringMap.get(listener);
@@ -112,7 +112,7 @@ public class RedisPublishCenter implements PublishCenter {
     public void unregister(String channel) {
         if (StringUtils.isEmpty(channel)) {
             log.warn("channel不能为空");
-            throw new IllegalArgumentException("[RedisPublishCenter.unregister]channel不能为空");
+            throw new IllegalArgumentException("[RedisMessageCenter.unregister]channel不能为空");
         }
 
         List<CustomMessageListener<?>> listeners = listenerMap.get(channel);

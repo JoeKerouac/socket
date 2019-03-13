@@ -11,6 +11,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -76,13 +77,13 @@ public class TCPConnectorManager extends AbstractConnectorManager implements Con
             TCPDatagramDecoder datagramDecoder = new TCPDatagramDecoder();
             TCPDatagramEncoder datagramEncoder = new TCPDatagramEncoder();
 
-            if (LINUX) {
-                log.debug("当前系统 是 linux系统，采用epoll模型");
+            if (Epoll.isAvailable()) {
+                log.debug("当前可以采用epoll模型");
                 mainGroup = new EpollEventLoopGroup();
                 workerGroup = new EpollEventLoopGroup();
                 bootstrap.channel(EpollServerSocketChannel.class);
             } else {
-                log.debug("当前系统 不是 linux系统，采用nio模型");
+                log.debug("当前epoll模型无法使用，采用nio模型");
                 mainGroup = new NioEventLoopGroup();
                 workerGroup = new NioEventLoopGroup();
                 bootstrap.channel(NioServerSocketChannel.class);
@@ -92,7 +93,7 @@ public class TCPConnectorManager extends AbstractConnectorManager implements Con
             bootstrap.group(mainGroup, workerGroup)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    public void initChannel(SocketChannel ch) throws Exception {
+                    public void initChannel(SocketChannel ch) {
                         // 下边的编码解码器顺序不能变，CustomFrameDecoder必须每次都new，其他几个对象不用每次都new但是需要在类上加上@Sharable注解
                         ch.pipeline().addLast(new CustomFrameDecoder(), datagramDecoder,
                             new TCPConnectorAdapter(TCPConnectorManager.this, eventCenter),

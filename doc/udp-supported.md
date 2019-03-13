@@ -3,7 +3,7 @@
 ```
 com.joe.easysocket.server.balance.Config config = com.joe.easysocket.server.balance.Config.builder()
                     .connectorManager(UDPConnectorManager.class.getName()).clusterConfig(ClusterConfig.builder()
-                            .publishCenter(publishCenter).registry(registry).build()).port(10051).host(host).build();
+                            .messageCenter(messageCenter).registry(registry).build()).port(10051).host(host).build();
 ```
 可以看出与TCP不同的是，使用UDP需要在配置指定使用UDPConnectorManager，这样就能开启UDP了，底层将默认使用UDP而不是TCP。
 

@@ -1,6 +1,6 @@
 package com.joe.easysocket.server.backserver;
 
-import static com.joe.easysocket.server.common.config.Const.PUBLISH_CENTER;
+import static com.joe.easysocket.server.common.config.Const.MSG_CENTER;
 import static com.joe.easysocket.server.common.config.Const.REGISTRY;
 
 import com.joe.easysocket.server.backserver.impl.MvcDataworker;
@@ -12,7 +12,7 @@ import com.joe.easysocket.server.common.info.BackServerInfo;
 import com.joe.easysocket.server.common.lambda.Function;
 import com.joe.easysocket.server.common.msg.CustomMessageListener;
 import com.joe.easysocket.server.common.msg.DataMsg;
-import com.joe.easysocket.server.common.spi.PublishCenter;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.utils.common.Tools;
 
@@ -60,7 +60,7 @@ public interface BackServer {
         private String                         topic;
         private DataWorker                     dataWorker;
         private Function                       callback;
-        private PublishCenter                  publishCenter;
+        private MessageCenter messageCenter;
         private CustomMessageListener<DataMsg> customMessageListener;
         /**
          * 后端的ID，需要全局唯一
@@ -84,7 +84,7 @@ public interface BackServer {
             this.environment = Environment.build(config);
 
             this.registry = this.environment.get(REGISTRY);
-            this.publishCenter = this.environment.get(PUBLISH_CENTER);
+            this.messageCenter = this.environment.get(MSG_CENTER);
 
             this.id = Tools.createUUID();
             this.registryPath = clusterConfig.getRegistryBase() + clusterConfig.getBackServerGroup()
@@ -142,7 +142,7 @@ public interface BackServer {
                 }
             };
             log.debug("注册数据监听，监听topic：{}", topic);
-            publishCenter.register(topic, customMessageListener);
+            messageCenter.register(topic, customMessageListener);
             log.debug("数据监听注册成功");
 
             this.callback = callback;
@@ -163,7 +163,7 @@ public interface BackServer {
             registry.delete(registryPath);
             log.debug("注册信息{}删除成功", registryPath);
             log.debug("删除数据监听");
-            publishCenter.unregister(topic, customMessageListener);
+            messageCenter.unregister(topic, customMessageListener);
             log.debug("数据监听删除完毕");
             log.debug("关闭数据处理器");
             dataWorker.shutdown();

@@ -13,6 +13,9 @@ public final class Const {
      */
     public static String       CONFIG          = "config";
 
+    /**
+     * 分布式节点配置信息
+     */
     public static String       CLUSTER_CONFIG  = "clusterConfig";
 
     /**
@@ -21,9 +24,9 @@ public final class Const {
     public static String       REGISTRY        = "registry";
 
     /**
-     * PUB/SUB消息中心
+     * 消息中心
      */
-    public static String       PUBLISH_CENTER  = "publishCenter";
+    public static String       MSG_CENTER      = "messageCenter";
 
     /**
      * Redis配置
