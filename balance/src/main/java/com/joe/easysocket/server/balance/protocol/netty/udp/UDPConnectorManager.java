@@ -10,6 +10,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -69,12 +70,12 @@ public class UDPConnectorManager extends AbstractConnectorManager implements Con
             UDPDatagramDecoder datagramDecoder = new UDPDatagramDecoder();
             UDPDatagramEncoder datagramEncoder = new UDPDatagramEncoder();
 
-            if (LINUX) {
-                log.debug("当前系统 是 linux系统，采用epoll模型");
+            if (Epoll.isAvailable()) {
+                log.debug("当前系统允许采用epoll模型");
                 workerGroup = new EpollEventLoopGroup();
                 bootstrap.channel(EpollDatagramChannel.class);
             } else {
-                log.debug("当前系统 不是 linux系统，采用nio模型");
+                log.debug("当前系统不允许采用epoll模型，采用nio模型");
                 workerGroup = new NioEventLoopGroup();
                 bootstrap.channel(NioDatagramChannel.class);
             }
