@@ -12,7 +12,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Consume
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Produces;
 import com.joe.utils.reflect.JavaType;
-import com.joe.utils.reflect.ReflectUtil;
+import com.joe.utils.reflect.JavaTypeUtil;
 
 /**
  * API构建工具
@@ -73,7 +73,7 @@ class ApiUtil {
 
             param.setMethod(resourceMethod);
 
-            JavaType type = ReflectUtil.createJavaType(parameter.getParameterizedType());
+            JavaType type = JavaTypeUtil.createJavaType(parameter.getParameterizedType());
             type.setAnnotations(parameter.getAnnotations());
             param.setType(type);
 

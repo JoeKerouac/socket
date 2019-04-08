@@ -8,7 +8,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserExcept
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Consumes;
 import com.joe.utils.reflect.JavaType;
-import com.joe.utils.reflect.ReflectUtil;
+import com.joe.utils.reflect.JavaTypeUtil;
 import com.joe.utils.serialize.json.JsonParser;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class GeneralParamParser implements ParamInterceptor {
         JavaType type = param.getType();
         log.debug("将{}解析为{};参数{}的类型为{}", data, type, param.getName(), type);
         try {
-            Object result = JSON_PARSER.readAsObject(data, ReflectUtil.getRealType(type));
+            Object result = JSON_PARSER.readAsObject(data, JavaTypeUtil.getRealType(type));
             log.debug("读取出来的参数是：{}", result);
             return result;
         } catch (Throwable e) {
