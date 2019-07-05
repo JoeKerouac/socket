@@ -30,7 +30,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.filter.FilterContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Resource;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.ResourceContainer;
-import com.joe.utils.common.StringUtils;
+import com.joe.utils.common.string.StringUtils;
 import com.joe.utils.data.BaseDTO;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.serialize.Serializer;

@@ -14,7 +14,7 @@ import com.joe.easysocket.server.common.spi.Serializer;
 import com.joe.utils.cluster.ClusterManager;
 import com.joe.utils.cluster.redis.RedisBaseConfig;
 import com.joe.utils.cluster.redis.RedisClusterManagerFactory;
-import com.joe.utils.common.StringUtils;
+import com.joe.utils.common.string.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

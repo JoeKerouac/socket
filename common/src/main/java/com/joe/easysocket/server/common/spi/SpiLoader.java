@@ -2,7 +2,7 @@ package com.joe.easysocket.server.common.spi;
 
 import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
-import com.joe.utils.common.StringUtils;
+import com.joe.utils.common.string.StringUtils;
 import com.joe.utils.reflect.ClassUtils;
 import com.joe.utils.reflect.ReflectException;
 

@@ -14,7 +14,7 @@ import com.joe.easysocket.server.balance.spi.EventCenterProxy;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.SystemException;
 import com.joe.easysocket.server.common.protocol.PChannel;
-import com.joe.utils.common.StringUtils;
+import com.joe.utils.common.string.StringUtils;
 import com.joe.utils.concurrent.ThreadUtil;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;

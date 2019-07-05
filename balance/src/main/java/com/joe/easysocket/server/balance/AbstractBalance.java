@@ -79,7 +79,7 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
     /**
      * 发布中心
      */
-    protected MessageCenter messageCenter;
+    protected MessageCenter                         messageCenter;
 
     /**
      * 注册中心
@@ -259,8 +259,8 @@ public abstract class AbstractBalance extends EventCenterProxy implements Balanc
                 AbstractConnectorManager.class);
         }
 
-        ExceptionWraper.convert(() -> ValidatorUtil.validate(config), ConfigIllegalException::new);
-        ExceptionWraper.convert(() -> ValidatorUtil.validate(config.getClusterConfig()),
+        ExceptionWraper.run(() -> ValidatorUtil.validate(config), ConfigIllegalException::new);
+        ExceptionWraper.run(() -> ValidatorUtil.validate(config.getClusterConfig()),
             ConfigIllegalException::new);
 
         String connectorManagerClass = config.getConnectorManager();
