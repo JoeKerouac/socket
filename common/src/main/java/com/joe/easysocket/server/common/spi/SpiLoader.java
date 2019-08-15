@@ -2,7 +2,7 @@ package com.joe.easysocket.server.common.spi;
 
 import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.exception.ConfigIllegalException;
-import com.joe.utils.common.string.StringUtils;
+import com.joe.utils.common.string.StringFormater;
 import com.joe.utils.reflect.ClassUtils;
 import com.joe.utils.reflect.ReflectException;
 
@@ -31,11 +31,12 @@ public class SpiLoader {
             clazz = ClassUtils.loadClass(className);
         } catch (ReflectException e) {
             log.error("指定的Spi[{}]不存在");
-            throw new ConfigIllegalException(StringUtils.format("指定的Spi[{0}]不存在", className), e);
+            throw new ConfigIllegalException(
+                StringFormater.simpleFormat("指定的Spi[{0}]不存在", className), e);
         }
         if (!parent.isAssignableFrom(clazz)) {
             throw new ConfigIllegalException(
-                StringUtils.format("指定的Spi[{0}]不是[{1}]的子类", className, parent.getName()));
+                StringFormater.simpleFormat("指定的Spi[{0}]不是[{1}]的子类", className, parent.getName()));
         }
         return (Class<T>) clazz;
     }
@@ -59,9 +60,8 @@ public class SpiLoader {
             return t;
         } catch (Throwable e) {
             log.error("构造实例[{}]失败，可能是没有无参数构造器，请为类[{}]增加无参数构造器", spiClass, spiClass, e);
-            throw new ConfigIllegalException(
-                StringUtils.format("构造实例[{0}]失败，可能是没有无参数构造器，请为类[{1}]增加无参数构造器", spiClass, spiClass),
-                e);
+            throw new ConfigIllegalException(StringFormater
+                .simpleFormat("构造实例[{0}]失败，可能是没有无参数构造器，请为类[{1}]增加无参数构造器", spiClass, spiClass), e);
         }
     }
 }
