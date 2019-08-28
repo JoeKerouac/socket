@@ -9,7 +9,7 @@ import com.joe.easysocket.server.backserver.mvc.Bean;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ResourceInvokeException;
 import com.joe.utils.reflect.ReflectUtil;
-import com.joe.utils.validator.ValidatorUtil;
+import com.joe.utils.validation.ValidatorUtil;
 
 import lombok.Data;
 

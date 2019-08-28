@@ -24,7 +24,7 @@ import com.joe.easysocket.server.common.spi.Registry;
 import com.joe.easysocket.server.common.spi.SpiLoader;
 import com.joe.utils.common.Tools;
 import com.joe.utils.exception.ExceptionWraper;
-import com.joe.utils.validator.ValidatorUtil;
+import com.joe.utils.validation.ValidatorUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
