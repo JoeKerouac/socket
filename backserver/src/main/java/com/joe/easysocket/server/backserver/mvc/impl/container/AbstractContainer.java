@@ -1,7 +1,5 @@
 package com.joe.easysocket.server.backserver.mvc.impl.container;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +13,8 @@ import com.joe.easysocket.server.backserver.mvc.container.Container;
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.container.Selector;
 import com.joe.utils.reflect.ClassUtils;
+import com.joe.utils.reflect.JavaType;
+import com.joe.utils.reflect.JavaTypeUtil;
 
 /**
  * 抽象容器，类必须加上注解{@link Provider}才能被该容器发现
@@ -58,16 +58,10 @@ public abstract class AbstractContainer<T extends Bean> implements Container<T> 
             this.clazz = ClassUtils.loadClass(beanClassName, loader);
         } catch (Exception e) {
             logger.debug("通过名字获取bean类型失败，尝试通过泛型获取");
-            Type genericSuperclass = getClass().getGenericSuperclass();
-            logger.debug("类型为：{}", genericSuperclass);
-            // 只检查一层Repository泛型参数，不检查父类
-            if (genericSuperclass instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-                Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-                this.clazz = (Class<T>) actualTypeArguments[0];
-            } else {
-                throw new RuntimeException("请检查Container类泛型或命名");
-            }
+            List<JavaType> javaTypes = JavaTypeUtil.getGenericSuperclasses(getClass());
+            // 我们这个类只可能有一个泛型，所以写死get(0)
+            this.clazz = (Class<T>) JavaTypeUtil.getRealType(javaTypes.get(0));
+            logger.debug("类型为：{}", this.clazz);
         }
     }
 
