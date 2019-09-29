@@ -12,7 +12,7 @@ import com.joe.easysocket.server.backserver.mvc.container.BeanContainer;
 import com.joe.easysocket.server.backserver.mvc.container.Container;
 import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.container.Selector;
-import com.joe.utils.reflect.ClassUtils;
+import com.joe.utils.reflect.clazz.ClassUtils;
 import com.joe.utils.reflect.JavaType;
 import com.joe.utils.reflect.JavaTypeUtil;
 

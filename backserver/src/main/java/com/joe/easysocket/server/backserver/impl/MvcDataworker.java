@@ -21,7 +21,7 @@ import com.joe.easysocket.server.common.exception.NoRequireParamException;
 import com.joe.easysocket.server.common.msg.DataMsg;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
-import com.joe.utils.reflect.ClassUtils;
+import com.joe.utils.reflect.clazz.ClassUtils;
 import com.joe.utils.serialize.json.JsonParser;
 
 /**
