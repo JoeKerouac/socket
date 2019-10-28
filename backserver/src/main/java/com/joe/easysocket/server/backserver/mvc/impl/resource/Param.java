@@ -2,7 +2,7 @@ package com.joe.easysocket.server.backserver.mvc.impl.resource;
 
 import java.lang.reflect.Method;
 
-import com.joe.utils.reflect.JavaType;
+import com.joe.utils.reflect.type.JavaType;
 
 import lombok.Data;
 

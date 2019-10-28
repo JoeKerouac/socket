@@ -13,7 +13,7 @@ import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserExcept
 import com.joe.easysocket.server.backserver.mvc.impl.param.Context;
 import com.joe.easysocket.server.backserver.mvc.impl.param.ParamParserContainer;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
-import com.joe.utils.reflect.JavaType;
+import com.joe.utils.reflect.type.JavaType;
 import com.joe.utils.serialize.json.JsonParser;
 
 import lombok.extern.slf4j.Slf4j;

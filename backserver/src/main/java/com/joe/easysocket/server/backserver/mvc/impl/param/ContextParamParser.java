@@ -9,7 +9,7 @@ import com.joe.easysocket.server.backserver.mvc.container.Provider;
 import com.joe.easysocket.server.backserver.mvc.context.Session;
 import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
-import com.joe.utils.reflect.BaseType;
+import com.joe.utils.reflect.type.BaseType;
 
 /**
  * Context参数解析器

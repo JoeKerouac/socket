@@ -11,8 +11,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.param.GeneralParam;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Consumes;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Produces;
-import com.joe.utils.reflect.JavaType;
-import com.joe.utils.reflect.JavaTypeUtil;
+import com.joe.utils.reflect.type.JavaType;
+import com.joe.utils.reflect.type.JavaTypeUtil;
 
 /**
  * API构建工具

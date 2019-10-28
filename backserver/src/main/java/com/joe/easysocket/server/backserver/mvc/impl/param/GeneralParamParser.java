@@ -7,8 +7,8 @@ import com.joe.easysocket.server.backserver.mvc.impl.context.HttpRequestContext;
 import com.joe.easysocket.server.backserver.mvc.impl.exception.ParamParserException;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.Param;
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Consumes;
-import com.joe.utils.reflect.JavaType;
-import com.joe.utils.reflect.JavaTypeUtil;
+import com.joe.utils.reflect.type.JavaType;
+import com.joe.utils.reflect.type.JavaTypeUtil;
 import com.joe.utils.serialize.json.JsonParser;
 
 import lombok.extern.slf4j.Slf4j;
