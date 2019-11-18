@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.joe.easysocket.server.backserver.mvc.impl.resource.annotation.Path;
+import com.joe.utils.collection.CollectionUtil;
+import com.joe.utils.common.Assert;
 import com.joe.utils.scan.ClassScanner;
 import com.joe.utils.scan.MethodScanner;
 import com.joe.utils.scan.ScannerException;
@@ -47,22 +49,26 @@ class ApiBuilder {
      * @return 该类构建的资源，可能返回空集合，不会返回null
      */
     public Map<String, Resource> buildResourceFromObject(Object arg) {
+        Assert.notNull(arg, "资源对象不能为空");
         logger.debug("使用类{}构建资源", arg);
-        Class<?> clazz = arg.getClass();
+        Class<?> clazz;
+        if (arg instanceof Class) {
+            clazz = (Class) arg;
+        } else {
+            clazz = arg.getClass();
+        }
         if (!clazz.isAnnotationPresent(Path.class)) {
             return Collections.emptyMap();
         }
         // 扫描API类中的API方法
         List<Method> methodList = methodScanner
-            .scan(Collections.singletonList(resourceMethodFilter), clazz);
-        if (methodList.isEmpty()) {
+            .scanByFilter(Collections.singletonList(resourceMethodFilter), clazz);
+        if (CollectionUtil.safeIsEmpty(methodList)) {
             return Collections.emptyMap();
         }
-        Map<String, Resource> resources = new TreeMap<>();
+
         // 构建API说明并添加到apiList中去
-        resources.putAll(
-            ApiUtil.buildResource(arg, clazz, methodList.toArray(new Method[methodList.size()])));
-        return resources;
+        return new TreeMap<>(ApiUtil.buildResource(arg, clazz, methodList.toArray(new Method[0])));
     }
 
     /**

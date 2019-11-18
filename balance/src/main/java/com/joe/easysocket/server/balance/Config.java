@@ -2,10 +2,9 @@ package com.joe.easysocket.server.balance;
 
 import java.util.Properties;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 import com.joe.easysocket.server.balance.protocol.DefaultEventCenter;
 import com.joe.easysocket.server.balance.protocol.netty.tcp.TCPConnectorManager;
@@ -17,6 +16,7 @@ import com.joe.easysocket.server.common.config.ClusterConfig;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
 /**
  * 前端配置，其中发布中心、注册中心、本机IP为必填项，其他都为选填项
@@ -24,6 +24,7 @@ import lombok.NonNull;
  * @author JoeKerouac
  */
 @Getter
+@ToString
 @Builder
 public class Config implements BaseConfig {
 
@@ -49,7 +50,8 @@ public class Config implements BaseConfig {
     /**
      * 监听客户端的端口
      */
-    @Size(min = 1, max = 65536)
+    @Min(1)
+    @Max(65536)
     @Builder.Default
     private int           port             = 10051;
 
@@ -83,17 +85,20 @@ public class Config implements BaseConfig {
     @Min(value = 1)
     @Builder.Default
     private long          ackTimeout       = 1000;
+
     /**
      * 用户环境信息
      */
     @Builder.Default
     private Properties    environment;
+
     /**
      * 连接管理
      */
     @NotEmpty
     @Builder.Default
     private String        connectorManager = TCPConnectorManager.class.getName();
+
     /**
      * 事件中心
      */

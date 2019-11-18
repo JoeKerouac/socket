@@ -47,13 +47,13 @@
         </dependency>
         <!--bean验证框架-->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
         <!--bean验证框架需要，容器中会提供该依赖，但是由于该包提供独立运行的能力，所以需要包含，如果在容器中运行可以删除该依赖-->
         <dependency>
             <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
+            <artifactId>jakarta.el</artifactId>
         </dependency>
         <!-- 常用工具类 -->
         <dependency>

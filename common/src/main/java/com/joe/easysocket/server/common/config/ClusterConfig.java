@@ -2,11 +2,12 @@ package com.joe.easysocket.server.common.config;
 
 import java.util.List;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import lombok.ToString;
 
 /**
  * 分布式节点配置（更改注册地址时一般只需要修改组地址balanceGroup和backServerGroup即可，这将会使组件处于不同组内而
@@ -15,6 +16,7 @@ import lombok.Singular;
  * @author joe
  */
 @Builder
+@ToString
 @Getter
 public class ClusterConfig {
     /**
