@@ -1,5 +1,5 @@
 <configuration scan="true">
-    <property name="LOG_HOME" value="/applogs/server"/>
+    <property name="LOG_HOME" value="applogs/server"/>
 
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -52,8 +52,18 @@
         <appender-ref ref="Console"/>
     </root>
 
-    <!-- 框架输出 -->
+    <!-- netty输出 -->
+    <logger name="io.netty" level="WARN">
+        <appender-ref ref="Framework"/>
+    </logger>
+
+    <!-- utils输出 -->
     <logger name="com.joe.utils" level="ERROR">
+        <appender-ref ref="Framework"/>
+    </logger>
+
+    <!-- 框架输出 -->
+    <logger name="com.joe.easysocket" level="WARN">
         <appender-ref ref="Framework"/>
     </logger>
 
