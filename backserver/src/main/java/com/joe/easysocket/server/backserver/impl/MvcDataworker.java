@@ -1,6 +1,5 @@
 package com.joe.easysocket.server.backserver.impl;
 
-import com.joe.easysocket.server.common.spi.MessageCenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +18,7 @@ import com.joe.easysocket.server.common.config.Environment;
 import com.joe.easysocket.server.common.data.ProtocolData;
 import com.joe.easysocket.server.common.exception.NoRequireParamException;
 import com.joe.easysocket.server.common.msg.DataMsg;
+import com.joe.easysocket.server.common.spi.MessageCenter;
 import com.joe.utils.protocol.Datagram;
 import com.joe.utils.protocol.DatagramUtil;
 import com.joe.utils.reflect.clazz.ClassUtils;
@@ -36,7 +36,7 @@ public class MvcDataworker implements DataWorker {
     /**
      * 发布中心
      */
-    private MessageCenter messageCenter;
+    private MessageCenter           messageCenter;
     /**
      * 服务器是否关闭标志，为true时表示关闭
      */
