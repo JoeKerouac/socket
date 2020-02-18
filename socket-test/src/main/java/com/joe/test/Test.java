@@ -1,6 +1,5 @@
 package com.joe.test;
 
-
 /**
  * 不依赖于外部系统自启动（spring等）
  *

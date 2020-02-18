@@ -25,7 +25,7 @@ public class BackServerImpl implements BackServer {
     /**
      * 发布中心
      */
-    private final MessageCenter messageCenter;
+    private final MessageCenter            messageCenter;
     /**
      * 后端消息响应监听
      */

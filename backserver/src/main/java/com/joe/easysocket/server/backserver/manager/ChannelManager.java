@@ -47,7 +47,7 @@ public class ChannelManager implements Endpoint {
     /**
      * 发布中心
      */
-    private MessageCenter messageCenter;
+    private MessageCenter                    messageCenter;
     /**
      * channel注销消息ACKtopic
      */

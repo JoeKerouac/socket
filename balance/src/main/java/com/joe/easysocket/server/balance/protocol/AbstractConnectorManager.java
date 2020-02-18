@@ -17,6 +17,7 @@ import com.joe.easysocket.server.common.protocol.PChannel;
 import com.joe.utils.common.string.StringUtils;
 import com.joe.utils.concurrent.ThreadUtil;
 import com.joe.utils.protocol.Datagram;
+import com.joe.utils.protocol.DatagramConst;
 import com.joe.utils.protocol.DatagramUtil;
 
 import lombok.Data;
@@ -360,7 +361,7 @@ public abstract class AbstractConnectorManager extends EventCenterProxy
             }
 
             //获取数据报的类型
-            byte type = protocolData.getData()[Datagram.TYPE_INDEX];
+            byte type = protocolData.getData()[DatagramConst.Position.TYPE_INDEX];
 
             if (Datagram.isHeartbeat(type)) {
                 log.debug("数据报是心跳包，返回一个心跳包");

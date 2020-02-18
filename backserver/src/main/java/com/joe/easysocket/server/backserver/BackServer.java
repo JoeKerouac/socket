@@ -60,7 +60,7 @@ public interface BackServer {
         private String                         topic;
         private DataWorker                     dataWorker;
         private Function                       callback;
-        private MessageCenter messageCenter;
+        private MessageCenter                  messageCenter;
         private CustomMessageListener<DataMsg> customMessageListener;
         /**
          * 后端的ID，需要全局唯一

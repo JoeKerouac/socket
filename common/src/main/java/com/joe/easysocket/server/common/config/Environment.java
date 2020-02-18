@@ -35,7 +35,7 @@ public final class Environment {
     public Environment(Properties environment) {
         if (environment == null) {
             this.environment = new ConcurrentHashMap<>();
-        }else {
+        } else {
             this.environment = new ConcurrentHashMap<>(environment);
         }
     }
